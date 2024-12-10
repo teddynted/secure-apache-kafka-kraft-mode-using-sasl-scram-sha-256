@@ -106,8 +106,5 @@ EOF'
     echo "Configuration Done ✅"
 fi
 
-# KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
-# echo $KAFKA_CLUSTER_ID
-# ./bin/kafka-storage.sh format --config $KRAFT_SERVER --cluster-id $KAFKA_CLUSTER_ID --add-scram SCRAM-SHA-256=[name=$USER_NAME,password=$PASS_WORD]
 export KAFKA_OPTS="-Djava.security.auth.login.config=config/kraft/jaas.config"
 ./bin/kafka-server-start.sh config/kraft/server.properties
