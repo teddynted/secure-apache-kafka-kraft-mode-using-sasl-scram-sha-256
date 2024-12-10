@@ -1,0 +1,251 @@
+service: apache-kafka-kraft-authentication
+
+frameworkVersion: "3"
+configValidationMode: error
+
+provider:
+  name: aws
+  architecture: arm64
+  region: ${env:AWS_REGION}
+  stage: "prod"
+  environment:
+    SASL_SCRAM_USERNAME: ${env:SASL_SCRAM_USERNAME}
+    SASL_SCRAM_PASSWORD: ${env:SASL_SCRAM_PASSWORD}
+
+resources:   
+  Parameters: 
+    LatestAmiId:
+      Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+      Default: '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64'
+    InstanceType:
+      Description: Apache Kafka EC2 instance type
+      Type: String
+      Default: t2.micro
+      AllowedValues:
+        - t2.nano
+        - t2.micro
+        - t2.small
+        - t2.medium
+  Resources:
+    Ec2RolePolicies: 
+      Type: AWS::IAM::Policy
+      Properties:
+        PolicyName: Ec2RolePolicies
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Action:
+                - "s3:GetObject"
+                - "s3:List*"
+              Resource: "*"
+            - Effect: "Allow"
+              Action:
+                - "cloudwatch:PutMetricData"
+                - "ec2:DescribeVolumes"
+                - "ec2:DescribeInstances"
+                - "ec2:DescribeTags"
+                - "logs:PutLogEvents"
+                - "logs:DescribeLogStreams"
+                - "logs:DescribeLogGroups"
+                - "logs:CreateLogStream"
+                - "logs:CreateLogGroup"
+                - "ec2:DescribeLaunchTemplates"
+                - "ec2:DescribeLaunchTemplateVersions"
+              Resource: "*"
+            - Effect: "Allow" 
+              Action:
+                - "ssm:GetParameter"
+                - "ssm:PutParameter"
+              Resource: "arn:aws:ssm:*:*:parameter/EC2-Custom-Metrics-*"
+            - Effect: "Allow"
+              Action:
+                - "ssm:SendCommand"
+                - "ssm:ListCommandInvocations"
+                - "ssm:DescribeInstanceInformation"
+              Resource: "*"
+            - Effect: "Allow"
+              Action: 
+                - "iam:GetInstanceProfile"
+                - "iam:SimulatePrincipalPolicy"
+              Resource: "*"
+        Roles:
+          - { "Ref": "Ec2IAMRole" } 
+    Ec2IAMRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+          - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+          - arn:aws:iam::aws:policy/AmazonInspector2ManagedCispolicy
+          - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
+        Path: /
+        Policies: { 'Ref': 'AWS::NoValue' }
+        RoleName: { 'Ref': 'AWS::NoValue' }
+    Ec2IAMProfile:
+      Type: AWS::IAM::InstanceProfile
+      DependsOn: Ec2IAMRole
+      Properties:
+        Path: /
+        Roles:
+          - { 'Ref': 'Ec2IAMRole' }
+    Ec2SecurityGroupSSH: 
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: allow SSH via static IP
+        GroupName: ec2-security-group-ssh
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 22
+            ToPort: 22
+            CidrIp: 0.0.0.0/0
+    Ec2SecurityGroupAllTraffic:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Allow Traffic from Anywhere Postman, Rest API, Internet etc
+        GroupName: ec2-security-group-all-traffic
+        SecurityGroupIngress:
+          - IpProtocol: -1
+            CidrIp: "0.0.0.0/0"
+    LaunchTemplate:
+      Type: 'AWS::EC2::LaunchTemplate'
+      Properties:
+        LaunchTemplateName: KafkaEC2LaunchTemplate
+        LaunchTemplateData:
+          InstanceType: { 'Ref': 'InstanceType' }
+          ImageId: { 'Ref': 'LatestAmiId' }
+          SecurityGroupIds:
+            - { 'Fn::GetAtt': ['Ec2SecurityGroupSSH', 'GroupId'] }
+          KeyName: !Join [ "-", [ 'kafka-key-pair', { 'Ref': 'AWS::Region' } ] ]
+          IamInstanceProfile:
+            Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
+    KafkaKraftCluster: 
+      Type: "AWS::EC2::Instance"
+      Properties:
+        AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
+        LaunchTemplate:
+          LaunchTemplateId: { "Ref": "LaunchTemplate" }
+          Version: { "Fn::GetAtt" : [ "LaunchTemplate", "DefaultVersionNumber" ] }
+        Tags:
+          - Key: Name
+            Value: Kafka Kraft Instance
+        SecurityGroupIds:
+          - { 'Fn::GetAtt': ['Ec2SecurityGroupAllTraffic', 'GroupId'] }
+        UserData:
+          Fn::Base64: !Sub 
+          - |
+            #!/bin/bash -ex
+            sudo yum update -y
+            sudo yum install -y java-11-amazon-corretto
+            sudo yum install -y git
+            export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto
+            export PATH=$PATH:$JAVA_HOME/bin
+            wget https://downloads.apache.org/kafka/3.9.0/kafka_2.12-3.9.0.tgz
+            tar xzf kafka_2.12-3.9.0.tgz
+            sudo mv -f kafka_2.12-3.9.0 /opt
+            sudo ln -s kafka_2.12-3.9.0 /opt/kafka
+            
+            # Generate TLS Certificate and Stores
+            mkdir /opt/kafka/config/kafka-ssl
+            git clone https://github.com/confluentinc/confluent-platform-security-tools.git  /opt/kafka/config/kafka-ssl
+            export COUNTRY=ZA
+            export STATE=JHB
+            export ORGANIZATION_UNIT=SE
+            export CITY=Johannesburg
+            export PASSWORD=${password}
+            chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
+            ./opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
+            ls -l
+            
+            sudo touch /opt/kafka/config/jaas.conf
+            cat <<EOF > /opt/kafka/config/kraft/jaas.config
+            KafkaServer {
+                org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password};
+            };
+            EOF
+
+            sudo touch /opt/kafka/config/kraft/admin.config
+            sudo cat <<EOF > /opt/kafka/config/kraft/admin.config
+            security.protocol=SASL_SSL
+            ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
+            ssl.truststore.password=${password}
+            sasl.mechanism=SCRAM-SHA-256
+            ssl.endpoint.identification.algorithm=
+            sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password};
+            EOF
+
+            sudo sed -i 's/log.dirs=\/tmp\/kafka-logs/log.dirs=\/home\/ec2-user\/kafka-logs/g' /opt/kafka/config/kraft/server.properties
+            sudo sed -i 's/num.partitions=1/num.partitions=8/' /opt/kafka/config/kraft/server.properties
+      
+            sudo sh -c 'cat << EOF >> /opt/kafka/config/kraft/server.properties
+            sasl.enabled.mechanisms=SASL_PLAINTEXT,SCRAM-SHA-256,SCRAM-SHA-512,PLAIN,SASL_SSL
+            sasl.mechanism.controller.protocol=SCRAM-SHA-256
+            sasl.mechanism.inter.broker.protocol=SASL_SSL
+            ssl.client.auth=required
+            ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
+            ssl.truststore.type=PKCS12
+            ssl.truststore.password=${password}
+            ssl.keystore.location=/opt/kafka/config/kafka-ssl/keystore/kafka.keystore.jks
+            ssl.keystore.type=PKCS12
+            ssl.keystore.password=${password}
+            ssl.key.password=${password}
+            ssl.endpoint.identification.algorithm=
+            authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
+            allow.everyone.if.no.acl.found=false
+            super.users=User:admin
+            delete.topic.enable=true
+            default.replication.factor=2
+            min.insync.replicas=2
+            auto.create.topics.enable=true
+            unclean.leader.election.enable=false
+            log4j.logger.org.apache.kafka.common.network.SslTransportLayer=DEBUG
+            log4j.logger.org.apache.kafka.common.security.ssl.SslFactory=DEBUG
+            EOF'
+
+            # Create Kafka service
+            cat <<EOF > /etc/systemd/system/kafka.service
+            [Unit]
+            Description=Kafka Service
+            After=network-online.target
+            Requires=network-online.target
+             
+            [Service]
+            Type=simple
+            User=ec2-user
+            Restart=on-failure
+            SyslogIdentifier=kafka
+            Environment="KAFKA_HEAP_OPTS=-Xms1G -Xmx1G"
+            Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"
+             
+            ExecStart=sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties
+            ExecStop=sudo /opt/kafka/bin/kafka-server-stop.sh /opt/kafka/config/kraft/server.properties
+            WorkingDirectory=/opt/kafka
+             
+            [Install]
+            WantedBy=multi-user.target
+            EOF
+
+            sudo sed -i 's/#ClientAliveInterval 0/ClientAliveInterval 300/' /etc/ssh/sshd_config
+            sudo sed -i 's/#ClientAliveCountMax 3/ClientAliveCountMax 3/' /etc/ssh/sshd_config
+            
+            sudo systemctl daemon-reload
+            sudo systemctl enable kafka
+            sudo systemctl start kafka
+            sudo systemctl status kafka
+
+          - username: { "Fn::Sub": [ "${username}", { "username": "${env:SASL_SCRAM_USERNAME}" } ] }
+            password: { "Fn::Sub": [ "${password}", { "password": "${env:SASL_SCRAM_PASSWORD}" } ] }
+  Outputs:
+    PublicIp:
+      Description: Cluster Instance IP Address
+      Value: { "Fn::GetAtt": ['KafkaKraftCluster', 'PublicIp'] }
+      Export:
+        Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }

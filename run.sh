@@ -7,7 +7,7 @@ ADMIN_CONFIG="config/kraft/admin.config"
 KRAFT_LOGS="config/kraft/logs"
 KRAFT_SERVER="config/kraft/server.properties"
 
-rm -rf $JAAS_CONFIG $ADMIN_CONFIG $DIR
+rm -rf $JAAS_CONFIG $ADMIN_CONFIG $DIR prometheus-3.0.1.linux-amd64 prometheus-3.0.1.linux-amd64.tar.gz
 git checkout $KRAFT_SERVER
 
 export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"
@@ -104,6 +104,19 @@ EOF'
     KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
     ./bin/kafka-storage.sh format --config $KRAFT_SERVER --cluster-id $KAFKA_CLUSTER_ID --add-scram SCRAM-SHA-256=[name=$USER_NAME,password=$PASS_WORD]
     echo "Configuration Done ✅"
+fi
+
+if [ -d "prometheus-3.0.1.linux-amd64" ]; then
+  echo 'Directory monitor exists.'
+else
+  wget https://github.com/prometheus/prometheus/releases/download/v3.0.1/prometheus-3.0.1.linux-amd64.tar.gz
+  tar xzf prometheus-3.0.1.linux-amd64.tar.gz
+  sudo sh -c 'cat << EOF >> prometheus-3.0.1.linux-amd64/prometheus.yml
+  
+  - job_name: 'kafka'
+    static_configs:
+    - targets: ['$HOST_NAME:7075']
+EOF'
 fi
 
 export KAFKA_OPTS="-Djava.security.auth.login.config=config/kraft/jaas.config"

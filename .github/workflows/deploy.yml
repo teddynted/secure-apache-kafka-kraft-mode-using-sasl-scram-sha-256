@@ -1,0 +1,49 @@
+name: 'Deploy'
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  Deploy:
+    name: 'Deploy'
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
+      SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}
+    
+    # Configure AWS Credentials
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+            
+    - name: Install the latest serverless
+      run: npm i serverless -g
+    
+    - name: Serverless deploy
+      uses: serverless/github-action@v3.2
+      with:
+        args: deploy --verbose
+
+    - name: Connect Kafka Cluster And Run Commands
+      run: |
+        chmod +x ./ec2.sh
+        ./ec2.sh
