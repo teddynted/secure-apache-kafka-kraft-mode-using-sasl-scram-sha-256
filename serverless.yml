@@ -174,7 +174,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster15: 
+    KafkaKraftCluster16: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -208,12 +208,10 @@ resources:
             # Generate TLS Certificate and Stores
             sudo mkdir /opt/kafka/config/kafka-ssl
             git clone https://github.com/confluentinc/confluent-platform-security-tools.git  /opt/kafka/config/kafka-ssl
-            sudo echo 'export COUNTRY=ZA' > /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
             sudo chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
-            #sudo chown ec2-user:ec2-user /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
            
-            echo COUNTRY="ZA" >> /etc/environment
-            echo STATE=Gauteng >> /etc/environment
+            echo COUNTRY=${country} >> /etc/environment
+            echo STATE=${state} >> /etc/environment
             echo ORGANIZATION_UNIT=PX >> /etc/environment
             echo CITY=Johannesburg >> /etc/environment
             echo PASSWORD=${password} >> /etc/environment
@@ -305,6 +303,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster15", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster16", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
