@@ -14,10 +14,7 @@ provider:
     KEY_PAIR_BUCKET_NAME: ${env:KEY_PAIR_BUCKET_NAME}
     KEY_PAIR_NAME: ${env:KEY_PAIR_NAME}
 
-resources:  
-  # Conditions:
-  #   #isCreateEc2KeyPairNotExist: { "Fn::Not" : [{ "Fn::Equals": [{"Ref": "KeyPairName"}, "true"]}] }
-  #   isCreateEc2KeyPairNotExist: { "Fn::Equals": [{"Ref": "KeyPairName"}, false]}
+resources:
   Parameters: 
     KeyPairName: 
       Description: Ec2 Key Pair Name
