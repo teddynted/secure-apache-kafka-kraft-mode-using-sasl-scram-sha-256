@@ -16,7 +16,7 @@ provider:
 
 resources:  
   Conditions:
-    isCreateEc2KeyPairNotExist: { "Fn::Not" : [{ "Fn::Equals": [{"Ref": "KeyPairName"}, "true"]}] }
+    isCreateEc2KeyPairNotExist: { "Fn::Not" : [{ "Fn::Equals": [{"Ref": "ClusterKeyPair"}, "true"]}] }
   Parameters: 
     KeyPairName: 
       Description: Ec2 Key Pair Name
@@ -162,7 +162,7 @@ resources:
       Type: AWS::EC2::KeyPair
       Condition: isCreateEc2KeyPairNotExist
       Properties:
-        KeyName: !Join [ "-", [ 'kafka-key-pair', { 'Ref': 'AWS::Region' } ] ]
+        KeyName: { "Fn::Join": [ "-", [ {"Ref": "KeyPairName"}, { "Ref": "AWS::Region" } ] ] }
     LaunchTemplate:
       Type: 'AWS::EC2::LaunchTemplate'
       Properties:
