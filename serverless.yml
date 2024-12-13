@@ -170,7 +170,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster7: 
+    KafkaKraftCluster8: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -198,6 +198,16 @@ resources:
             sudo ln -s kafka_2.12-3.9.0 /opt/kafka
             sudo chown ec2-user:ec2-user /opt/kafka && sudo chmod u+s /opt/kafka
             #sudo rm -rf opt/kafka_2.12-3.9.0
+            COUNTRY=ZA
+            export $COUNTRY
+            STATE=Gauteng
+            export $STATE
+            ORGANIZATION_UNIT=PX
+            echo $ORGANIZATION_UNIT
+            CITY=Johannesburg
+            export CITY
+            PASSWORD=${password}
+            export PASSWORD
             ls -l 
             ls -l /opt/kafka/
             # Generate TLS Certificate and Stores
@@ -296,6 +306,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster7", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster8", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
