@@ -20,7 +20,7 @@ sudo sed -i s/listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAI
 sudo useradd --no-create-home prometheus || echo "User already exists."
 sudo mkdir /etc/prometheus
 sudo mkdir /var/lib/prometheus
-wget https://github.com/prometheus/prometheus/releases/download/v3.0.1/prometheus-2.37.0.linux-amd64.tar.gz
+wget https://github.com/prometheus/prometheus/releases/download/v2.37.0/prometheus-2.37.0.linux-amd64.tar.gz
 tar xzf prometheus-2.37.0.linux-amd64.tar.gz
 sudo cp prometheus-2.37.0.linux-amd64/prometheus /usr/local/bin
 sudo cp prometheus-2.37.0.linux-amd64/promtool /usr/local/bin/
