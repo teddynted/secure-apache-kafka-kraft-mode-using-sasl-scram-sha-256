@@ -45,8 +45,8 @@ jobs:
 
     - name: Create Key Pair and Upload to S3 bucket
       run: |
-        chmod +x ./ssh-scripts/create-key-pair.sh
-        ./ssh-scripts/create-key-pair.sh
+        chmod +x ./create-key-pair.sh
+        ./create-key-pair.sh
       env:
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
         KEY_PAIR_BUCKET_NAME: $${{ secrets.KEY_PAIR_BUCKET_NAME }}
