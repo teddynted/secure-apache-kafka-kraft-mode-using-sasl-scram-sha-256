@@ -18,10 +18,6 @@ sudo sed -i s/listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAI
 
 # Prometheus
 sudo useradd --no-create-home prometheus || echo "User already exists."
-sudo rm -rf /etc/prometheus
-sudo rm -rf /var/lib/prometheus
-sudo rm -rf /usr/local/bin/prometheus
-sudo rm -rf /usr/local/bin/promtool
 sudo mkdir /etc/prometheus
 sudo mkdir /var/lib/prometheus
 wget https://github.com/prometheus/prometheus/releases/download/v3.0.1/prometheus-3.0.1.linux-amd64.tar.gz
