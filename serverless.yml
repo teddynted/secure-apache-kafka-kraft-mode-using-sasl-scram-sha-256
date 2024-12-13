@@ -170,7 +170,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster5: 
+    KafkaKraftCluster6: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -196,8 +196,9 @@ resources:
             sudo mv -f kafka_2.12-3.9.0 /opt
             sudo ln -s kafka_2.12-3.9.0 /opt/kafka
             sudo chown ec2-user:ec2-user /opt/kafka && sudo chmod u+s /opt/kafka
-            sudo rm -rf opt/kafka_2.12-3.9.0
+            #sudo rm -rf opt/kafka_2.12-3.9.0
             ls -l 
+            ls -l /opt/kafka/
             # Generate TLS Certificate and Stores
             sudo mkdir /opt/kafka/config/kafka-ssl
             git clone https://github.com/confluentinc/confluent-platform-security-tools.git  /opt/kafka/config/kafka-ssl
@@ -294,6 +295,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster5", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster6", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
