@@ -17,7 +17,11 @@ sudo sed -i s/advertised.listeners=PLAINTEXT:\\/\\/localhost:9092,CONTROLLER:\\/
 sudo sed -i s/listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL/listener.security.protocol.map=CONTROLLER:SASL_SSL,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL/ /opt/kafka/config/kraft/server.properties
 
 # Prometheus
-sudo useradd --no-create-home prometheus
+sudo useradd --no-create-home prometheus || echo "User already exists."
+rm -rf /etc/prometheus
+rm -rf /var/lib/prometheus
+rm -rf /usr/local/bin/prometheus
+rm -rf /usr/local/bin/promtool
 sudo mkdir /etc/prometheus
 sudo mkdir /var/lib/prometheus
 wget https://github.com/prometheus/prometheus/releases/download/v3.0.1/prometheus-3.0.1.linux-amd64.tar.gz
