@@ -16,7 +16,7 @@ provider:
 
 resources:  
   Conditions:
-    isCreateEc2KeyPairNotExist: { "Fn::Not" : { "Fn::Equals": [{"Ref": "KeyPairName"}, "true"]} }
+    isCreateEc2KeyPairNotExist: { "Fn::Not" : [{ "Fn::Equals": [{"Ref": "KeyPairName"}, "true"]}] }
   Parameters: 
     KeyPairName: 
       Description: Ec2 Key Pair Name
