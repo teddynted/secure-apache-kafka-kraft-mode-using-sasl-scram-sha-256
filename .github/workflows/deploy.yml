@@ -16,6 +16,7 @@ jobs:
       SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
       SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
       KEY_PAIR_BUCKET_NAME: ${{ secrets.KEY_PAIR_BUCKET_NAME }}
+      KEY_PAIR_NAME: ${{ secrets.KEY_PAIR_NAME }}
     defaults:
       run:
         shell: bash
@@ -49,7 +50,8 @@ jobs:
         ./create-key-pair.sh
       env:
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-        KEY_PAIR_BUCKET_NAME: $${{ secrets.KEY_PAIR_BUCKET_NAME }}
+        KEY_PAIR_BUCKET_NAME: ${{ secrets.KEY_PAIR_BUCKET_NAME }}
+        KEY_PAIR_NAME: ${{ secrets.KEY_PAIR_NAME }}
 
     - name: Connect Kafka Cluster And Run Commands
       run: |

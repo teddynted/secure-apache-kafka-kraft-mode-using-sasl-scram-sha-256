@@ -12,11 +12,16 @@ provider:
     SASL_SCRAM_USERNAME: ${env:SASL_SCRAM_USERNAME}
     SASL_SCRAM_PASSWORD: ${env:SASL_SCRAM_PASSWORD}
     KEY_PAIR_BUCKET_NAME: ${env:KEY_PAIR_BUCKET_NAME}
+    KEY_PAIR_NAME: ${env:KEY_PAIR_NAME}
 
 resources:  
   Conditions:
-    isCreateEc2KeyPair: { "Fn::Equals": [{"Ref": "ClusterKeyPair"}, "true"]}
+    isCreateEc2KeyPairNotExist: { "Fn::Not" : { "Fn::Equals": [{"Ref": "KeyPairName"}, "true"]} }
   Parameters: 
+    KeyPairName: 
+      Description: Ec2 Key Pair Name
+      Default: { "Fn::Join": [ "-", [ '${env:KEY_PAIR_NAME}', { 'Ref': 'AWS::Region' } ] ] }
+      Type: String
     LatestAmiId:
       Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
       Default: '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64'
@@ -139,7 +144,6 @@ resources:
             CidrIp: 0.0.0.0/0
     ProsmetheusSG: 
       Type: AWS::EC2::SecurityGroup
-      Condition: isCreateEc2KeyPair
       Properties:
         GroupDescription: Allow Traffic from Prometheus
         GroupName: ec2-security-group-prometheus
@@ -156,6 +160,7 @@ resources:
             CidrIp: "0.0.0.0/0"
     ClusterKeyPair:
       Type: AWS::EC2::KeyPair
+      Condition: isCreateEc2KeyPairNotExist
       Properties:
         KeyName: !Join [ "-", [ 'kafka-key-pair', { 'Ref': 'AWS::Region' } ] ]
     LaunchTemplate:
