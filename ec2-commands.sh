@@ -21,7 +21,8 @@ wget https://github.com/prometheus/prometheus/releases/download/v3.0.1/prometheu
 tar xzf prometheus-3.0.1.linux-amd64.tar.gz
 sudo mv prometheus-3.0.1.linux-amd64 /opt
 sudo ln -s prometheus-3.0.1.linux-amd64 /opt/prometheus
-sudo sh -c 'cat << EOF >> prometheus-3.0.1.linux-amd64/prometheus.yml
+ls -l /opt/prometheus
+sudo sh -c 'cat << EOF >> /opt/prometheus/prometheus.yml
               
   - job_name: 'kafka'
     static_configs:
