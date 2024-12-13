@@ -24,6 +24,7 @@ fi
 
 sudo systemctl daemon-reload
 sudo systemctl restart kafka
+sudo systemctl status kafka
 sudo systemctl list-unit-files --type=service
 
 
