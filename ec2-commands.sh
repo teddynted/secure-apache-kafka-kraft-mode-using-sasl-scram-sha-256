@@ -22,6 +22,7 @@ tar xzf prometheus-3.0.1.linux-amd64.tar.gz
 sudo mv prometheus-3.0.1.linux-amd64 /opt
 sudo ln -s prometheus-3.0.1.linux-amd64 /opt/prometheus
 ls -l /opt/prometheus
+rm -rf xzf prometheus-3.0.1.linux-amd64.tar.gz prometheus-3.0.1.linux-amd64
 sudo sh -c 'cat << EOF >> /opt/prometheus/prometheus.yml
               
   - job_name: 'kafka'
@@ -29,7 +30,7 @@ sudo sh -c 'cat << EOF >> /opt/prometheus/prometheus.yml
     - targets: ['$PUBLIC_IP_ADDRESS:7075']
 EOF'
 
-cat <<EOF > /etc/systemd/system/prometheus.service
+sudo cat <<EOF > /etc/systemd/system/prometheus.service
 [Unit]
 Description=Prometheus Server
 Documentation=https://prometheus.io/docs/introduction/overview/
