@@ -17,22 +17,29 @@ sudo sed -i s/advertised.listeners=PLAINTEXT:\\/\\/localhost:9092,CONTROLLER:\\/
 sudo sed -i s/listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL/listener.security.protocol.map=CONTROLLER:SASL_SSL,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL/ /opt/kafka/config/kraft/server.properties
 
 # Prometheus
+sudo useradd --no-create-home prometheus
+rm -f /etc/prometheus
+rm -f /var/lib/prometheus
+sudo mkdir /etc/prometheus
+sudo mkdir /var/lib/prometheus
 wget https://github.com/prometheus/prometheus/releases/download/v3.0.1/prometheus-3.0.1.linux-amd64.tar.gz
-sudo mkdir /opt/prometheus/
-sudo chown ec2-user:ec2-user /opt/prometheus
 tar xzf prometheus-3.0.1.linux-amd64.tar.gz
-sudo mv prometheus-3.0.1.linux-amd64 /opt
-sudo ln -s prometheus-3.0.1.linux-amd64 /opt/prometheus
-ls -l /opt/prometheus
-rm -rf xzf prometheus-3.0.1.linux-amd64.tar.gz /opt/prometheus/prometheus-3.0.1.linux-amd64
+# sudo mv prometheus-3.0.1.linux-amd64 /opt
+# sudo ln -s prometheus-3.0.1.linux-amd64 /opt/prometheus
+# ls -l /opt/prometheus
+# sudo chown ec2-user:ec2-user /opt/prometheus
+#rm -rf prometheus-3.0.1.linux-amd64.tar.gz /opt/prometheus/prometheus-3.0.1.linux-amd64
+sudo cp prometheus-3.0.1.linux-amd64/prometheus /usr/local/bin
+sudo cp prometheus-3.0.1.linux-amd64/promtool /usr/local/bin
+sudo cp prometheus-3.0.1.linux-amd64/consoles /etc/prometheus
+sudo cp -r prometheus-3.0.1.linux-amd64/console_libraries /etc/prometheus
+rm -rf prometheus-3.0.1.linux-amd64 prometheus-3.0.1.linux-amd64.tar.gz
 sudo sh -c 'cat << EOF >> /opt/prometheus/prometheus.yml
               
   - job_name: 'kafka'
     static_configs:
     - targets: ['$PUBLIC_IP_ADDRESS:7075']
 EOF'
-
-sudo nano /opt/prometheus/prometheus.yml
 
 sudo cat <<EOF > /etc/systemd/system/prometheus.service
 [Unit]

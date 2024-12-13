@@ -209,13 +209,15 @@ resources:
             sudo mkdir /opt/kafka/config/kafka-ssl
             git clone https://github.com/confluentinc/confluent-platform-security-tools.git  /opt/kafka/config/kafka-ssl
             sudo chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
-           
+            cd /opt/kafka/config/kafka-ssl/
             echo COUNTRY=${country} >> /etc/environment
             echo STATE=${state} >> /etc/environment
             echo ORGANIZATION_UNIT=PX >> /etc/environment
             echo CITY=Johannesburg >> /etc/environment
             echo PASSWORD=${password} >> /etc/environment
-            sudo ./opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
+            sudo ./kafka-generate-ssl-automatic.sh
+            ls -l
+            cd ../../../../
             ls -l
             
             sudo touch /opt/kafka/config/jaas.config
