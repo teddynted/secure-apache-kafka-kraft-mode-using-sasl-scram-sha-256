@@ -56,5 +56,11 @@ sudo systemctl start prometheus
 sudo systemctl status prometheus
 sudo systemctl list-unit-files --type=service
 
+# export COUNTRY=ZA
+# export STATE=Gauteng
+# export ORGANIZATION_UNIT=PX
+# export CITY=Johannesburg
+# export PASSWORD=${password}
+
 
 
