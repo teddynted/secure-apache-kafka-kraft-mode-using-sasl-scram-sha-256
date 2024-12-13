@@ -20,7 +20,7 @@ resources:
   Parameters: 
     KeyPairName: 
       Description: Ec2 Key Pair Name
-      Default: { "Fn::Join": [ "-", [ '${env:KEY_PAIR_NAME}', { 'Ref': 'AWS::Region' } ] ] }
+      Default: '${env:KEY_PAIR_NAME}'
       Type: String
     LatestAmiId:
       Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
