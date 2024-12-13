@@ -13,6 +13,10 @@ provider:
     SASL_SCRAM_PASSWORD: ${env:SASL_SCRAM_PASSWORD}
     KEY_PAIR_BUCKET_NAME: ${env:KEY_PAIR_BUCKET_NAME}
     KEY_PAIR_NAME: ${env:KEY_PAIR_NAME}
+    STATE: ${env:STATE}
+    COUNTRY: ${env:COUNTRY}
+    ORGANIZATION_UNIT: ${env:ORGANIZATION_UNIT}
+    CITY: ${env:CITY}
 
 resources:
   Parameters: 
@@ -198,22 +202,14 @@ resources:
             sudo ln -s kafka_2.12-3.9.0 /opt/kafka
             sudo chown ec2-user:ec2-user /opt/kafka && sudo chmod u+s /opt/kafka
             #sudo rm -rf opt/kafka_2.12-3.9.0
-            set +u
-            COUNTRY="ZA"
-            export $COUNTRY
-            if [ -z "${COUNTRY}" ]; then
-              echo "Error: COUNTRY variable is not set."
-              exit 1
-            fi
-            STATE="Gauteng"
+            sudo echo "export COUNTRY=${country}; export STATE=${state}; export ORGANIZATION_UNIT=${unit}; export CITY=${city}; export PASSWORD=${password}" >> ~/.bash_profile && source ~/.bash_profile
+            
             export $STATE
-            ORGANIZATION_UNIT="PX"
-            echo $ORGANIZATION_UNIT
-            CITY="Johannesburg"
+            export $COUNTRY
+            export $ORGANIZATION_UNIT
             export $CITY
-            PASSWORD=${password}
             export $PASSWORD
-            set -u
+
             ls -l 
             ls -l /opt/kafka/
             # Generate TLS Certificate and Stores
@@ -285,11 +281,6 @@ resources:
             SyslogIdentifier=kafka
             Environment="KAFKA_HEAP_OPTS=-Xms1G -Xmx1G"
             Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"
-            Environment="COUNTRY=ZA"
-            Environment="STATE=Gauteng"
-            Environment="ORGANIZATION_UNIT=PX"
-            Environment="CITY=Johannesburg"
-            Environment="PASSWORD=${password}"
             
             ExecStart=sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties
             ExecStop=sudo /opt/kafka/bin/kafka-server-stop.sh /opt/kafka/config/kraft/server.properties
@@ -309,6 +300,10 @@ resources:
 
           - username: { "Fn::Sub": [ "${username}", { "username": "${env:SASL_SCRAM_USERNAME}" } ] }
             password: { "Fn::Sub": [ "${password}", { "password": "${env:SASL_SCRAM_PASSWORD}" } ] }
+            state: { "Fn::Sub": [ "${state}", { "state": "${env:STATE}" } ] }
+            country: { "Fn::Sub": [ "${country}", { "country": "${env:COUNTRY}" } ] }
+            unit: { "Fn::Sub": [ "${unit}", { "unit": "${env:ORGANIZATION_UNIT}" } ] }
+            city: { "Fn::Sub": [ "${city}", { "city": "${env:CITY}" } ] }
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
