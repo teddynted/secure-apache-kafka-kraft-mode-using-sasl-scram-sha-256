@@ -43,6 +43,13 @@ jobs:
       with:
         args: deploy --verbose
 
+    - name: Create Key Pair and Upload to S3 bucket
+      run: |
+        chmod +x ./ssh-scripts/create-key-pair.sh
+        ./ssh-scripts/create-key-pair.sh
+      env:
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+
     - name: Connect Kafka Cluster And Run Commands
       run: |
         chmod +x ./ec2.sh
