@@ -291,6 +291,8 @@ resources:
             sudo sed -i 's/#ClientAliveInterval 0/ClientAliveInterval 300/' /etc/ssh/sshd_config
             sudo sed -i 's/#ClientAliveCountMax 3/ClientAliveCountMax 3/' /etc/ssh/sshd_config
             
+            KAFKA_HEAP_OPTS=-Xms1G -Xmx1G
+            
             sudo systemctl daemon-reload
             sudo systemctl enable kafka
             sudo systemctl start kafka
