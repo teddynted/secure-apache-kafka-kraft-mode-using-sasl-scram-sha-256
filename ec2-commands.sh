@@ -24,8 +24,8 @@ wget https://github.com/prometheus/prometheus/releases/download/v3.0.1/prometheu
 tar xzf prometheus-3.0.1.linux-amd64.tar.gz
 sudo cp prometheus-3.0.1.linux-amd64/prometheus /usr/local/bin
 sudo cp prometheus-3.0.1.linux-amd64/promtool /usr/local/bin/
-sudo cp -r prometheus-3.0.1.linux-amd64/consoles /etc/prometheus
-sudo cp -r prometheus-3.0.1.linux-amd64/console_libraries /etc/prometheus
+# sudo cp -r prometheus-3.0.1.linux-amd64/consoles /etc/prometheus
+# sudo cp -r prometheus-3.0.1.linux-amd64/console_libraries /etc/prometheus
 sudo cp prometheus-3.0.1.linux-amd64/promtool /usr/local/bin/
 rm -rf prometheus-3.0.1.linux-amd64.tar.gz prometheus-3.0.1.linux-amd64
 cat /etc/prometheus/prometheus.yml
@@ -35,7 +35,7 @@ sudo sh -c 'cat << EOF >> /etc/prometheus/prometheus.yml
     static_configs:
     - targets: ['$PUBLIC_IP_ADDRESS:7075']
 EOF'
-
+sudo touch /etc/systemd/system/prometheus.service
 sudo cat <<EOF > /etc/systemd/system/prometheus.service
 [Unit]
 Description=Prometheus
@@ -58,12 +58,6 @@ sudo systemctl enable prometheus
 sudo systemctl start prometheus
 sudo systemctl status prometheus
 sudo systemctl list-unit-files --type=service
-
-# export COUNTRY=ZA
-# export STATE=Gauteng
-# export ORGANIZATION_UNIT=PX
-# export CITY=Johannesburg
-# export PASSWORD=${password}
 
 
 
