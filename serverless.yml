@@ -174,7 +174,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster14: 
+    KafkaKraftCluster15: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -211,8 +211,6 @@ resources:
             sudo echo 'export COUNTRY=ZA' > /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
             sudo chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
             #sudo chown ec2-user:ec2-user /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
-            cd /opt/kafka/config/kafka-ssl
-            sudo echo "export COUNTRY=${country}; export STATE=${state}; export ORGANIZATION_UNIT=${unit}; export CITY=${city}; export PASSWORD=${password}" >> /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
            
             echo COUNTRY="ZA" >> /etc/environment
             echo STATE=Gauteng >> /etc/environment
@@ -307,6 +305,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster14", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster15", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
