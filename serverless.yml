@@ -152,7 +152,7 @@ resources:
           ImageId: { 'Ref': 'LatestAmiId' }
           SecurityGroupIds:
             - { 'Fn::GetAtt': ['Ec2SecurityGroupSSH', 'GroupId'] }
-          KeyName: !Join [ "-", [ 'kafka-key-pair', { 'Ref': 'AWS::Region' } ] ]
+          #KeyName: !Join [ "-", [ 'kafka-key-pair', { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
     KafkaKraftCluster: 
@@ -185,8 +185,8 @@ resources:
             mkdir /opt/kafka/config/kafka-ssl
             git clone https://github.com/confluentinc/confluent-platform-security-tools.git  /opt/kafka/config/kafka-ssl
             export COUNTRY=ZA
-            export STATE=JHB
-            export ORGANIZATION_UNIT=SE
+            export STATE=Gauteng
+            export ORGANIZATION_UNIT=PX
             export CITY=Johannesburg
             export PASSWORD=${password}
             chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
