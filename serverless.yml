@@ -182,6 +182,7 @@ resources:
             Value: Kafka Kraft Instance
         SecurityGroupIds:
           - { 'Fn::GetAtt': ['Ec2SecurityGroupAllTraffic', 'GroupId'] }
+          - { 'Fn::GetAtt': ['ProsmetheusSG', 'GroupId'] }
         UserData:
           Fn::Base64: !Sub 
           - |
@@ -202,11 +203,11 @@ resources:
             # Generate TLS Certificate and Stores
             sudo mkdir /opt/kafka/config/kafka-ssl
             git clone https://github.com/confluentinc/confluent-platform-security-tools.git  /opt/kafka/config/kafka-ssl
-            export COUNTRY=ZA
-            export STATE=Gauteng
-            export ORGANIZATION_UNIT=PX
-            export CITY=Johannesburg
-            export PASSWORD=${password}
+            # export COUNTRY=ZA
+            # export STATE=Gauteng
+            # export ORGANIZATION_UNIT=PX
+            # export CITY=Johannesburg
+            # export PASSWORD=${password}
             chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
             cd /opt/kafka/config/kafka-ssl
             sudo ./kafka-generate-ssl-automatic.sh
@@ -273,7 +274,12 @@ resources:
             SyslogIdentifier=kafka
             Environment="KAFKA_HEAP_OPTS=-Xms1G -Xmx1G"
             Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"
-             
+            Environment="COUNTRY=ZA"
+            Environment="STATE=Gauteng"
+            Environment="ORGANIZATION_UNIT=PX"
+            Environment="CITY=Johannesburg"
+            Environment="PASSWORD=${password}"
+            
             ExecStart=sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties
             ExecStop=sudo /opt/kafka/bin/kafka-server-stop.sh /opt/kafka/config/kraft/server.properties
             WorkingDirectory=/opt/kafka
