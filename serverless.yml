@@ -203,6 +203,7 @@ resources:
             tar xzf kafka_2.12-3.9.0.tgz
             sudo mv -f kafka_2.12-3.9.0 /opt
             sudo ln -s kafka_2.12-3.9.0 /opt/kafka
+            sudo rm -rf opt/kafka_2.12-3.9.0
             
             # Generate TLS Certificate and Stores
             sudo mkdir /opt/kafka/config/kafka-ssl
@@ -213,7 +214,10 @@ resources:
             export CITY=Johannesburg
             export PASSWORD=${password}
             chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
-            ./opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
+            cd /opt/kafka/config/kafka-ssl
+            sudo ./kafka-generate-ssl-automatic.sh
+            ls -l
+            cd ../../../..
             ls -l
             
             sudo touch /opt/kafka/config/jaas.config
