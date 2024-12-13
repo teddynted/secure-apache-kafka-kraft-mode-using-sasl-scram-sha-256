@@ -1,5 +1,6 @@
 #!/bin/bash
 Region=$AWS_DEFAULT_REGION
+Bucket=$KEY_PAIR_BUCKET_NAME
 key=kafka-key-pair-$Region
 Available_key=`aws ec2 describe-key-pairs --key-name $key | grep KeyName | awk -F\" '{print $4}'`
 
@@ -14,7 +15,7 @@ else
     --query "KeyMaterial" \
     --region $Region \
     --output text > kafka-key-pair-$Region.pem
-    aws s3 cp kafka-key-pair-$Region.pem s3://panda-trip-apache-kafka-bucket/kafka-key-pair-$Region.pem
+    aws s3 cp kafka-key-pair-$Region.pem s3://$Bucket/kafka-key-pair-$Region.pem
 fi
 
 template_id=$(aws ec2 describe-launch-templates --query "LaunchTemplates[0].LaunchTemplateId" --output text)

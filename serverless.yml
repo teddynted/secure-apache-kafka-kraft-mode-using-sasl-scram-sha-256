@@ -11,6 +11,7 @@ provider:
   environment:
     SASL_SCRAM_USERNAME: ${env:SASL_SCRAM_USERNAME}
     SASL_SCRAM_PASSWORD: ${env:SASL_SCRAM_PASSWORD}
+    KEY_PAIR_BUCKET_NAME: ${env:KEY_PAIR_BUCKET_NAME}
 
 resources:   
   Parameters: 
@@ -27,6 +28,33 @@ resources:
         - t2.small
         - t2.medium
   Resources:
+    KeyPairS3:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: "${env:KEY_PAIR_BUCKET_NAME}"
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: false
+          BlockPublicPolicy: false
+          IgnorePublicAcls: false
+          RestrictPublicBuckets: false
+    KeyPairS3Policy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: { "Ref": "KeyPairS3" }
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Action: 
+                - "s3:GetObject"
+                - "s3:PutObject"
+              Effect: "Allow"
+              Principal: "*"
+              Resource:
+                - "Fn::Join":
+                    - ""
+                    - - "arn:aws:s3:::"
+                      - { "Ref": "KeyPairS3" }
+                      - "/*"
     Ec2RolePolicies: 
       Type: AWS::IAM::Policy
       Properties:
