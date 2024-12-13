@@ -23,7 +23,7 @@ tar xzf prometheus-3.0.1.linux-amd64.tar.gz
 sudo mv prometheus-3.0.1.linux-amd64 /opt
 sudo ln -s prometheus-3.0.1.linux-amd64 /opt/prometheus
 ls -l /opt/prometheus
-sudo chown -R /opt/prometheus
+sudo chown ec2-user:ec2-user /opt/prometheus
 rm -rf xzf prometheus-3.0.1.linux-amd64.tar.gz /opt/prometheus/prometheus-3.0.1.linux-amd64
 sudo sh -c 'cat << EOF >> /opt/prometheus/prometheus.yml
               

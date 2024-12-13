@@ -158,11 +158,6 @@ resources:
         SecurityGroupIngress:
           - IpProtocol: -1
             CidrIp: "0.0.0.0/0"
-    # ClusterKeyPair:
-    #   Type: AWS::EC2::KeyPair
-    #   Condition: isCreateEc2KeyPairNotExist
-    #   Properties:
-    #     KeyName: { "Fn::Join": [ "-", [ {"Ref": "KeyPairName"}, { "Ref": "AWS::Region" } ] ] }
     LaunchTemplate:
       Type: 'AWS::EC2::LaunchTemplate'
       Properties:
@@ -175,7 +170,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster4: 
+    KafkaKraftCluster5: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -200,7 +195,7 @@ resources:
             tar xzf kafka_2.12-3.9.0.tgz
             sudo mv -f kafka_2.12-3.9.0 /opt
             sudo ln -s kafka_2.12-3.9.0 /opt/kafka
-            sudo chown -R /opt/kafka
+            sudo chown ec2-user:ec2-user /opt/kafka && sudo chmod u+s /opt/kafka
             sudo rm -rf opt/kafka_2.12-3.9.0
             ls -l 
             # Generate TLS Certificate and Stores
@@ -264,7 +259,7 @@ resources:
             EOF'
 
             # Create Kafka service
-            cat <<EOF > /etc/systemd/system/kafka.service
+            sudo cat <<EOF > /etc/systemd/system/kafka.service
             [Unit]
             Description=Kafka Service
             After=network-online.target
@@ -299,6 +294,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster4", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster5", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
