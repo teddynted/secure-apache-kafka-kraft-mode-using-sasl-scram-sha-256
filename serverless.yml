@@ -31,7 +31,7 @@ resources:
     KeyPairS3:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: "${env:KEY_PAIR_BUCKET_NAME}"
+        BucketName: '${env:KEY_PAIR_BUCKET_NAME}'
         PublicAccessBlockConfiguration:
           BlockPublicAcls: false
           BlockPublicPolicy: false
@@ -40,7 +40,7 @@ resources:
     KeyPairS3Policy:
       Type: AWS::S3::BucketPolicy
       Properties:
-        Bucket: { "Ref": "KeyPairS3" }
+        Bucket: { 'Ref': 'KeyPairS3' }
         PolicyDocument:
           Version: "2012-10-17"
           Statement:
@@ -50,10 +50,10 @@ resources:
               Effect: "Allow"
               Principal: "*"
               Resource:
-                - "Fn::Join":
-                    - ""
-                    - - "arn:aws:s3:::"
-                      - { "Ref": "KeyPairS3" }
+                - 'Fn::Join':
+                    - ''
+                    - - 'arn:aws:s3:::'
+                      - { 'Ref': 'KeyPairS3' }
                       - "/*"
     Ec2RolePolicies: 
       Type: AWS::IAM::Policy
@@ -143,6 +143,10 @@ resources:
         SecurityGroupIngress:
           - IpProtocol: -1
             CidrIp: "0.0.0.0/0"
+    ClusterKeyPair:
+      Type: AWS::EC2::KeyPair
+      Properties:
+        KeyName: !Join [ "-", [ 'kafka-key-pair', { 'Ref': 'AWS::Region' } ] ]
     LaunchTemplate:
       Type: 'AWS::EC2::LaunchTemplate'
       Properties:
@@ -152,6 +156,7 @@ resources:
           ImageId: { 'Ref': 'LatestAmiId' }
           SecurityGroupIds:
             - { 'Fn::GetAtt': ['Ec2SecurityGroupSSH', 'GroupId'] }
+          KeyName: { 'Ref': 'ClusterKeyPair' }
           #KeyName: !Join [ "-", [ 'kafka-key-pair', { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
