@@ -20,22 +20,21 @@ sudo sed -i s/listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAI
 sudo useradd --no-create-home prometheus || echo "User already exists."
 sudo mkdir /etc/prometheus
 sudo mkdir /var/lib/prometheus
-wget https://github.com/prometheus/prometheus/releases/download/v3.0.1/prometheus-3.0.1.linux-amd64.tar.gz
-tar xzf prometheus-3.0.1.linux-amd64.tar.gz
-sudo cp prometheus-3.0.1.linux-amd64/prometheus /usr/local/bin
-sudo cp prometheus-3.0.1.linux-amd64/promtool /usr/local/bin/
-# sudo cp -r prometheus-3.0.1.linux-amd64/consoles /etc/prometheus
-# sudo cp -r prometheus-3.0.1.linux-amd64/console_libraries /etc/prometheus
-sudo cp prometheus-3.0.1.linux-amd64/promtool /usr/local/bin/
-rm -rf prometheus-3.0.1.linux-amd64.tar.gz prometheus-3.0.1.linux-amd64
-cat /etc/prometheus/prometheus.yml
-sudo sh -c 'cat << EOF >> /etc/prometheus/prometheus.yml
-              
-  - job_name: 'kafka'
-    static_configs:
-    - targets: ['$PUBLIC_IP_ADDRESS:7075']
-EOF'
+wget https://github.com/prometheus/prometheus/releases/download/v3.0.1/prometheus-2.37.0.linux-amd64.tar.gz
+tar xzf prometheus-2.37.0.linux-amd64.tar.gz
+sudo cp prometheus-2.37.0.linux-amd64/prometheus /usr/local/bin
+sudo cp prometheus-2.37.0.linux-amd64/promtool /usr/local/bin/
+sudo cp -r prometheus-2.37.0.linux-amd64/consoles /etc/prometheus
+sudo cp -r prometheus-2.37.0.linux-amd64/console_libraries /etc/prometheus
+sudo cp prometheus-2.37.0.linux-amd64/promtool /usr/local/bin/
+rm -rf prometheus-2.37.0.linux-amd64.tar.gz prometheus-2.37.0.linux-amd64
+# sudo sh -c 'cat << EOF >> /etc/prometheus/prometheus.yml
+#   - job_name: 'kafka'
+#     static_configs:
+#     - targets: ['$PUBLIC_IP_ADDRESS:7075']
+# EOF'
 sudo touch /etc/systemd/system/prometheus.service
+sudo chown prometheus:prometheus /etc/systemd/system/prometheus.service
 sudo cat <<EOF > /etc/systemd/system/prometheus.service
 [Unit]
 Description=Prometheus
@@ -51,6 +50,11 @@ ExecStart=/usr/local/bin/prometheus \
     --web.console.libraries=/etc/prometheus/console_libraries[Install]
 WantedBy=multi-user.target
 EOF
+
+sudo chown prometheus:prometheus /etc/prometheus
+sudo chown prometheus:prometheus /usr/local/bin/prometheus
+sudo chown prometheus:prometheus /usr/local/bin/promtool
+sudo chown -R prometheus:prometheus /var/lib/prometheus
 
 sudo systemctl daemon-reload
 sudo systemctl restart kafka
