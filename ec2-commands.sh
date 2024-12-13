@@ -18,22 +18,16 @@ sudo sed -i s/listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAI
 
 # Prometheus
 sudo useradd --no-create-home prometheus
-rm -f /etc/prometheus
-rm -f /var/lib/prometheus
 sudo mkdir /etc/prometheus
 sudo mkdir /var/lib/prometheus
 wget https://github.com/prometheus/prometheus/releases/download/v3.0.1/prometheus-3.0.1.linux-amd64.tar.gz
 tar xzf prometheus-3.0.1.linux-amd64.tar.gz
-# sudo mv prometheus-3.0.1.linux-amd64 /opt
-# sudo ln -s prometheus-3.0.1.linux-amd64 /opt/prometheus
-# ls -l /opt/prometheus
-# sudo chown ec2-user:ec2-user /opt/prometheus
-#rm -rf prometheus-3.0.1.linux-amd64.tar.gz /opt/prometheus/prometheus-3.0.1.linux-amd64
 sudo cp prometheus-3.0.1.linux-amd64/prometheus /usr/local/bin
-sudo cp prometheus-3.0.1.linux-amd64/promtool /usr/local/bin
-sudo cp prometheus-3.0.1.linux-amd64/consoles /etc/prometheus
-sudo cp -r prometheus-3.0.1.linux-amd64/console_libraries /etc/prometheus
-rm -rf prometheus-3.0.1.linux-amd64 prometheus-3.0.1.linux-amd64.tar.gz
+sudo cp prometheus-3.0.1.linux-amd64/promtool /usr/local/bin/
+sudo cp -r prometheus-3.0.1.linux-amd64/consoles /etc/prometheus
+sudo cp -r prometheus-3.0.1.linux-amd64/console_libraries /etc/prometheussudo cp prometheus-3.0.1.linux-amd64/promtool /usr/local/bin/
+rm -rf prometheus-3.0.1.linux-amd64.tar.gz prometheus-3.0.1.linux-amd64
+cat /opt/prometheus/prometheus.yml
 sudo sh -c 'cat << EOF >> /opt/prometheus/prometheus.yml
               
   - job_name: 'kafka'
