@@ -15,9 +15,9 @@ provider:
     KEY_PAIR_NAME: ${env:KEY_PAIR_NAME}
 
 resources:  
-  Conditions:
-    #isCreateEc2KeyPairNotExist: { "Fn::Not" : [{ "Fn::Equals": [{"Ref": "KeyPairName"}, "true"]}] }
-    isCreateEc2KeyPairNotExist: { "Fn::Equals": [{"Ref": "KeyPairName"}, false]}
+  # Conditions:
+  #   #isCreateEc2KeyPairNotExist: { "Fn::Not" : [{ "Fn::Equals": [{"Ref": "KeyPairName"}, "true"]}] }
+  #   isCreateEc2KeyPairNotExist: { "Fn::Equals": [{"Ref": "KeyPairName"}, false]}
   Parameters: 
     KeyPairName: 
       Description: Ec2 Key Pair Name
@@ -159,11 +159,11 @@ resources:
         SecurityGroupIngress:
           - IpProtocol: -1
             CidrIp: "0.0.0.0/0"
-    ClusterKeyPair:
-      Type: AWS::EC2::KeyPair
-      Condition: isCreateEc2KeyPairNotExist
-      Properties:
-        KeyName: { "Fn::Join": [ "-", [ {"Ref": "KeyPairName"}, { "Ref": "AWS::Region" } ] ] }
+    # ClusterKeyPair:
+    #   Type: AWS::EC2::KeyPair
+    #   Condition: isCreateEc2KeyPairNotExist
+    #   Properties:
+    #     KeyName: { "Fn::Join": [ "-", [ {"Ref": "KeyPairName"}, { "Ref": "AWS::Region" } ] ] }
     LaunchTemplate:
       Type: 'AWS::EC2::LaunchTemplate'
       Properties:
@@ -173,7 +173,7 @@ resources:
           ImageId: { 'Ref': 'LatestAmiId' }
           SecurityGroupIds:
             - { 'Fn::GetAtt': ['Ec2SecurityGroupSSH', 'GroupId'] }
-          KeyName: { 'Ref': 'ClusterKeyPair' }
+          KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
     KafkaKraftCluster: 
