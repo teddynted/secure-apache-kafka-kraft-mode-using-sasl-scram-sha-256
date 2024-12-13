@@ -13,7 +13,9 @@ provider:
     SASL_SCRAM_PASSWORD: ${env:SASL_SCRAM_PASSWORD}
     KEY_PAIR_BUCKET_NAME: ${env:KEY_PAIR_BUCKET_NAME}
 
-resources:   
+resources:  
+  Conditions:
+    isCreateEc2KeyPair: { "Fn::Equals": [{"Ref": "ClusterKeyPair"}, "true"]}
   Parameters: 
     LatestAmiId:
       Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
@@ -135,6 +137,15 @@ resources:
             FromPort: 22
             ToPort: 22
             CidrIp: 0.0.0.0/0
+    ProsmetheusSG: 
+      Type: AWS::EC2::SecurityGroup
+      Condition: isCreateEc2KeyPair
+      Properties:
+        GroupDescription: Allow Traffic from Prometheus
+        GroupName: ec2-security-group-prometheus
+        SecurityGroupIngress:
+          - IpProtocol: 9090
+            CidrIp: "0.0.0.0/0"
     Ec2SecurityGroupAllTraffic:
       Type: AWS::EC2::SecurityGroup
       Properties:
