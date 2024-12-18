@@ -174,7 +174,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster1: 
+    KafkaKraftCluster: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -266,7 +266,7 @@ resources:
             EOF'
 
             sudo KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
-            sudo ./bin/kafka-storage.sh format --config $KRAFT_SERVER --cluster-id $KAFKA_CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
+            sudo ./bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $KAFKA_CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
 
             # Create Kafka service
             sudo cat <<EOF > /etc/systemd/system/kafka.service
@@ -310,6 +310,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster1", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
