@@ -9,7 +9,7 @@ echo 'KRAFT_ADVERTISED_LISTENERS '$KRAFT_ADVERTISED_LISTENERS''
 if [[ $KRAFT_ADVERTISED_LISTENERS -eq 0 ]] 
 then
 echo 'PUBLIC_IP_ADDRESS: '$PUBLIC_IP_ADDRESS''
-sudo sed -i s/log.dirs=\\/tmp\\/kraft-combined-logs/log.dirs=\\/var\\/log\\/kafka /opt/kafka/config/kraft/server.properties
+sudo sed -i s/log.dirs=\\/tmp\\/kraft-combined-logs/log.dirs=\\/var\\/log\\/kafka/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/num.partitions=1/num.partitions=3/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/offsets.topic.replication.factor=1/offsets.topic.replication.factor=2/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/transaction.state.log.replication.factor=1/transaction.state.log.replication.factor=2/ /opt/kafka/config/kraft/server.properties
