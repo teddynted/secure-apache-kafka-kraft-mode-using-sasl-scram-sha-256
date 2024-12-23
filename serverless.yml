@@ -144,24 +144,6 @@ resources:
             FromPort: 22
             ToPort: 22
             CidrIp: 0.0.0.0/0
-    ProsmetheusSG: 
-      Type: AWS::EC2::SecurityGroup
-      Properties:
-        GroupDescription: Allow Traffic from Prometheus
-        GroupName: ec2-security-group-prometheus
-        SecurityGroupIngress:
-          - IpProtocol: tcp
-            FromPort: 9090
-            ToPort: 9090
-            CidrIp: 0.0.0.0/0
-    Ec2SecurityGroupAllTraffic:
-      Type: AWS::EC2::SecurityGroup
-      Properties:
-        GroupDescription: Allow Traffic from Anywhere Postman, Rest API, Internet etc
-        GroupName: ec2-security-group-all-traffic
-        SecurityGroupIngress:
-          - IpProtocol: -1
-            CidrIp: "0.0.0.0/0"
     LaunchTemplate:
       Type: 'AWS::EC2::LaunchTemplate'
       Properties:
@@ -174,7 +156,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster15: 
+    KafkaKraftCluster: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -186,7 +168,6 @@ resources:
             Value: Kafka Kraft Instance
         SecurityGroupIds:
           - { 'Fn::GetAtt': ['Ec2SecurityGroupAllTraffic', 'GroupId'] }
-          - { 'Fn::GetAtt': ['ProsmetheusSG', 'GroupId'] }
         UserData:
           Fn::Base64: !Sub 
           - |
@@ -311,6 +292,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster15", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
