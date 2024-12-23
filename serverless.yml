@@ -174,7 +174,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster11: 
+    KafkaKraftCluster12: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -215,6 +215,7 @@ resources:
             echo ORGANIZATION_UNIT=PX >> /etc/environment
             echo CITY=Johannesburg >> /etc/environment
             echo PASSWORD=${password} >> /etc/environment
+            echo USERNAME=${username} >> /etc/environment
             sudo ./kafka-generate-ssl-automatic.sh
             ls -l
             cd ../../../../
@@ -265,9 +266,10 @@ resources:
             log4j.logger.org.apache.kafka.common.security.ssl.SslFactory=DEBUG
             EOF'
             
+            cd /opt/kafka/bin/
             #sudo echo KAFKA_CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid) >> /etc/environment
             sudo export CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
-            sudo ./opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
+            sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
             
             sudo mkdir /var/log/kafka
 
@@ -311,6 +313,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster11", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster12", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
