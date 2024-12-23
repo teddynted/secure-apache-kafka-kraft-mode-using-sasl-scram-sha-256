@@ -117,7 +117,7 @@ resources:
             FromPort: 22
             ToPort: 22
             CidrIp: 0.0.0.0/0
-    BootratrapSecurityGroup:
+    BrokerSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: "Allow inbound traffic on port 9092"
@@ -126,6 +126,16 @@ resources:
           - IpProtocol: tcp
             FromPort: 9092
             ToPort: 9092
+            CidrIp: 0.0.0.0/0
+    ControllerSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: "Allow inbound traffic on port 9092"
+        GroupName: ec2-security-group-bootstrap-server
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 9093
+            ToPort: 9093
             CidrIp: 0.0.0.0/0
     LaunchTemplate:
       Type: 'AWS::EC2::LaunchTemplate'
@@ -137,10 +147,11 @@ resources:
           SecurityGroupIds:
             - { 'Fn::GetAtt': ['Ec2SecurityGroupSSH', 'GroupId'] }
             - { 'Fn::GetAtt': ['BootratrapSecurityGroup', 'GroupId'] }
+            - { 'Fn::GetAtt': ['ControllerSecurityGroup', 'GroupId'] }
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster2: 
+    KafkaKraftCluster4: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -275,6 +286,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster2", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster4", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
