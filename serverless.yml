@@ -174,7 +174,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster6: 
+    KafkaKraftCluster7: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -209,6 +209,7 @@ resources:
             sudo mkdir /opt/kafka/config/kafka-ssl
             git clone https://github.com/confluentinc/confluent-platform-security-tools.git  /opt/kafka/config/kafka-ssl
             sudo chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
+            echo KAFKA_CLUSTER_ID=$(opt/kafka/bin/kafka-storage.sh random-uuid) >> /etc/environment
             cd /opt/kafka/config/kafka-ssl/
             echo COUNTRY=${country} >> /etc/environment
             echo STATE=${state} >> /etc/environment
@@ -265,7 +266,6 @@ resources:
             log4j.logger.org.apache.kafka.common.security.ssl.SslFactory=DEBUG
             EOF'
 
-            echo KAFKA_CLUSTER_ID="$(opt/kafka/bin/kafka-storage.sh random-uuid)" >> /etc/environment
             sudo ./opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $KAFKA_CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
             
             sudo mkdir /var/log/kafka
@@ -295,8 +295,6 @@ resources:
 
             sudo sed -i 's/#ClientAliveInterval 0/ClientAliveInterval 300/' /etc/ssh/sshd_config
             sudo sed -i 's/#ClientAliveCountMax 3/ClientAliveCountMax 3/' /etc/ssh/sshd_config
-            
-            export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"
 
             sudo systemctl daemon-reload
             sudo systemctl enable kafka
@@ -312,6 +310,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster6", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster7", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
