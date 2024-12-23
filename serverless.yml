@@ -146,7 +146,7 @@ resources:
           ImageId: { 'Ref': 'LatestAmiId' }
           SecurityGroupIds:
             - { 'Fn::GetAtt': ['Ec2SecurityGroupSSH', 'GroupId'] }
-            - { 'Fn::GetAtt': ['BootratrapSecurityGroup', 'GroupId'] }
+            - { 'Fn::GetAtt': ['BrokerSecurityGroup', 'GroupId'] }
             - { 'Fn::GetAtt': ['ControllerSecurityGroup', 'GroupId'] }
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
