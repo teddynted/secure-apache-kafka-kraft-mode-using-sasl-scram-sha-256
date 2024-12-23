@@ -174,7 +174,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster9: 
+    KafkaKraftCluster10: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -265,7 +265,7 @@ resources:
             log4j.logger.org.apache.kafka.common.security.ssl.SslFactory=DEBUG
             EOF'
             
-            echo KAFKA_CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid) >> /etc/environment
+            sudo echo KAFKA_CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid) >> /etc/environment
             sudo ./opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $KAFKA_CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
             
             sudo mkdir /var/log/kafka
@@ -310,6 +310,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster9", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster10", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
