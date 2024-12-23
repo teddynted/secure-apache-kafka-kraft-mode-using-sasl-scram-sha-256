@@ -1,6 +1,6 @@
 #!/bin/bash
 Region=$AWS_DEFAULT_REGION
-#Bucket=$KEY_PAIR_BUCKET_NAME
+Bucket=$KEY_PAIR_BUCKET_NAME
 KeyPairName=$KEY_PAIR_NAME
 key=$KeyPairName-$Region
 Available_key=`aws ec2 describe-key-pairs --key-name $key | grep KeyName | awk -F\" '{print $4}'`
@@ -16,5 +16,10 @@ else
     --query "KeyMaterial" \
     --region $Region \
     --output text > $key.pem
-    #aws s3 cp $key.pem s3://$Bucket/$key.pem
+    aws s3api create-bucket \
+        --acl private \
+        --bucket $Bucket \
+        --region $Region \
+        --create-bucket-configuration LocationConstraint=$Region
+    aws s3 cp $key.pem s3://$Bucket/$key.pem
 fi

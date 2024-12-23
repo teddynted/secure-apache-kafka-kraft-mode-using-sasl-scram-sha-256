@@ -57,15 +57,6 @@ jobs:
       with:
         args: deploy --verbose
 
-    - name: Upload Create Pair to S3 bucket
-      run: |
-        chmod +x ./upload-key-pair.sh
-        ./upload-key-pair.sh
-      env:
-        AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-        KEY_PAIR_BUCKET_NAME: ${{ secrets.KEY_PAIR_BUCKET_NAME }}
-        KEY_PAIR_NAME: ${{ secrets.KEY_PAIR_NAME }}
-
     - name: Update EC2 Launch Template Version
       run: |
         chmod +x ./modify-launch-template-version.sh
