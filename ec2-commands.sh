@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-KRAFT_SERVER="config/kraft/server.properties"
+KRAFT_SERVER="/opt/kafka/config/kraft/server.properties"
 PUBLIC_IP_ADDRESS=$(ec2-metadata --public-ipv4 | cut -d " " -f 2);
 
 KRAFT_ADVERTISED_LISTENERS=$(cat $KRAFT_SERVER | grep -c "advertised.listeners=SASL_SSL://$PUBLIC_IP_ADDRESS:9092")
