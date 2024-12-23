@@ -117,6 +117,16 @@ resources:
             FromPort: 22
             ToPort: 22
             CidrIp: 0.0.0.0/0
+    BootratrapSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: "Allow inbound traffic on port 9092"
+        GroupName: ec2-security-group-bootstrap-server
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 9092
+            ToPort: 9092
+            CidrIp: 0.0.0.0/0
     LaunchTemplate:
       Type: 'AWS::EC2::LaunchTemplate'
       Properties:
@@ -126,6 +136,7 @@ resources:
           ImageId: { 'Ref': 'LatestAmiId' }
           SecurityGroupIds:
             - { 'Fn::GetAtt': ['Ec2SecurityGroupSSH', 'GroupId'] }
+            - { 'Fn::GetAtt': ['BootratrapSecurityGroup', 'GroupId'] }
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
@@ -237,9 +248,9 @@ resources:
             User=ec2-user
             Restart=on-failure
             SyslogIdentifier=kafka
-            # Environment=KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"
-            # Environment=KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"
-            # Environment=KAFKA_JVM_PERFORMANCE_OPTS="-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
+            Environment="KAFKA_HEAP_OPTS='-Xms1G -Xmx1G'"
+            Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"
+            Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
             ExecStart=sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties
             ExecStop=sudo /opt/kafka/bin/kafka-server-stop.sh /opt/kafka/config/kraft/server.properties
              
