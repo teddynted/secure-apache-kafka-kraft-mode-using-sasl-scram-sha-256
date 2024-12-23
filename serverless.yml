@@ -166,8 +166,8 @@ resources:
         Tags:
           - Key: Name
             Value: Kafka Kraft Instance
-        SecurityGroupIds:
-          - { 'Fn::GetAtt': ['Ec2SecurityGroupAllTraffic', 'GroupId'] }
+        # SecurityGroupIds:
+        #   - { 'Fn::GetAtt': ['Ec2SecurityGroupAllTraffic', 'GroupId'] }
         UserData:
           Fn::Base64: !Sub 
           - |
