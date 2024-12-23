@@ -174,7 +174,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster4: 
+    KafkaKraftCluster6: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -267,6 +267,8 @@ resources:
 
             echo KAFKA_CLUSTER_ID="$(opt/kafka/bin/kafka-storage.sh random-uuid)" >> /etc/environment
             sudo ./opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $KAFKA_CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
+            
+            sudo mkdir /var/log/kafka
 
             # Create Kafka service
             sudo cat <<EOF > /etc/systemd/system/kafka.service
@@ -280,9 +282,9 @@ resources:
             User=ec2-user
             Restart=on-failure
             SyslogIdentifier=kafka
-            Environment="KAFKA_HEAP_OPTS=-Xms1G -Xmx1G"
-            Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"
-            
+            Environment=KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"
+            Environment=KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"
+            Environment=KAFKA_JVM_PERFORMANCE_OPTS="-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
             ExecStart=sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties
             ExecStop=sudo /opt/kafka/bin/kafka-server-stop.sh /opt/kafka/config/kraft/server.properties
             WorkingDirectory=/opt/kafka
@@ -310,6 +312,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster4", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster6", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
