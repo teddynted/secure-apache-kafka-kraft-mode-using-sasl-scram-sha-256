@@ -190,7 +190,6 @@ resources:
             sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password};
             EOF
 
-            #sudo sed -i 's/log.dirs=\/tmp\/kafka-logs/log.dirs=\/home\/ec2-user\/kafka-logs/g' /opt/kafka/config/kraft/server.properties
             sudo sed -i 's/num.partitions=1/num.partitions=8/' /opt/kafka/config/kraft/server.properties
       
             sudo sh -c 'cat << EOF >> /opt/kafka/config/kraft/server.properties
