@@ -6,9 +6,9 @@ key=$KeyPairName-$Region
 Available_key=`aws ec2 describe-key-pairs --key-name $key | grep KeyName | awk -F\" '{print $4}'`
 
 if [ "$key" = "$Available_key" ]; then
-    echo "Key is available.."
+    echo "Key is available."
 else
-    echo "Key is not available: Creating new key"
+    echo "Key is not available, Creating a new key"
     aws ec2 create-key-pair \
     --key-name $key \
     --key-type rsa \
