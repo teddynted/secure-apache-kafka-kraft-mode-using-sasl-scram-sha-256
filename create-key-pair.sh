@@ -19,7 +19,6 @@ else
     aws s3api create-bucket \
         --acl private \
         --bucket $Bucket \
-        --region $Region \
-        --create-bucket-configuration LocationConstraint=$Region
+        --region $Region
     aws s3 cp $key.pem s3://$Bucket/$key.pem
 fi
