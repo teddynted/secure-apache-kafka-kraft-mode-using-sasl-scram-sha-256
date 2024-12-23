@@ -46,26 +46,26 @@ resources:
     #       BlockPublicPolicy: false
     #       IgnorePublicAcls: false
     #       RestrictPublicBuckets: false
-    KeyPairS3Policy:
-      Type: AWS::S3::BucketPolicy
-      Properties:
-        Bucket: '${env:KEY_PAIR_BUCKET_NAME}'
-        #Bucket: 'kk-cluster-key-pair-bucket'
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Action: 
-                - "s3:GetObject"
-                - "s3:PutObject"
-              Effect: "Allow"
-              Principal: "*"
-              #Resource: "*"
-              Resource:
-                - 'Fn::Join':
-                    - ''
-                    - - 'arn:aws:s3:::'
-                      - { "Fn::Sub": "${env:KEY_PAIR_BUCKET_NAME}" }
-                      - "/*"
+    # KeyPairS3Policy:
+    #   Type: AWS::S3::BucketPolicy
+    #   Properties:
+    #     Bucket: '${env:KEY_PAIR_BUCKET_NAME}'
+    #     #Bucket: 'kk-cluster-key-pair-bucket'
+    #     PolicyDocument:
+    #       Version: "2012-10-17"
+    #       Statement:
+    #         - Action: 
+    #             - "s3:GetObject"
+    #             - "s3:PutObject"
+    #           Effect: "Allow"
+    #           Principal: "*"
+    #           #Resource: "*"
+    #           Resource:
+    #             - 'Fn::Join':
+    #                 - ''
+    #                 - - 'arn:aws:s3:::'
+    #                   - { "Fn::Sub": "${env:KEY_PAIR_BUCKET_NAME}" }
+    #                   - "/*"
     Ec2RolePolicies: 
       Type: AWS::IAM::Policy
       Properties:
