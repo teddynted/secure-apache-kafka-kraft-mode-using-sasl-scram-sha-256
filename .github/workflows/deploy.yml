@@ -31,6 +31,15 @@ jobs:
       uses: actions/checkout@v4
       with:
         ref: ${{ github.head_ref }}
+
+    - name: Create Key Pair
+      run: |
+        chmod +x ./create-key-pair.sh
+        ./create-key-pair.sh
+      env:
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+        KEY_PAIR_BUCKET_NAME: ${{ secrets.KEY_PAIR_BUCKET_NAME }}
+        KEY_PAIR_NAME: ${{ secrets.KEY_PAIR_NAME }}
     
     # Configure AWS Credentials
     - name: Configure AWS Credentials
@@ -47,15 +56,22 @@ jobs:
       uses: serverless/github-action@v3.2
       with:
         args: deploy --verbose
-    
-    - name: Create Key Pair and Upload to S3 bucket
+
+    - name: Upload Create Pair to S3 bucket
       run: |
-        chmod +x ./create-key-pair.sh
-        ./create-key-pair.sh
+        chmod +x ./upload-key-pair.sh
+        ./upload-key-pair.sh
       env:
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
         KEY_PAIR_BUCKET_NAME: ${{ secrets.KEY_PAIR_BUCKET_NAME }}
         KEY_PAIR_NAME: ${{ secrets.KEY_PAIR_NAME }}
+
+    - name: Update EC2 Launch Template Version
+      run: |
+        chmod +x ./modify-launch-template-version.sh
+        ./modify-launch-template-version.sh
+      env:
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
 
     - name: Connect Kafka Cluster And Run Commands
       run: |
