@@ -245,9 +245,6 @@ resources:
             EOF'
             
             CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
-            echo $CLUSTER_ID
-            # echo 'export CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)' >> /etc/environment
-            # echo $CLUSTER_ID >> /etc/environment
             sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
             
             echo 'export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' >> /etc/environment
