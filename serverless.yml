@@ -151,7 +151,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster6: 
+    KafkaKraftCluster7: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -216,8 +216,8 @@ resources:
             sudo chmod -R 700 /var/lib/kafka
             sudo chown -R ec2-user:ec2-user /var/lib/kafka
 
-            sudo sed -i 's/num.partitions=1/num.partitions=8/' /opt/kafka/config/kraft/server.properties
-            sudo sed -i 's/log.dirs=\\/tmp\\/kraft-combined-logs/log.dirs=\\/var\\/log\\/kafka\\/logs/' /opt/kafka/config/kraft/server.properties
+            sudo sed -i s/num.partitions=1/num.partitions=8/ /opt/kafka/config/kraft/server.properties
+            sudo sed -i s/log.dirs=\\/tmp\\/kraft-combined-logs/log.dirs=\\/var\\/bin\\/kafka\\/logs/ /opt/kafka/config/kraft/server.properties
       
             sudo sh -c 'cat << EOF >> /opt/kafka/config/kraft/server.properties
             sasl.enabled.mechanisms=SASL_PLAINTEXT,SCRAM-SHA-256,SCRAM-SHA-512,PLAIN,SASL_SSL
@@ -290,6 +290,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster6", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster7", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
