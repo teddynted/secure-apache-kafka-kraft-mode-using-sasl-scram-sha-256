@@ -3,7 +3,7 @@
 PUBLIC_IP_ADDRESS=$(ec2-metadata --public-ipv4 | cut -d " " -f 2);
 echo "PUBLIC_IP_ADDRESS: '$PUBLIC_IP_ADDRESS'"
 
-KRAFT_ADVERTISED_LISTENERS=$(sudo cat /opt/kafka/config/kraft/server.properties | grep -c "advertised.listeners=SASL_SSL://$PUBLIC_IP_ADDRESS:9092")
+KRAFT_ADVERTISED_LISTENERS=$(cat /opt/kafka/config/kraft/server.properties | grep -c "advertised.listeners=SASL_SSL://$PUBLIC_IP_ADDRESS:9092")
 echo 'KRAFT_ADVERTISED_LISTENERS '$KRAFT_ADVERTISED_LISTENERS''
 if [[ $KRAFT_ADVERTISED_LISTENERS -eq 0 ]] 
 then
