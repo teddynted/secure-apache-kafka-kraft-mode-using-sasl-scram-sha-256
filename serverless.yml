@@ -151,7 +151,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster5: 
+    KafkaKraftCluster6: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -212,7 +212,12 @@ resources:
             sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password};
             EOF
 
+            sudo mkdir -p /var/lib/kafka/logs
+            sudo chmod -R 700 /var/lib/kafka
+            sudo chown -R ec2-user:ec2-user /var/lib/kafka
+
             sudo sed -i 's/num.partitions=1/num.partitions=8/' /opt/kafka/config/kraft/server.properties
+            sudo sed -i 's/log.dirs=\\/tmp\\/kraft-combined-logs/log.dirs=\\/var\\/log\\/kafka\\/logs/' /opt/kafka/config/kraft/server.properties
       
             sudo sh -c 'cat << EOF >> /opt/kafka/config/kraft/server.properties
             sasl.enabled.mechanisms=SASL_PLAINTEXT,SCRAM-SHA-256,SCRAM-SHA-512,PLAIN,SASL_SSL
@@ -242,7 +247,6 @@ resources:
             export CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
             sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
             
-            #sudo mkdir /var/log/kafka
             export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"
             export KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"
             export KAFKA_JVM_PERFORMANCE_OPTS="-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
@@ -286,6 +290,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster5", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster6", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
