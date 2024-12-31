@@ -1,8 +1,1 @@
-libs
-bin
-logs
-config/kraft/logs
-config/certs
-prometheus-3.0.1.linux-amd64
-prometheus-3.0.1.linux-amd64.tar.gz
 *.pem

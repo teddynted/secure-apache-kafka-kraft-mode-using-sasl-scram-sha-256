@@ -2,7 +2,6 @@
 
 PUBLIC_IP_ADDRESS=$(ec2-metadata --public-ipv4 | cut -d " " -f 2);
 PRIVATE_IP_ADDRESS=$(ec2-metadata --local-ipv4 | cut -d " " -f 2);
-IP_ADDRESS=0.0.0.0
 echo "PUBLIC_IP_ADDRESS: '$PUBLIC_IP_ADDRESS'"
 echo "PRIVATE_IP_ADDRESS: '$PRIVATE_IP_ADDRESS'"
 
@@ -26,8 +25,10 @@ sudo systemctl restart kafka
 sudo systemctl status kafka
 sudo systemctl list-unit-files --type=service
 
+# Create a topic if doesn't exists
 sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/admin.config
 
+# List all the existing topics
 sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --list --command-config /opt/kafka/config/kraft/admin.config
 
 
