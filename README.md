@@ -5,7 +5,7 @@ Secure and monitor your Amazon Linux 2023 EC2 self-hosted Apache Kafka using SAS
 ### List Topics
 
 ```cli
-./bin/kafka-topics.sh kafka-topics --bootstrap-server localhost:9092 --list --command-config config/kraft/admin.config
+./opt/kafka/bin/kafka-topics.sh kafka-topics --bootstrap-server localhost:9092 --list --command-config config/kraft/admin.config
 ```
 
 ### Create Topic
