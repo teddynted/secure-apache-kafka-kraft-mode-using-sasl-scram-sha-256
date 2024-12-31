@@ -110,7 +110,7 @@ resources:
     Ec2SecurityGroupSSH: 
       Type: AWS::EC2::SecurityGroup
       Properties:
-        GroupDescription: allow SSH via static IP
+        GroupDescription: "Allow inbound traffic on port 22 for SSH"
         GroupName: ec2-security-group-ssh
         SecurityGroupIngress:
           - IpProtocol: tcp
