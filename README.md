@@ -2,21 +2,15 @@
 
 Secure and monitor your Amazon Linux 2023 EC2 self-hosted Apache Kafka using SASL/SCRAM
 
-### List Topics
-
-```cli
-./opt/kafka/bin/kafka-topics.sh kafka-topics --bootstrap-server localhost:9092 --list --command-config config/kraft/admin.config
-```
-
 ### Create Topic
 
 ```cli
-./bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists --command-config config/kraft/admin.config
+/opt/kafka/bin/kafka-topics.sh --create --bootstrap-server <ec2-public-ip-address>:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/admin.config
 ```
 
-### Run on Your Local
+
+### List Topics
 
 ```cli
-chmod +x run.sh
-./run.sh
+/opt/kafka/bin/kafka-topics.sh kafka-topics --bootstrap-server <ec2-public-ip-address>:9092 --list --command-config /opt/kafka/config/kraft/admin.config
 ```
