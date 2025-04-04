@@ -111,7 +111,7 @@ resources:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: allow SSH via static IP
-        GroupName: ec2-security-group-ssh
+        GroupName: ${self:provider.stage}-ec2-security-group-ssh
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 22
@@ -121,7 +121,7 @@ resources:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: "Allow inbound traffic on port 9092"
-        GroupName: ec2-security-group-broker
+        GroupName: ${self:provider.stage}-ec2-security-group-broker
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 9092
@@ -131,7 +131,7 @@ resources:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: "Allow inbound traffic on port 9092"
-        GroupName: ec2-security-group-inter-broker
+        GroupName: ${self:provider.stage}-ec2-security-group-inter-broker
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 9091
@@ -141,7 +141,7 @@ resources:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: "Allow inbound traffic on port 9092"
-        GroupName: ec2-security-group-quorom
+        GroupName: ${self:provider.stage}-ec2-security-group-quorom
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 9093
@@ -151,7 +151,7 @@ resources:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: "Allow inbound traffic on port 9092"
-        GroupName: ec2-security-group-icmp
+        GroupName: ${self:provider.stage}-ec2-security-group-icmp
         SecurityGroupIngress:
           - IpProtocol: icmp
             FromPort: -1
@@ -160,7 +160,7 @@ resources:
     LaunchTemplate:
       Type: 'AWS::EC2::LaunchTemplate'
       Properties:
-        LaunchTemplateName: KafkaEC2LaunchTemplate
+        LaunchTemplateName: ${self:provider.stage}-KafkaEC2LaunchTemplate
         LaunchTemplateData:
           InstanceType: { 'Ref': 'InstanceType' }
           ImageId: { 'Ref': 'LatestAmiId' }
