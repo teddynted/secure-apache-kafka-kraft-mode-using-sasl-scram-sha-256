@@ -160,7 +160,7 @@ resources:
     LaunchTemplate:
       Type: 'AWS::EC2::LaunchTemplate'
       Properties:
-        LaunchTemplateName: KafkaEC2LaunchTemplate
+        LaunchTemplateName: { "Fn::Sub": "${AWS::StackName}-KafkaEC2LaunchTemplate" } 
         LaunchTemplateData:
           InstanceType: { 'Ref': 'InstanceType' }
           ImageId: { 'Ref': 'LatestAmiId' }
