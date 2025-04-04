@@ -64,7 +64,6 @@ jobs:
       env:
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
     
-    # Debug
     - name: Connect Kafka Cluster And Run Commands
       run: |
         chmod +x ./ec2.sh
