@@ -37,6 +37,8 @@ sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 -
 
 #sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server PUBLIC_IP_ADDRESS:9092 --topic testtopic --from-beginning --consumer.config /opt/kafka/config/kraft/admin.config
 
+#KAFKA_OPTS="-Djavax.net.debug=ssl" sudo /opt/kafka/bin/kafka-console-consumer.sh --broker-list <ec2-ip>:9092 --topic test --producer.config client.properties
+
 # Produce Messsage
 
 #sudo /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server PUBLIC_IP_ADDRESS:9092 --topic testtopic --producer.config /opt/kafka/config/kraft/admin.config
