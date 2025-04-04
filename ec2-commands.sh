@@ -5,8 +5,6 @@ PRIVATE_IP_ADDRESS=$(ec2-metadata --local-ipv4 | cut -d " " -f 2);
 echo "EC2 PUBLIC_IP_ADDRESS: '$PUBLIC_IP_ADDRESS'"
 echo "EC2 PRIVATE_IP_ADDRESS: '$PRIVATE_IP_ADDRESS'"
 
-PRIVATE_IP_ADDRESS=0.0.0.0
-
 KRAFT_ADVERTISED_LISTENERS=$(cat /opt/kafka/config/kraft/server.properties | grep -c "advertised.listeners=SASL_SSL://$PRIVATE_IP_ADDRESS:9092")
 echo 'KRAFT_ADVERTISED_LISTENERS '$KRAFT_ADVERTISED_LISTENERS''
 if [[ $KRAFT_ADVERTISED_LISTENERS -eq 0 ]] 
