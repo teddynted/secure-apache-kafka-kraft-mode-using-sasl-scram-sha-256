@@ -115,7 +115,7 @@ resources:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: allow SSH via static IP
-        GroupName: ${self:provider.stage}-ec2-security-group-ssh
+        GroupName: ${AWS::StackName}-ec2-security-group-ssh
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 22
@@ -125,7 +125,7 @@ resources:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: "Allow inbound traffic on port 9092"
-        GroupName: ${self:provider.stage}-ec2-security-group-broker
+        GroupName: ${AWS::StackName}-ec2-security-group-broker
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 9092
@@ -135,7 +135,7 @@ resources:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: "Allow inbound traffic on port 9092"
-        GroupName: ${self:provider.stage}-ec2-security-group-inter-broker
+        GroupName: ${AWS::StackName}-ec2-security-group-inter-broker
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 9091
@@ -145,7 +145,7 @@ resources:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: "Allow inbound traffic on port 9092"
-        GroupName: ${self:provider.stage}-ec2-security-group-quorom
+        GroupName: ${AWS::StackName}-ec2-security-group-quorom
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 9093
@@ -155,7 +155,7 @@ resources:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: "Allow outbound traffic on all ports"
-        GroupName: ${self:provider.stage}-ec2-s-g-icmp
+        GroupName: ${AWS::StackName}-ec2-s-g-icmp
         SecurityGroupIngress:
           - IpProtocol: icmp
             FromPort: -1
@@ -164,7 +164,7 @@ resources:
     LaunchTemplate:
       Type: 'AWS::EC2::LaunchTemplate'
       Properties:
-        LaunchTemplateName: ${self:provider.stage}-KafkaEC2LaunchTemplate
+        LaunchTemplateName: ${AWS::StackName}-KafkaEC2LaunchTemplate
         LaunchTemplateData:
           InstanceType: { 'Ref': 'InstanceType' }
           ImageId: { 'Ref': 'LatestAmiId' }
