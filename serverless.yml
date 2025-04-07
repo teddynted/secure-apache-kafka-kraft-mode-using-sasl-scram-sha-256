@@ -1,4 +1,4 @@
-service: apache-kafka-kraft-authentication
+service: apache-kafka-sasl-scram
 
 frameworkVersion: "3"
 configValidationMode: error
