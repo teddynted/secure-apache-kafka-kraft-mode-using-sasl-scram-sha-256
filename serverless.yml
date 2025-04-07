@@ -30,12 +30,13 @@ resources:
     InstanceType:
       Description: Apache Kafka EC2 instance type
       Type: String
-      Default: t2.medium
+      Default: t2.xlarge
       AllowedValues:
         - t2.nano
         - t2.micro
         - t2.small
         - t2.medium
+        - t2.xlarge
   Resources:
     Ec2RolePolicies: 
       Type: AWS::IAM::Policy
@@ -150,7 +151,7 @@ resources:
     IcmpSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
-        GroupDescription: "Allow inbound traffic on port 9092"
+        GroupDescription: "Allow outbound traffic on all ports"
         GroupName: ${self:provider.stage}-ec2-security-group-icmp
         SecurityGroupIngress:
           - IpProtocol: icmp
