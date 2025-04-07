@@ -30,14 +30,17 @@ sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PUBLIC_IP_ADDRE
 
 # List all the existing topics
 sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --list --command-config /opt/kafka/config/kraft/admin.config
-#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server 34.244.128.235:9092 --list --command-config /opt/kafka/config/kraft/admin.config
+#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server 34.246.176.62:9092 --list --command-config /opt/kafka/config/kraft/admin.config
 
 # Consuming Message
 
-#sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server 34.244.128.235:9092 --topic testtopic --from-beginning --consumer.config /opt/kafka/config/kraft/admin.config
+#sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server 34.246.176.62:9092 --topic testtopic --from-beginning --consumer.config /opt/kafka/config/kraft/admin.config
 
 # Produce Messsage
 
-#sudo /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server 34.244.128.235:9092 --topic testtopic --producer.config /opt/kafka/config/kraft/admin.config
+#sudo /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server 34.246.176.62:9092 --topic testtopic --producer.config /opt/kafka/config/kraft/admin.config
+#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server 34.246.176.62:9092 --list
+
+#sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-controller 34.246.176.62:9093 describe --status
 
 
