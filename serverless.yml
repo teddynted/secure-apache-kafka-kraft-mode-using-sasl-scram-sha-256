@@ -152,7 +152,7 @@ resources:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: "Allow outbound traffic on all ports"
-        GroupName: ${self:provider.stage}-ec2-security-group-icmp
+        GroupName: ${self:provider.stage}-ec2-s-g-icmp
         SecurityGroupIngress:
           - IpProtocol: icmp
             FromPort: -1
