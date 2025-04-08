@@ -331,6 +331,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster10", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster11", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
