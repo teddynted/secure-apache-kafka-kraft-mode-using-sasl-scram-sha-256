@@ -324,11 +324,11 @@ resources:
       Type: AWS::EC2::EIPAssociation
       Properties:
         AllocationId: { 'Fn::GetAtt': ['AKElasticIP', 'AllocationId'] }
-        InstanceId: { 'Ref': 'KafkaKraftCluster20' }
+        InstanceId: { 'Ref': 'KafkaKraftCluster21' }
 
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster20", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster21", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
