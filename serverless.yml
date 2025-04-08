@@ -270,9 +270,9 @@ resources:
             log4j.logger.org.apache.kafka.common.security.ssl.SslFactory=DEBUG
             EOF'
             
-            CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
-            sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
-            
+            #CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
+            #sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
+            echo 'export CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)' >> /etc/environment
             echo 'export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' >> /etc/environment
             echo 'export KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"' >> /etc/environment
             echo 'export KAFKA_JVM_PERFORMANCE_OPTS="-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"' >> /etc/environment
@@ -291,7 +291,6 @@ resources:
             Environment="KAFKA_HEAP_OPTS='-Xms1G -Xmx1G'"
             Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"
             Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
-            Environment="CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)"
             ExecStartPre=sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
             ExecStart=sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties
             ExecStop=sudo /opt/kafka/bin/kafka-server-stop.sh /opt/kafka/config/kraft/server.properties
@@ -315,16 +314,16 @@ resources:
             country: { "Fn::Sub": [ "${country}", { "country": "${env:COUNTRY}" } ] }
             unit: { "Fn::Sub": [ "${unit}", { "unit": "${env:ORGANIZATION_UNIT}" } ] }
             city: { "Fn::Sub": [ "${city}", { "city": "${env:CITY}" } ] }
-    AKElasticIP:
-      Type: AWS::EC2::EIP
-      Properties:
-        Domain: vpc
+    # AKElasticIP:
+    #   Type: AWS::EC2::EIP
+    #   Properties:
+    #     Domain: vpc
   
-    AKEIPAssociation:
-      Type: AWS::EC2::EIPAssociation
-      Properties:
-        AllocationId: { 'Fn::GetAtt': ['AKElasticIP', 'AllocationId'] }
-        InstanceId: { 'Ref': 'KafkaKraftCluster17' }
+    # AKEIPAssociation:
+    #   Type: AWS::EC2::EIPAssociation
+    #   Properties:
+    #     AllocationId: { 'Fn::GetAtt': ['AKElasticIP', 'AllocationId'] }
+    #     InstanceId: { 'Ref': 'KafkaKraftCluster17' }
 
   Outputs:
     PublicIp:
