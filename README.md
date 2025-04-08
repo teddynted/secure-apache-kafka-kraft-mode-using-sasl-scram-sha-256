@@ -29,6 +29,17 @@ ps aux | grep kafka.Kafka
 openssl s_client -connect <broker-ip>:9092 -showcerts
 ```
 
+### Verify Basic Connectivity
+
 ```cli
-tail -f /opt/kafka/logs/server.log
+# Check if Kafka brokers are reachable
+nc -zv <broker-ip> 9092
+telnet <broker-ip> 9092
+```
+
+### Check Broker Logs
+
+```cli
+tail -f /opt/kafka/log/kafka/server.log | grep -i sasl
+grep -i "authentication failed" /opt/kafka/log/kafka/server.log
 ```
