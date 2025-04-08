@@ -31,7 +31,7 @@ sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PUBLIC_IP_ADDRE
 # List all the existing topics
 sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --list --command-config /opt/kafka/config/kraft/admin.config
 
-# sudo ss -tulnp | grep java
+sudo ss -tulnp | grep java
 # tail -f /opt/kafka/logs/server.log
 # curl ifconfig.me
 # journalctl -u kafka -f
