@@ -157,10 +157,10 @@ resources:
         GroupDescription: "Allow outbound traffic on all ports"
         GroupName: ${self:provider.stage}-ec2-s-g-icmp
         SecurityGroupIngress:
-          - IpProtocol: icmp
-            FromPort: -1
-            ToPort: -1
-            CidrIp: 0.0.0.0/0
+          - IpProtocol: -1
+            # FromPort: -1
+            # ToPort: -1
+            # CidrIp: 0.0.0.0/0
     LaunchTemplate:
       Type: 'AWS::EC2::LaunchTemplate'
       Properties:
@@ -177,7 +177,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster15: 
+    KafkaKraftCluster16: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -322,11 +322,11 @@ resources:
       Type: AWS::EC2::EIPAssociation
       Properties:
         AllocationId: { 'Fn::GetAtt': ['AKElasticIP', 'AllocationId'] }
-        InstanceId: { 'Ref': 'KafkaKraftCluster15' }
+        InstanceId: { 'Ref': 'KafkaKraftCluster16' }
 
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster15", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster16", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
