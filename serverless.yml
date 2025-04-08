@@ -177,7 +177,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster20: 
+    KafkaKraftCluster21: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -288,7 +288,7 @@ resources:
             Type=simple
             User=ec2-user
             SyslogIdentifier=kafka
-            Environment="CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)"
+            #Environment="CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)"
             Environment="KAFKA_HEAP_OPTS='-Xms1G -Xmx1G'"
             Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"
             Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
@@ -315,16 +315,16 @@ resources:
             country: { "Fn::Sub": [ "${country}", { "country": "${env:COUNTRY}" } ] }
             unit: { "Fn::Sub": [ "${unit}", { "unit": "${env:ORGANIZATION_UNIT}" } ] }
             city: { "Fn::Sub": [ "${city}", { "city": "${env:CITY}" } ] }
-    # AKElasticIP:
-    #   Type: AWS::EC2::EIP
-    #   Properties:
-    #     Domain: vpc
+    AKElasticIP:
+      Type: AWS::EC2::EIP
+      Properties:
+        Domain: vpc
   
-    # AKEIPAssociation:
-    #   Type: AWS::EC2::EIPAssociation
-    #   Properties:
-    #     AllocationId: { 'Fn::GetAtt': ['AKElasticIP', 'AllocationId'] }
-    #     InstanceId: { 'Ref': 'KafkaKraftCluster17' }
+    AKEIPAssociation:
+      Type: AWS::EC2::EIPAssociation
+      Properties:
+        AllocationId: { 'Fn::GetAtt': ['AKElasticIP', 'AllocationId'] }
+        InstanceId: { 'Ref': 'KafkaKraftCluster20' }
 
   Outputs:
     PublicIp:
