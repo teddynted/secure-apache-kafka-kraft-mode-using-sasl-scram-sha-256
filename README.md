@@ -23,6 +23,12 @@ Secure and monitor your Amazon Linux 2023 EC2 self-hosted Apache Kafka using SAS
 ps aux | grep kafka.Kafka
 ```
 
+### Validate TLS/SSL Configuration
+
+```cli
+openssl s_client -connect <broker-ip>:9092 -showcerts
+```
+
 ```cli
 tail -f /opt/kafka/logs/server.log
 ```
