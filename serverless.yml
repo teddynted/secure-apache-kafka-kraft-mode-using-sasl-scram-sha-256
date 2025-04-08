@@ -177,7 +177,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster11: 
+    KafkaKraftCluster12: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -220,6 +220,26 @@ resources:
             ls -l
             cd ../../../../
             ls -l
+
+            sudo touch /opt/kakfa/scripts/kafka-format.sh
+            sudo cat <<EOF > /opt/kakfa/scripts/kafka-format.sh
+            #!/bin/bash
+            set -euo pipefail
+            
+            KAFKA_DIR="/opt/kafka"
+            CONFIG="$KAFKA_DIR/config/server.properties"
+            LOG_DIR="/opt/kafka/data/logs"
+            
+            # Only format if not already formatted
+            if [ ! -f "$LOG_DIR/meta.properties" ]; then
+              CLUSTER_ID=$(uuidgen)
+              echo "Formatting Kafka KRaft storage with CLUSTER_ID=$CLUSTER_ID"
+              "$KAFKA_DIR/bin/kafka-storage.sh" format --cluster-id "$CLUSTER_ID" --config "$CONFIG"
+            else
+              echo "Kafka storage already formatted."
+            fi
+            EOF
+            sudo chmod +x /opt/kafka/scripts/kafka-format.sh
             
             sudo touch /opt/kafka/config/kraft/jaas.config
             sudo cat <<EOF > /opt/kafka/config/kraft/jaas.config
@@ -294,6 +314,7 @@ resources:
             Environment="KAFKA_HEAP_OPTS='-Xms1G -Xmx1G'"
             Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"
             Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
+            ExecStartPre=sudo /opt/kafka/scripts/kafka-format.sh
             ExecStart=sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties
             ExecStop=sudo /opt/kafka/bin/kafka-server-stop.sh /opt/kafka/config/kraft/server.properties
              
@@ -324,11 +345,11 @@ resources:
       Type: AWS::EC2::EIPAssociation
       Properties:
         AllocationId: { 'Fn::GetAtt': ['AKElasticIP', 'AllocationId'] }
-        InstanceId: { 'Ref': 'KafkaKraftCluster11' }
+        InstanceId: { 'Ref': 'KafkaKraftCluster12' }
 
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster11", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster12", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
