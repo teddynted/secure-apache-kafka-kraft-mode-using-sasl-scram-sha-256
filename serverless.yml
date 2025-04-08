@@ -273,6 +273,7 @@ resources:
             
             CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
             sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
+            echo $CLUSTER_ID;
             
             echo 'export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' >> /etc/environment
             echo 'export KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"' >> /etc/environment
