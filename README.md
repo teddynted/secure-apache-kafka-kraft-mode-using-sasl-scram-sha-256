@@ -20,7 +20,7 @@ Secure and monitor your Amazon Linux 2023 EC2 self-hosted Apache Kafka using SAS
 #### Check that Kafka is running
 
 ```cli
-jcmd | grep kafka
+ps aux | grep kafka.Kafka
 ```
 
 ```cli

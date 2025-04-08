@@ -34,13 +34,14 @@ sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 -
 
 # Consuming Message
 
-#sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server 34.246.176.62:9092 --topic testtopic --from-beginning --consumer.config /opt/kafka/config/kraft/admin.config
+#sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server 54.155.178.235:9092 --topic testtopic --from-beginning --consumer.config /opt/kafka/config/kraft/admin.config
 
 # Produce Messsage
 
-#sudo /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server 34.246.176.62:9092 --topic testtopic --producer.config /opt/kafka/config/kraft/admin.config
+#sudo /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server 54.155.178.235:9092 --topic testtopic --producer.config /opt/kafka/config/kraft/admin.config
 #sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server 34.246.176.62:9092 --list
 
 #sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-controller 34.246.176.62:9093 describe --status
+#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server 172.31.30.39:9092 --list --command-config /opt/kafka/config/kraft/admin.config
 
 
