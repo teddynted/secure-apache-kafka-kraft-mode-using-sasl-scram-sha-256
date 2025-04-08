@@ -177,7 +177,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster13: 
+    KafkaKraftCluster14: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -231,8 +231,8 @@ resources:
             sudo touch /opt/kafka/config/kraft/admin.config
             sudo cat <<EOF > /opt/kafka/config/kraft/admin.config
             security.protocol=SASL_SSL
-            #ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
-            #ssl.truststore.password=${password}
+            ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
+            ssl.truststore.password=${password}
             sasl.mechanism=SCRAM-SHA-256
             #ssl.endpoint.identification.algorithm=
             sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password};
@@ -322,11 +322,11 @@ resources:
       Type: AWS::EC2::EIPAssociation
       Properties:
         AllocationId: { 'Fn::GetAtt': ['AKElasticIP', 'AllocationId'] }
-        InstanceId: { 'Ref': 'KafkaKraftCluster13' }
+        InstanceId: { 'Ref': 'KafkaKraftCluster14' }
 
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster13", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster14", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
