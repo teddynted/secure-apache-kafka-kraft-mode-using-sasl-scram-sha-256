@@ -44,5 +44,6 @@ sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 -
 #sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-controller 34.250.196.150:9093 describe --status
 #sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server 172.31.30.39:9092 --list --command-config /opt/kafka/config/kraft/admin.config
 #sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server 34.250.196.150:9092 describe --status
+#journalctl -xeu kafka.service
 
 
