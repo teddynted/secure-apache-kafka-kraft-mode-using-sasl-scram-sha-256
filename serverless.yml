@@ -157,10 +157,10 @@ resources:
         GroupDescription: "Allow outbound traffic on all ports"
         GroupName: ${self:provider.stage}-ec2-s-g-icmp
         SecurityGroupIngress:
-          - IpProtocol: icmp
-            FromPort: -1
-            ToPort: -1
-            CidrIp: 0.0.0.0/0
+          - IpProtocol: -1
+            # FromPort: -1
+            # ToPort: -1
+            # CidrIp: 0.0.0.0/0
     LaunchTemplate:
       Type: 'AWS::EC2::LaunchTemplate'
       Properties:
