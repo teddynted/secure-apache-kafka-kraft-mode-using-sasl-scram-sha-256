@@ -43,3 +43,9 @@ telnet <broker-ip> 9092
 tail -f /opt/kafka/log/kafka/server.log | grep -i sasl
 grep -i "authentication failed" /opt/kafka/log/kafka/server.log
 ```
+
+### Check Listening Ports
+
+```cli
+sudo ss -tulnp | grep java
+```

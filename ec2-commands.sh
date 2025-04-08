@@ -34,7 +34,8 @@ sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 -
 sudo ss -tulnp | grep java
 tail -f /opt/kafka/logs/server.log
 curl ifconfig.me
-sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --command-config config/client.properties describe --status
+journalctl -u kafka -f
+#sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --command-config config/client.properties describe --status
 #sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server 34.250.196.150:9092 --list --command-config /opt/kafka/config/kraft/admin.config
 
 # Consuming Message
