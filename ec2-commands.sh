@@ -32,9 +32,10 @@ sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PUBLIC_IP_ADDRE
 sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --list --command-config /opt/kafka/config/kraft/admin.config
 
 sudo ss -tulnp | grep java
-# tail -f /opt/kafka/logs/server.log
-# curl ifconfig.me
-# journalctl -u kafka -f
+tail -f /opt/kafka/logs/server.log
+curl ifconfig.me
+journalctl -u kafka -f
+echo $CLUSTER_ID;
 #ExecStartPre=sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
 #sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --command-config config/client.properties describe --status
 #sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server 34.250.196.150:9092 --list --command-config /opt/kafka/config/kraft/admin.config
