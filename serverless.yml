@@ -336,16 +336,16 @@ resources:
             country: { "Fn::Sub": [ "${country}", { "country": "${env:COUNTRY}" } ] }
             unit: { "Fn::Sub": [ "${unit}", { "unit": "${env:ORGANIZATION_UNIT}" } ] }
             city: { "Fn::Sub": [ "${city}", { "city": "${env:CITY}" } ] }
-    AKElasticIP:
-      Type: AWS::EC2::EIP
-      Properties:
-        Domain: vpc
+    # AKElasticIP:
+    #   Type: AWS::EC2::EIP
+    #   Properties:
+    #     Domain: vpc
   
-    AKEIPAssociation:
-      Type: AWS::EC2::EIPAssociation
-      Properties:
-        AllocationId: { 'Fn::GetAtt': ['AKElasticIP', 'AllocationId'] }
-        InstanceId: { 'Ref': 'KafkaKraftCluster14' }
+    # AKEIPAssociation:
+    #   Type: AWS::EC2::EIPAssociation
+    #   Properties:
+    #     AllocationId: { 'Fn::GetAtt': ['AKElasticIP', 'AllocationId'] }
+    #     InstanceId: { 'Ref': 'KafkaKraftCluster14' }
 
   Outputs:
     PublicIp:
