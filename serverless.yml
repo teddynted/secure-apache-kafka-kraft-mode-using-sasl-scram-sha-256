@@ -271,12 +271,12 @@ resources:
             EOF'
             
             #CLUSTER_ID=$(sudo /opt/kafka/bin/kafka-storage.sh random-uuid)
-            echo 'export CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)' >> /etc/environment
+            #echo 'export CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)' >> /etc/environment
             #echo 'export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' >> /etc/environment
             #echo 'export KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"' >> /etc/environment
             #echo 'export KAFKA_JVM_PERFORMANCE_OPTS="-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"' >> /etc/environment
 
-            echo $CLUSTER_ID
+            #echo $CLUSTER_ID
 
             # Create Kafka service
             sudo cat <<EOF > /etc/systemd/system/kafka.service
@@ -289,7 +289,7 @@ resources:
             Type=simple
             User=ec2-user
             SyslogIdentifier=kafka
-            Environment="CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)"
+            #Environment="CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)"
             Environment="KAFKA_HEAP_OPTS='-Xms1G -Xmx1G'"
             Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"
             Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
