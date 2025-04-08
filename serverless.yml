@@ -177,7 +177,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster13: 
+    KafkaKraftCluster14: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -221,8 +221,8 @@ resources:
             cd ../../../../
             ls -l
 
-            sudo touch /opt/kakfa/scripts/kafka-format.sh
-            sudo cat <<EOF > /opt/kakfa/scripts/kafka-format.sh
+            sudo touch /opt/kafka/scripts/kafka-format.sh
+            sudo cat <<EOF > /opt/kafka/scripts/kafka-format.sh
             #!/bin/bash
             set -euo pipefail
             
@@ -345,11 +345,11 @@ resources:
       Type: AWS::EC2::EIPAssociation
       Properties:
         AllocationId: { 'Fn::GetAtt': ['AKElasticIP', 'AllocationId'] }
-        InstanceId: { 'Ref': 'KafkaKraftCluster13' }
+        InstanceId: { 'Ref': 'KafkaKraftCluster14' }
 
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster13", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster14", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
