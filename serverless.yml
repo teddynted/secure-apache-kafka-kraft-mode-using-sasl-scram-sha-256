@@ -248,7 +248,6 @@ resources:
             sudo sh -c 'cat << EOF >> /opt/kafka/config/kraft/server.properties
             sasl.enabled.mechanisms=SASL_PLAINTEXT,SCRAM-SHA-256,SCRAM-SHA-512,PLAIN,SASL_SSL
             sasl.mechanism.controller.protocol=SCRAM-SHA-256
-            security.inter.broker.protocol=SASL_SSL
             sasl.mechanism.inter.broker.protocol=SASL_SSL
             ssl.client.auth=required
             ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
@@ -269,9 +268,6 @@ resources:
             unclean.leader.election.enable=false
             log4j.logger.org.apache.kafka.common.network.SslTransportLayer=DEBUG
             log4j.logger.org.apache.kafka.common.security.ssl.SslFactory=DEBUG
-            -Djava.security.debug=all
-            -Dsun.security.krb5.debug=true
-            -Djavax.net.debug=all
             EOF'
             
             CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
