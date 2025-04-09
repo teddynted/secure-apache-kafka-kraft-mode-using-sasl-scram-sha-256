@@ -177,7 +177,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster17: 
+    KafkaKraftCluster18: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -227,18 +227,10 @@ resources:
             #!/bin/bash
             set -euo pipefail
             
-            KAFKA_DIR="/opt/kafka"
-            CONFIG="$KAFKA_DIR/config/server.properties"
-            LOG_DIR="/opt/kafka/data/logs"
-            
-            # Only format if not already formatted
-            if [ ! -f "$LOG_DIR/meta.properties" ]; then
-              CLUSTER_ID=$(uuidgen)
-              echo "Formatting Kafka KRaft storage with CLUSTER_ID=$CLUSTER_ID"
-              "$KAFKA_DIR/bin/kafka-storage.sh" format --cluster-id "$CLUSTER_ID" --config "$CONFIG"
-            else
-              echo "Kafka storage already formatted."
-            fi
+            CLUSTER_ID=$(uuidgen)
+            echo "Formatting Kafka KRaft storage with CLUSTER_ID=$CLUSTER_ID"
+            sudo /opt/kafka/bin/kafka-storage.sh format --cluster-id "$CLUSTER_ID" --config /opt/kafka/config/server.properties
+
             EOF
             sudo chmod +x /opt/kafka/scripts/kafka-format.sh
             
@@ -351,6 +343,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster17", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster18", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
