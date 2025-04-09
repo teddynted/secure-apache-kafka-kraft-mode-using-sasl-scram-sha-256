@@ -177,7 +177,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster16: 
+    KafkaKraftCluster17: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -220,7 +220,8 @@ resources:
             ls -l
             cd ../../../../
             ls -l
-
+            
+            sudo mkdir /opt/kafka/scripts
             sudo touch /opt/kafka/scripts/kafka-format.sh
             sudo cat <<EOF > /opt/kafka/scripts/kafka-format.sh
             #!/bin/bash
@@ -350,6 +351,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster16", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster17", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
