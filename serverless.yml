@@ -221,13 +221,13 @@ resources:
             cd ../../../../
             ls -l
             
+            CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
             sudo mkdir /opt/kafka/scripts
             sudo touch /opt/kafka/scripts/kafka-format.sh
             sudo cat <<EOF > /opt/kafka/scripts/kafka-format.sh
             #!/bin/bash
             set -euo pipefail
             
-            CLUSTER_ID=$(uuidgen)
             echo "Formatting Kafka KRaft storage with CLUSTER_ID=$CLUSTER_ID"
             sudo /opt/kafka/bin/kafka-storage.sh format --cluster-id "$CLUSTER_ID" --config /opt/kafka/config/server.properties
 
