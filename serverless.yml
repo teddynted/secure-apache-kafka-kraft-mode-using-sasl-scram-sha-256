@@ -220,7 +220,7 @@ resources:
             ls -l
             cd ../../../../
             ls -l
-            
+
             CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
             sudo mkdir /opt/kafka/scripts
             sudo touch /opt/kafka/scripts/kafka-format.sh
@@ -284,8 +284,8 @@ resources:
             log4j.logger.org.apache.kafka.common.security.ssl.SslFactory=DEBUG
             EOF'
             
-            CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
-            sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
+            #CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
+            #sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
             echo $CLUSTER_ID;
             
             echo 'export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' >> /etc/environment
