@@ -177,7 +177,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster29: 
+    KafkaKraftCluster30: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -349,6 +349,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster29", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster30", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
