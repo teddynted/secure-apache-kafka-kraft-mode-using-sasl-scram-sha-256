@@ -20,8 +20,13 @@ sudo sed -i s/advertised.listeners=PLAINTEXT:\\/\\/localhost:9092,CONTROLLER:\\/
 sudo sed -i s/listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL/listener.security.protocol.map=CONTROLLER:SASL_SSL,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL/ /opt/kafka/config/kraft/server.properties
 fi
 
+cat /var/log/cloud-init-output.log
+cat /opt/kafka/logs/server.log
+cat /opt/kafka/config/kraft/server.properties
+
 sudo systemctl daemon-reload
-sudo systemctl restart kafka
+sudo systemctl enable kafka
+sudo systemctl start kafka
 sudo systemctl status kafka
 #sudo systemctl list-unit-files --type=service
 
