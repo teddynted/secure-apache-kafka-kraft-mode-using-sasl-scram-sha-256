@@ -177,7 +177,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster27: 
+    KafkaKraftCluster28: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -221,6 +221,8 @@ resources:
             cd ../../../../
             ls -l
 
+            SERVER_PROPERTIES_DIR=/opt/kafka/config/kraft/server.properties
+
             CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
             sudo mkdir /opt/kafka/scripts
             sudo touch /opt/kafka/scripts/kafka-format.sh
@@ -228,7 +230,7 @@ resources:
             #!/bin/bash
             set -euo pipefail
             echo "Formatting Kafka KRaft storage with CLUSTER_ID=$CLUSTER_ID"
-            sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
+            sudo /opt/kafka/bin/kafka-storage.sh format --config $SERVER_PROPERTIES_DIR --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
             echo $CLUSTER_ID;
             EOF
             sudo chmod +x /opt/kafka/scripts/kafka-format.sh
@@ -254,10 +256,10 @@ resources:
             sudo chmod -R 700 /var/lib/kafka
             sudo chown -R ec2-user:ec2-user /var/lib/kafka
 
-            sudo sed -i s/num.partitions=1/num.partitions=8/ /opt/kafka/config/kraft/server.properties
-            sudo sed -i s/log.dirs=\\/tmp\\/kraft-combined-logs/log.dirs=\\/var\\/bin\\/kafka\\/logs/ /opt/kafka/config/kraft/server.properties
+            sudo sed -i s/num.partitions=1/num.partitions=8/ $SERVER_PROPERTIES_DIR
+            sudo sed -i s/log.dirs=\\/tmp\\/kraft-combined-logs/log.dirs=\\/opt\\/kafka\\/logs/ $SERVER_PROPERTIES_DIR
       
-            sudo sh -c 'cat << EOF >> /opt/kafka/config/kraft/server.properties
+            sudo sh -c 'cat << EOF >> $SERVER_PROPERTIES_DIR
             sasl.enabled.mechanisms=SASL_PLAINTEXT,SCRAM-SHA-256,SCRAM-SHA-512,PLAIN,SASL_SSL
             sasl.mechanism.controller.protocol=SCRAM-SHA-256
 
@@ -272,10 +274,10 @@ resources:
             ssl.keystore.password=${password}
             ssl.key.password=${password}
             ssl.endpoint.identification.algorithm=
-            authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
-            #authorizer.class.name=kafka.security.authorizer.AclAuthorizer
-            allow.everyone.if.no.acl.found=true
-            super.users=User:admin
+            #authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
+            authorizer.class.name=kafka.security.authorizer.AclAuthorizer
+            allow.everyone.if.no.acl.found=false
+            super.users=User:controller;User:broker;User:admin
             delete.topic.enable=true
             default.replication.factor=2
             min.insync.replicas=2
@@ -284,10 +286,6 @@ resources:
             log4j.logger.org.apache.kafka.common.network.SslTransportLayer=DEBUG
             log4j.logger.org.apache.kafka.common.security.ssl.SslFactory=DEBUG
             EOF'
-            
-            #CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
-            #sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
-            echo $CLUSTER_ID;
             
             echo 'export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' >> /etc/environment
             echo 'export KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"' >> /etc/environment
@@ -310,8 +308,8 @@ resources:
             Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"
             Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
             ExecStartPre=sudo /opt/kafka/scripts/kafka-format.sh
-            ExecStart=sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties
-            ExecStop=sudo /opt/kafka/bin/kafka-server-stop.sh /opt/kafka/config/kraft/server.properties
+            ExecStart=sudo /opt/kafka/bin/kafka-server-start.sh $SERVER_PROPERTIES_DIR
+            ExecStop=sudo /opt/kafka/bin/kafka-server-stop.sh $SERVER_PROPERTIES_DIR
              
             [Install]
             WantedBy=multi-user.target
@@ -345,6 +343,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster27", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster28", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
