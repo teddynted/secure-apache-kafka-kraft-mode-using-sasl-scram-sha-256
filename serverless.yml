@@ -236,7 +236,7 @@ resources:
             sudo touch /opt/kafka/config/kraft/jaas.config
             sudo cat <<EOF > /opt/kafka/config/kraft/jaas.config
             KafkaServer {
-                org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password};
+                org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password} user_admin=${username};
             };
             EOF
 
