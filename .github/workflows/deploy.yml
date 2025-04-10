@@ -68,3 +68,5 @@ jobs:
       run: |
         chmod +x ./ec2.sh
         ./ec2.sh
+      env:
+        SASL_SCRAM_PASSWORD: ${{ env.SASL_SCRAM_PASSWORD }}

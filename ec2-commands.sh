@@ -13,17 +13,23 @@ sudo sed -i s/offsets.topic.replication.factor=1/offsets.topic.replication.facto
 sudo sed -i s/transaction.state.log.replication.factor=1/transaction.state.log.replication.factor=2/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/socket.receive.buffer.bytes=102400/socket.receive.buffer.bytes=1048576/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/socket.send.buffer.bytes=102400/socket.send.buffer.bytes=1048576/ /opt/kafka/config/kraft/server.properties
-sudo sed -i s/controller.quorum.voters=1@localhost:9093/controller.quorum.voters=1@$PRIVATE_IP_ADDRESS:9093/ /opt/kafka/config/kraft/server.properties
-#sudo sed -i s/listeners=PLAINTEXT:\\/\\/:9092,CONTROLLER:\\/\\/:9093/listeners=SASL_SSL:\\/\\/$PRIVATE_IP_ADDRESS:9092,CONTROLLER:\\/\\/$PRIVATE_IP_ADDRESS:9093/ /opt/kafka/config/kraft/server.properties
-#sudo sed -i s/inter.broker.listener.name=PLAINTEXT/inter.broker.listener.name=SASL_SSL/ /opt/kafka/config/kraft/server.properties
+sudo sed -i s/controller.quorum.voters=1@localhost:9093/controller.quorum.voters=1@$PRIVATE_IP_ADDRESS:9094/ /opt/kafka/config/kraft/server.properties
+sudo sed -i s/listeners=PLAINTEXT:\\/\\/:9092,CONTROLLER:\\/\\/:9093/listeners=SASL_SSL:\\/\\/:9092,INTERNAL://:9093,CONTROLLER:\\/\\/:9094/ /opt/kafka/config/kraft/server.properties
+sudo sed -i s/inter.broker.listener.name=PLAINTEXT/inter.broker.listener.name=INTERNAL/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/advertised.listeners=PLAINTEXT:\\/\\/localhost:9092,CONTROLLER:\\/\\/localhost:9093/advertised.listeners=SASL_SSL:\\/\\/$PUBLIC_IP_ADDRESS:9092/ /opt/kafka/config/kraft/server.properties
-sudo sed -i s/listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL/listener.security.protocol.map=CONTROLLER:SASL_SSL,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL/ /opt/kafka/config/kraft/server.properties
-sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --add --allow-principal "User:broker1" --operation ClusterAction --cluster
-sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --list --cluster
+sudo sed -i s/listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL/listener.security.protocol.map=INTERNAL:SASL_SSL,CONTROLLER:SASL_SSL,SASL_SSL:SASL_SSL/ /opt/kafka/config/kraft/server.properties
+# sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --add --allow-principal "User:broker1" --operation ClusterAction --cluster
+# sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --list --cluster
 sudo systemctl daemon-reload
 sudo systemctl enable kafka
 sudo systemctl start kafka
 sudo systemctl status kafka
+echo 'SASL_SCRAM_PASSWORD '$SASL_SCRAM_PASSWORD''
+sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092 --alter --add-config 'SCRAM-SHA-256=[password='$SASL_SCRAM_PASSWORD']' --entity-type users --entity-name admin
+sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092 --alter --add-config 'SCRAM-SHA-256=[password='$SASL_SCRAM_PASSWORD']' --entity-type users --entity-name broker
+sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092 --alter --add-config 'SCRAM-SHA-256=[password='$SASL_SCRAM_PASSWORD']' --entity-type users --entity-name controller
+sudo systemctl restart kafka
+sudo systemctl status kafka -l
 fi
 
 cat /var/log/cloud-init-output.log
@@ -32,10 +38,10 @@ cat /opt/kafka/config/kraft/server.properties
 #sudo systemctl list-unit-files --type=service
 
 # Create a topic if doesn't exists
-sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/admin.config
+#sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/admin.config
 
 # List all the existing topics
-sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --list --command-config /opt/kafka/config/kraft/admin.config
+#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --list --command-config /opt/kafka/config/kraft/admin.config
 
 # sudo ss -tulnp | grep java
 # tail -f /opt/kafka/logs/server.log

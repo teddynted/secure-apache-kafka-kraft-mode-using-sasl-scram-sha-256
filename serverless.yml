@@ -134,22 +134,22 @@ resources:
     InterBrokerSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
-        GroupDescription: "Allow inbound traffic on port 9092"
+        GroupDescription: "Allow inbound traffic on port 9093"
         GroupName: ${self:provider.stage}-ec2-security-group-inter-broker
-        SecurityGroupIngress:
-          - IpProtocol: tcp
-            FromPort: 9091
-            ToPort: 9091
-            CidrIp: 0.0.0.0/0
-    QuorumSecurityGroup:
-      Type: AWS::EC2::SecurityGroup
-      Properties:
-        GroupDescription: "Allow inbound traffic on port 9092"
-        GroupName: ${self:provider.stage}-ec2-security-group-quorom
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 9093
             ToPort: 9093
+            CidrIp: 0.0.0.0/0
+    QuorumSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: "Allow inbound traffic on port 9094"
+        GroupName: ${self:provider.stage}-ec2-security-group-quorom
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 9094
+            ToPort: 9094
             CidrIp: 0.0.0.0/0
     IcmpSecurityGroup:
       Type: AWS::EC2::SecurityGroup
@@ -177,7 +177,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster28: 
+    KafkaKraftCluster29: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -201,7 +201,6 @@ resources:
             sudo mv -f kafka_2.12-3.9.0 /opt
             sudo ln -s kafka_2.12-3.9.0 /opt/kafka
             sudo chown ec2-user:ec2-user /opt/kafka && sudo chmod u+s /opt/kafka
-            #sudo rm -rf opt/kafka_2.12-3.9.0
 
             ls -l 
             ls -l /opt/kafka/
@@ -225,20 +224,26 @@ resources:
 
             CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
             sudo mkdir /opt/kafka/scripts
-            sudo touch /opt/kafka/scripts/kafka-format.sh
-            sudo cat <<EOF > /opt/kafka/scripts/kafka-format.sh
+            CLUSTER_SCRIPT=/opt/kafka/scripts/kafka-format.sh
+            sudo touch $CLUSTER_SCRIPT
+            sudo cat <<EOF > $CLUSTER_SCRIPT
             #!/bin/bash
             set -euo pipefail
             echo "Formatting Kafka KRaft storage with CLUSTER_ID=$CLUSTER_ID"
             sudo /opt/kafka/bin/kafka-storage.sh format --config $SERVER_PROPERTIES_DIR --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
             echo $CLUSTER_ID;
             EOF
-            sudo chmod +x /opt/kafka/scripts/kafka-format.sh
+            sudo chmod +x $CLUSTER_SCRIPT
             
             sudo touch /opt/kafka/config/kraft/jaas.config
             sudo cat <<EOF > /opt/kafka/config/kraft/jaas.config
             KafkaServer {
-                org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password} user_admin=${username};
+                org.apache.kafka.common.security.scram.ScramLoginModule required \
+                username=${username} \
+                password=${password} \
+                user_admin=${password} \
+                user_controller=${password} \
+                user_broker=${password};
             };
             EOF
 
@@ -248,7 +253,6 @@ resources:
             ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
             ssl.truststore.password=${password}
             sasl.mechanism=SCRAM-SHA-256
-            ssl.endpoint.identification.algorithm=
             sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password};
             EOF
 
@@ -260,10 +264,10 @@ resources:
             sudo sed -i s/log.dirs=\\/tmp\\/kraft-combined-logs/log.dirs=\\/opt\\/kafka\\/logs/ $SERVER_PROPERTIES_DIR
       
             sudo sh -c 'cat << EOF >> $SERVER_PROPERTIES_DIR
-            sasl.enabled.mechanisms=SASL_PLAINTEXT,SCRAM-SHA-256,SCRAM-SHA-512,PLAIN,SASL_SSL
+            sasl.enabled.mechanisms=SCRAM-SHA-256
             sasl.mechanism.controller.protocol=SCRAM-SHA-256
-
-            sasl.mechanism.inter.broker.protocol=SASL_SSL
+            security.inter.broker.protocol=SASL_SSL
+            sasl.mechanism.inter.broker.protocol=SCRAM-SHA-256
             ssl.client.auth=required
             ssl.enabled.protocols=TLSv1.2,TLSv1.3
             ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
@@ -273,7 +277,7 @@ resources:
             ssl.keystore.type=PKCS12
             ssl.keystore.password=${password}
             ssl.key.password=${password}
-            ssl.endpoint.identification.algorithm=
+            ssl.endpoint.identification.algorithm=HTTPS
             #authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
             authorizer.class.name=kafka.security.authorizer.AclAuthorizer
             allow.everyone.if.no.acl.found=false
@@ -307,7 +311,7 @@ resources:
             Environment="CLUSTER_ID=$CLUSTER_ID"
             Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"
             Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
-            ExecStartPre=sudo /opt/kafka/scripts/kafka-format.sh
+            ExecStartPre=sudo $CLUSTER_SCRIPT
             ExecStart=sudo /opt/kafka/bin/kafka-server-start.sh $SERVER_PROPERTIES_DIR
             ExecStop=sudo /opt/kafka/bin/kafka-server-stop.sh $SERVER_PROPERTIES_DIR
              
@@ -317,6 +321,8 @@ resources:
 
             sudo sed -i 's/#ClientAliveInterval 0/ClientAliveInterval 300/' /etc/ssh/sshd_config
             sudo sed -i 's/#ClientAliveCountMax 3/ClientAliveCountMax 3/' /etc/ssh/sshd_config
+
+            sudo rm -rf /opt/kafka_2.12-3.9.0
 
             # sudo systemctl daemon-reload
             # sudo systemctl enable kafka
@@ -343,6 +349,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster28", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster29", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
