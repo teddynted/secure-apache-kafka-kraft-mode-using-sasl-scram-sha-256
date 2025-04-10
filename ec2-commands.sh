@@ -18,16 +18,17 @@ sudo sed -i s/listeners=PLAINTEXT:\\/\\/:9092,CONTROLLER:\\/\\/:9093/listeners=S
 sudo sed -i s/inter.broker.listener.name=PLAINTEXT/inter.broker.listener.name=SASL_SSL/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/advertised.listeners=PLAINTEXT:\\/\\/localhost:9092,CONTROLLER:\\/\\/localhost:9093/advertised.listeners=SASL_SSL:\\/\\/$PUBLIC_IP_ADDRESS:9092/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL/listener.security.protocol.map=CONTROLLER:SASL_SSL,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL/ /opt/kafka/config/kraft/server.properties
+sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --add --allow-principal "User:broker1" --operation ClusterAction --cluster
+sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --list --cluster
+sudo systemctl daemon-reload
+sudo systemctl enable kafka
+sudo systemctl start kafka
+sudo systemctl status kafka
 fi
 
 cat /var/log/cloud-init-output.log
 cat /opt/kafka/logs/server.log
 cat /opt/kafka/config/kraft/server.properties
-
-sudo systemctl daemon-reload
-sudo systemctl enable kafka
-sudo systemctl start kafka
-sudo systemctl status kafka
 #sudo systemctl list-unit-files --type=service
 
 # Create a topic if doesn't exists
@@ -36,10 +37,10 @@ sudo systemctl status kafka
 # List all the existing topics
 #sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --list --command-config /opt/kafka/config/kraft/admin.config
 
-sudo ss -tulnp | grep java
-tail -f /opt/kafka/logs/server.log
-curl ifconfig.me
-journalctl -u kafka -f
+# sudo ss -tulnp | grep java
+# tail -f /opt/kafka/logs/server.log
+# curl ifconfig.me
+# journalctl -u kafka -f
 
 #sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server localhost:9092 --entity-type users --describe --entity-name admin
 #ExecStartPre=sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
