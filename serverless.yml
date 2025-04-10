@@ -177,7 +177,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster22: 
+    KafkaKraftCluster23: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -271,8 +271,8 @@ resources:
             ssl.keystore.password=${password}
             ssl.key.password=${password}
             ssl.endpoint.identification.algorithm=
-            #authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
-            authorizer.class.name=kafka.security.authorizer.AclAuthorizer
+            authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
+            #authorizer.class.name=kafka.security.authorizer.AclAuthorizer
             allow.everyone.if.no.acl.found=false
             super.users=User:admin
             delete.topic.enable=true
@@ -344,6 +344,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster22", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster23", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
