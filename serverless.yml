@@ -177,7 +177,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster26: 
+    KafkaKraftCluster27: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -263,6 +263,7 @@ resources:
 
             sasl.mechanism.inter.broker.protocol=SASL_SSL
             ssl.client.auth=required
+            ssl.enabled.protocols=TLSv1.2,TLSv1.3
             ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
             ssl.truststore.type=PKCS12
             ssl.truststore.password=${password}
@@ -344,6 +345,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster26", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster27", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
