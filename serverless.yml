@@ -273,7 +273,7 @@ resources:
             ssl.endpoint.identification.algorithm=
             authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
             #authorizer.class.name=kafka.security.authorizer.AclAuthorizer
-            allow.everyone.if.no.acl.found=false
+            allow.everyone.if.no.acl.found=true
             super.users=User:admin
             delete.topic.enable=true
             default.replication.factor=2
