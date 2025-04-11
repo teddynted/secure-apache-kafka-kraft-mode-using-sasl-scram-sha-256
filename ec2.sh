@@ -11,8 +11,6 @@ public_key=${tmpfile}.pub
 private_key=$tmpfile
 password=$SASL_SCRAM_PASSWORD
 
-echo 'password '$password''
-
 # Register public key
 aws ec2-instance-connect send-ssh-public-key \
   --instance-id $instance_id \
