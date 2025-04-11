@@ -227,19 +227,13 @@ resources:
             set -euo pipefail
             echo "Formatting Kafka KRaft storage with CLUSTER_ID=$CLUSTER_ID"
             sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
-            echo $CLUSTER_ID;
             EOF
             sudo chmod +x /opt/kafka/scripts/kafka-format.sh
             
             sudo touch /opt/kafka/config/kraft/jaas.config
             sudo cat <<EOF > /opt/kafka/config/kraft/jaas.config
             KafkaServer {
-                org.apache.kafka.common.security.scram.ScramLoginModule required \
-                username=${username} \
-                password=${password} \
-                user_admin=${password} \
-                user_controller=${password} \
-                user_broker=${password};
+                org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password} user_admin=${password} user_controller=${password} user_broker=${password};
             };
             EOF
 
