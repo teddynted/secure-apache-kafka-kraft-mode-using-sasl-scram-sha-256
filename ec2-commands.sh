@@ -31,9 +31,9 @@ echo 'SASL_SCRAM_PASSWORD '$1''
 # sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092 --add --allow-principal "User:admin" --operation ClusterAction --cluster
 # sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092 --add --allow-principal "User:broker" --operation ClusterAction --cluster
 # sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092 --add --allow-principal "User:controller" --operation ClusterAction --cluster
+# sudo systemctl restart kafka
+# sudo systemctl status kafka -l
 # sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-controller $PRIVATE_IP_ADDRESS:9093 describe --status
-sudo systemctl restart kafka
-sudo systemctl status kafka -l
 fi
 
 # cat /var/log/cloud-init-output.log
