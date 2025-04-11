@@ -24,18 +24,18 @@ sudo systemctl daemon-reload
 sudo systemctl enable kafka
 sudo systemctl start kafka
 sudo systemctl status kafka
-echo 'SASL_SCRAM_PASSWORD '$SASL_SCRAM_PASSWORD''
-sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092 --alter --add-config 'SCRAM-SHA-256=[password='$SASL_SCRAM_PASSWORD']' --entity-type users --entity-name admin
-sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092 --alter --add-config 'SCRAM-SHA-256=[password='$SASL_SCRAM_PASSWORD']' --entity-type users --entity-name broker
-sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092 --alter --add-config 'SCRAM-SHA-256=[password='$SASL_SCRAM_PASSWORD']' --entity-type users --entity-name controller
+echo 'SASL_SCRAM_PASSWORD '$password''
+sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092 --alter --add-config 'SCRAM-SHA-256=[password='$password']' --entity-type users --entity-name admin
+sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092 --alter --add-config 'SCRAM-SHA-256=[password='$password']' --entity-type users --entity-name broker
+sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092 --alter --add-config 'SCRAM-SHA-256=[password='$password']' --entity-type users --entity-name controller
 sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-controller $PRIVATE_IP_ADDRESS:9093 describe --status
 sudo systemctl restart kafka
 sudo systemctl status kafka -l
 fi
 
-cat /var/log/cloud-init-output.log
-cat /opt/kafka/logs/server.log
-cat /opt/kafka/config/kraft/server.properties
+# cat /var/log/cloud-init-output.log
+# cat /opt/kafka/logs/server.log
+# cat /opt/kafka/config/kraft/server.properties
 #sudo systemctl list-unit-files --type=service
 
 # Create a topic if doesn't exists
