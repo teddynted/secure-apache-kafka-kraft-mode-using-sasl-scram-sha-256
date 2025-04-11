@@ -9,6 +9,7 @@ tmpfile=$(mktemp /tmp/ssh.XXXXXX)
 ssh-keygen -C "eic temp key" -q -f $tmpfile -t rsa -b 2048 -N "" <<< y
 public_key=${tmpfile}.pub
 private_key=$tmpfile
+password=$SASL_SCRAM_PASSWORD
 
 # Register public key
 aws ec2-instance-connect send-ssh-public-key \
