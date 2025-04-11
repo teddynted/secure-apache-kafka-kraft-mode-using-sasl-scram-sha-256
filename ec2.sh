@@ -21,4 +21,4 @@ aws ec2-instance-connect send-ssh-public-key \
   --availability-zone $availability_zone > /dev/null
 
 # SSH into ec2 instance with private key
-ssh -i $private_key -o "StrictHostKeyChecking no" ec2-user@$public_dns_name < ./ec2-commands.sh
+ssh -i $private_key -o "StrictHostKeyChecking no" ec2-user@$public_dns_name < './ec2-commands.sh '$SASL_SCRAM_PASSWORD''

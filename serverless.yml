@@ -268,9 +268,9 @@ resources:
             ssl.keystore.password=${password}
             ssl.key.password=${password}
             ssl.endpoint.identification.algorithm=HTTPS
-            #authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
-            authorizer.class.name=kafka.security.authorizer.AclAuthorizer
-            allow.everyone.if.no.acl.found=false
+            authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
+            #authorizer.class.name=kafka.security.authorizer.AclAuthorizer
+            allow.everyone.if.no.acl.found=true
             super.users=User:controller;User:broker;User:admin
             delete.topic.enable=true
             default.replication.factor=2
