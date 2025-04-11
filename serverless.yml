@@ -30,7 +30,7 @@ resources:
     InstanceType:
       Description: Apache Kafka EC2 instance type
       Type: String
-      Default: t2.medium
+      Default: t3.medium
       AllowedValues:
         - t2.nano
         - t2.micro
