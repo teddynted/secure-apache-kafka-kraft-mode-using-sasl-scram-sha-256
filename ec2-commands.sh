@@ -20,29 +20,29 @@ sudo sed -i s/listeners=PLAINTEXT:\\/\\/:9092,CONTROLLER:\\/\\/:9093/listeners=C
 sudo sed -i s/inter.broker.listener.name=PLAINTEXT/inter.broker.listener.name=BROKER/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/advertised.listeners=PLAINTEXT:\\/\\/localhost:9092,CONTROLLER:\\/\\/localhost:9093/advertised.listeners=CLIENT:\\/\\/$PUBLIC_IP_ADDRESS:9092,BROKER:\\/\\/$PRIVATE_IP_ADDRESS:9094/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL/listener.security.protocol.map=CLIENT:SASL_SSL,CONTROLLER:SASL_SSL,BROKER:SASL_SSL/ /opt/kafka/config/kraft/server.properties
-sudo sh -c 'cat << EOF >> /opt/kafka/config/kraft/server.properties
-client.bootstrap.servers=CONTROLLER://'$PRIVATE_IP_ADDRESS':9093
-client.sasl.mechanism=SCRAM-SHA-256
-client.security.protocol=SASL_SSL
-client.sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \
-    username='$2' \
-    password='$1';
-# Producer
-producer.bootstrap.servers=CONTROLLER://'$PRIVATE_IP_ADDRESS':9093
-producer.sasl.mechanism=SCRAM-SHA-256
-producer.security.protocol=SASL_SSL
-producer.sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \
-  username='$2' \
-  password='$1';
-# Consumer
-consumer.bootstrap.servers=CONTROLLER://'$PRIVATE_IP_ADDRESS':9093
-consumer.group.id=testtopic-consumer-group
-consumer.sasl.mechanism=SCRAM-SHA-256
-consumer.security.protocol=SASL_SSL
-consumer.sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \
-  username='$2' \
-  password='$1';
-EOF'
+# sudo sh -c 'cat << EOF >> /opt/kafka/config/kraft/server.properties
+# client.bootstrap.servers=CONTROLLER://'$PRIVATE_IP_ADDRESS':9093
+# client.sasl.mechanism=SCRAM-SHA-256
+# client.security.protocol=SASL_SSL
+# client.sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \
+#     username='$2' \
+#     password='$1';
+# # Producer
+# producer.bootstrap.servers=CONTROLLER://'$PRIVATE_IP_ADDRESS':9093
+# producer.sasl.mechanism=SCRAM-SHA-256
+# producer.security.protocol=SASL_SSL
+# producer.sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \
+#   username='$2' \
+#   password='$1';
+# # Consumer
+# consumer.bootstrap.servers=CONTROLLER://'$PRIVATE_IP_ADDRESS':9093
+# consumer.group.id=testtopic-consumer-group
+# consumer.sasl.mechanism=SCRAM-SHA-256
+# consumer.security.protocol=SASL_SSL
+# consumer.sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \
+#   username='$2' \
+#   password='$1';
+# EOF'
 # sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --add --allow-principal "User:broker1" --operation ClusterAction --cluster
 # sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --list --cluster
 sudo systemctl daemon-reload
