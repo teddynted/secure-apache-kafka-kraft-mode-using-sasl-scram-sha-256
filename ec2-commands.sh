@@ -49,8 +49,10 @@ sudo systemctl daemon-reload
 sudo systemctl enable kafka
 sudo systemctl start kafka
 sudo systemctl status kafka
-sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/admin.config
-sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --list --command-config /opt/kafka/config/kraft/admin.config
+sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists 
+#--command-config /opt/kafka/config/kraft/client.properties
+sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --list 
+#--command-config /opt/kafka/config/kraft/client.properties
 echo 'SASL_SCRAM_PASSWORD username'$2' password:'$1''
 sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --alter --add-config 'SCRAM-SHA-256=[password='$1']' --entity-type users --entity-name admin
 # sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092 --alter --add-config 'SCRAM-SHA-256=[password='$1']' --entity-type users --entity-name broker
@@ -69,10 +71,10 @@ fi
 #sudo systemctl list-unit-files --type=service
 
 # Create a topic if doesn't exists
-#sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/admin.config
+#sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/client.properties
 
 # List all the existing topics
-#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --list --command-config /opt/kafka/config/kraft/admin.config
+#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --list --command-config /opt/kafka/config/kraft/client.properties
 
 # sudo ss -tulnp | grep java
 # tail -f /opt/kafka/logs/server.log
@@ -82,22 +84,22 @@ fi
 #sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server localhost:9092 --entity-type users --describe --entity-name admin
 #ExecStartPre=sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}]
 #sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --command-config config/client.properties describe --status
-#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server 34.250.196.150:9092 --list --command-config /opt/kafka/config/kraft/admin.config
+#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server 34.250.196.150:9092 --list --command-config /opt/kafka/config/kraft/client.properties
 
 # Consuming Message
 
-#sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server 34.250.196.150:9092 --topic testtopic --from-beginning --consumer.config /opt/kafka/config/kraft/admin.config
+#sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server 34.250.196.150:9092 --topic testtopic --from-beginning --consumer.config /opt/kafka/config/kraft/client.properties
 
 # Produce Messsage
 
-#sudo /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server 54.155.178.235:9092 --topic testtopic --producer.config /opt/kafka/config/kraft/admin.config
+#sudo /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server 54.155.178.235:9092 --topic testtopic --producer.config /opt/kafka/config/kraft/client.properties
 #sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server 34.250.196.150:9092 --list
 
 #sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-controller 34.250.196.150:9092 describe --status
-#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server 172.31.30.39:9092 --list --command-config /opt/kafka/config/kraft/admin.config
-#sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server 54.78.163.240:9092 describe --status --command-config /opt/kafka/config/kraft/admin.config
+#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server 172.31.30.39:9092 --list --command-config /opt/kafka/config/kraft/client.properties
+#sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server 54.78.163.240:9092 describe --status --command-config /opt/kafka/config/kraft/client.properties
 #journalctl -xeu kafka.service
-#sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server 54.78.163.240:9092 --add --allow-principal "User:broker1" --operation ClusterAction --cluster /opt/kafka/config/kraft/admin.config
+#sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server 54.78.163.240:9092 --add --allow-principal "User:broker1" --operation ClusterAction --cluster /opt/kafka/config/kraft/client.properties
 #sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server 54.78.163.240:9092 --list --cluster
 #cat /var/bin/kafka/logs/meta.properties
 
