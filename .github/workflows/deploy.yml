@@ -70,3 +70,4 @@ jobs:
         ./ec2.sh
       env:
         SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
+        SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
