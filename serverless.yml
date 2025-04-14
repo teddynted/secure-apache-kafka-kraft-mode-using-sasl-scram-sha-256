@@ -175,7 +175,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster52: 
+    KafkaKraftCluster53: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -254,6 +254,24 @@ resources:
             sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password};
             EOF
 
+            sudo touch /opt/kafka/config/kraft/log4j.properties
+            sudo cat <<EOF > /opt/kafka/config/kraft/log4j.properties
+            log4j.rootLogger=INFO, stdout, kafkaAppender
+            log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+            log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+            log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n
+            log4j.appender.kafkaAppender=org.apache.log4j.RollingFileAppender
+            log4j.appender.kafkaAppender.File=/var/log/kafka/server.log
+            log4j.appender.kafkaAppender.MaxFileSize=100MB
+            log4j.appender.kafkaAppender.MaxBackupIndex=10
+            log4j.appender.kafkaAppender.layout=org.apache.log4j.PatternLayout
+            log4j.appender.kafkaAppender.layout.ConversionPattern=[%d] %p %m (%c)%n
+            log4j.logger.org.apache.kafka.metadata=INFO
+            log4j.logger.org.apache.kafka.raft=INFO
+            log4j.logger.org.apache.kafka.controller=INFO
+            log4j.logger.org.apache.kafka.quorum=DEBUG
+            EOF
+
             sudo mkdir -p /var/lib/kafka/logs
             sudo chmod -R 700 /var/lib/kafka
             sudo chown -R ec2-user:ec2-user /var/lib/kafka
@@ -315,6 +333,7 @@ resources:
             SyslogIdentifier=kafka
             Environment="KAFKA_HEAP_OPTS='-Xms1G -Xmx1G'"
             Environment="CLUSTER_ID=$CLUSTER_ID"
+            Environment="KAFKA_LOG4J_OPTS='-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties'"
             Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"
             Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
             ExecStartPre=sudo /opt/kafka/scripts/kafka-format.sh
@@ -353,6 +372,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster52", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster53", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
