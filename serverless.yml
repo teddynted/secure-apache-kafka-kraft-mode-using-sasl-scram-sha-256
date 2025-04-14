@@ -175,7 +175,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster50: 
+    KafkaKraftCluster51: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -267,8 +267,7 @@ resources:
             #or SASL_PLAINTEXT if encryption isnt enabled otherwise use SASL_SSL
             #security.inter.broker.protocol=SASL_SSL 
             sasl.mechanism.inter.broker.protocol=SCRAM-SHA-256
-            #sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password};
-            # Specify this if you're not using a separate JAAS file
+            sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password};
             listener.name.sasl_ssl.scram-sha-256.sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password} user_admin=${password};
             listener.name.controller.sasl.enabled.mechanisms=SCRAM-SHA-256
             listener.name.broker.sasl.enabled.mechanisms=SCRAM-SHA-256
@@ -286,7 +285,6 @@ resources:
             ssl.keystore.password=${password}
             ssl.key.password=${password}
             ssl.endpoint.identification.algorithm=https
-            # for ACL (RBAC)
             authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
             #authorizer.class.name=kafka.security.authorizer.AclAuthorizer
             allow.everyone.if.no.acl.found=true
@@ -356,6 +354,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster50", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster51", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
