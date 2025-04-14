@@ -284,7 +284,7 @@ resources:
             sasl.mechanism.controller.protocol=SCRAM-SHA-256
             #security.inter.broker.protocol=SASL_SSL 
             sasl.mechanism.inter.broker.protocol=SCRAM-SHA-256
-            sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password};
+            # sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password};
             # listener.name.sasl_ssl.scram-sha-256.sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password} user_admin=${password};
             # listener.name.controller.sasl.enabled.mechanisms=SCRAM-SHA-256
             # listener.name.broker.sasl.enabled.mechanisms=SCRAM-SHA-256
