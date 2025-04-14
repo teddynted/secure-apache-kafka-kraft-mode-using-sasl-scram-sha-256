@@ -175,7 +175,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster46: 
+    KafkaKraftCluster47: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -258,7 +258,7 @@ resources:
             sudo chown -R ec2-user:ec2-user /var/lib/kafka
 
             sudo sed -i s/num.partitions=1/num.partitions=8/ /opt/kafka/config/kraft/server.properties
-            sudo sed -i s/log.dirs=\\/tmp\\/kraft-combined-logs/log.dirs=\\/opt\\/kafka\\/kraft\\/logs/ /opt/kafka/config/kraft/server.properties
+            sudo sed -i s/log.dirs=\\/tmp\\/kraft-combined-logs/log.dirs=\\/opt\\/kafka\\/logs/ /opt/kafka/config/kraft/server.properties
       
             sudo sh -c 'cat << EOF >> /opt/kafka/config/kraft/server.properties
             sasl.enabled.mechanisms=SCRAM-SHA-256
