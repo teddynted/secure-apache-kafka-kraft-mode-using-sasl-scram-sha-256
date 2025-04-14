@@ -102,13 +102,9 @@ fi
 #sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server 54.78.163.240:9092 --add --allow-principal "User:broker1" --operation ClusterAction --cluster /opt/kafka/config/kraft/client.properties
 #sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server 54.78.163.240:9092 --list --cluster
 #cat /var/bin/kafka/logs/meta.properties
-# Controller errors
 #grep -i "controller" /var/log/kafka/server.log | grep -i "error"
-# Quorum/consensus issues
 #grep -iE "quorum|consensus" /var/log/kafka/server.log | grep -iE "error|warn"
-# Election problems
 #grep -i "election" /var/log/kafka/server.log | grep -iE "failed|error"
-# Metadata errors
 #grep -i "metadata" /var/log/kafka/server.log | grep -i "error"
 
 
