@@ -10,6 +10,7 @@ ssh-keygen -C "eic temp key" -q -f $tmpfile -t rsa -b 2048 -N "" <<< y
 public_key=${tmpfile}.pub
 private_key=$tmpfile
 password=$SASL_SCRAM_PASSWORD
+username=$SASL_SCRAM_USERNAME
 
 # Register public key
 aws ec2-instance-connect send-ssh-public-key \
@@ -19,4 +20,4 @@ aws ec2-instance-connect send-ssh-public-key \
   --availability-zone $availability_zone > /dev/null
 
 # SSH into ec2 instance with private key
-ssh -i $private_key -o "StrictHostKeyChecking no" ec2-user@$public_dns_name "bash -s" < ./ec2-commands.sh $password
+ssh -i $private_key -o "StrictHostKeyChecking no" ec2-user@$public_dns_name "bash -s" < ./ec2-commands.sh $password $username
