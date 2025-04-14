@@ -175,7 +175,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster56: 
+    KafkaKraftCluster57: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -234,9 +234,7 @@ resources:
             sudo touch /opt/kafka/config/kraft/jaas.config
             sudo cat <<EOF > /opt/kafka/config/kraft/jaas.config
             KafkaServer {
-                org.apache.kafka.common.security.scram.ScramLoginModule required\
-                username=${username}\
-                password=${password};
+                org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password};
             };
             EOF
 
@@ -330,7 +328,7 @@ resources:
             Environment="KAFKA_HEAP_OPTS='-Xms1G -Xmx1G'"
             Environment="CLUSTER_ID=$CLUSTER_ID"
             Environment="KAFKA_LOG4J_OPTS=-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"
-            Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"
+            Environment="KAFKA_OPTS=-Djava.security.auth.login.config=file:/opt/kafka/config/kraft/jaas.config"
             Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
             ExecStartPre=sudo /opt/kafka/scripts/kafka-format.sh
             ExecStart=sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties
@@ -368,6 +366,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster56", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster57", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
