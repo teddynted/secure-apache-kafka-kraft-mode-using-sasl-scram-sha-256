@@ -175,7 +175,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster54: 
+    KafkaKraftCluster55: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -234,14 +234,9 @@ resources:
             sudo touch /opt/kafka/config/kraft/jaas.config
             sudo cat <<EOF > /opt/kafka/config/kraft/jaas.config
             KafkaServer {
-                org.apache.kafka.common.security.scram.ScramLoginModule required \
-                username=${username} \
-                password=${password} \
-                user_admin=${password} \
-                user_controller=${password} \
-                user_broker=${password} \
-                user_producer=${password} \
-                user_consumer=${password};
+                org.apache.kafka.common.security.scram.ScramLoginModule required\
+                username=${username}\
+                password=${password};
             };
             EOF
 
@@ -315,9 +310,10 @@ resources:
             log4j.logger.org.apache.kafka.common.security.ssl.SslFactory=DEBUG
             EOF'
             
-            # echo 'export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' >> /etc/environment
-            # echo 'export KAFKA_OPTS="-Djava.security.auth.login.config=opt/kafka/config/kraft/jaas.config"' >> /etc/environment
-            # echo 'export KAFKA_JVM_PERFORMANCE_OPTS="-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"' >> /etc/environment
+            echo 'export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' >> /etc/environment
+            echo 'export KAFKA_OPTS="-Djava.security.auth.login.config=opt/kafka/config/kraft/jaas.config"' >> /etc/environment
+            echo 'export KAFKA_JVM_PERFORMANCE_OPTS="-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"' >> /etc/environment
+            echo 'KAFKA_LOG4J_OPTS="-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"'
 
             # Create Kafka service
             sudo cat <<EOF > /etc/systemd/system/kafka.service
@@ -372,6 +368,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster54", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster55", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
