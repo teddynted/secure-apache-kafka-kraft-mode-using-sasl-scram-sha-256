@@ -175,7 +175,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster51: 
+    KafkaKraftCluster52: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -231,19 +231,19 @@ resources:
             EOF
             sudo chmod +x /opt/kafka/scripts/kafka-format.sh
             
-            # sudo touch /opt/kafka/config/kraft/jaas.config
-            # sudo cat <<EOF > /opt/kafka/config/kraft/jaas.config
-            # KafkaServer {
-            #     org.apache.kafka.common.security.scram.ScramLoginModule required \
-            #     username=${username} \
-            #     password=${password} \
-            #     user_admin=${password} \
-            #     user_controller=${password} \
-            #     user_broker=${password} \
-            #     user_producer=${password} \
-            #     user_consumer=${password};
-            # };
-            # EOF
+            sudo touch /opt/kafka/config/kraft/jaas.config
+            sudo cat <<EOF > /opt/kafka/config/kraft/jaas.config
+            KafkaServer {
+                org.apache.kafka.common.security.scram.ScramLoginModule required \
+                username=${username} \
+                password=${password} \
+                user_admin=${password} \
+                user_controller=${password} \
+                user_broker=${password} \
+                user_producer=${password} \
+                user_consumer=${password};
+            };
+            EOF
 
             sudo touch /opt/kafka/config/kraft/client.properties
             sudo cat <<EOF > /opt/kafka/config/kraft/client.properties
@@ -264,7 +264,6 @@ resources:
             sudo sh -c 'cat << EOF >> /opt/kafka/config/kraft/server.properties
             sasl.enabled.mechanisms=SCRAM-SHA-256
             sasl.mechanism.controller.protocol=SCRAM-SHA-256
-            #or SASL_PLAINTEXT if encryption isnt enabled otherwise use SASL_SSL
             #security.inter.broker.protocol=SASL_SSL 
             sasl.mechanism.inter.broker.protocol=SCRAM-SHA-256
             sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password};
@@ -316,7 +315,7 @@ resources:
             SyslogIdentifier=kafka
             Environment="KAFKA_HEAP_OPTS='-Xms1G -Xmx1G'"
             Environment="CLUSTER_ID=$CLUSTER_ID"
-            #Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"
+            Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"
             Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
             ExecStartPre=sudo /opt/kafka/scripts/kafka-format.sh
             ExecStart=sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties
@@ -354,6 +353,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster51", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster52", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
