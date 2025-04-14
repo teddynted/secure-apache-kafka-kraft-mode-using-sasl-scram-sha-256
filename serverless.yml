@@ -175,7 +175,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster53: 
+    KafkaKraftCluster54: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -285,13 +285,13 @@ resources:
             #security.inter.broker.protocol=SASL_SSL 
             sasl.mechanism.inter.broker.protocol=SCRAM-SHA-256
             sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password};
-            listener.name.sasl_ssl.scram-sha-256.sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password} user_admin=${password};
-            listener.name.controller.sasl.enabled.mechanisms=SCRAM-SHA-256
-            listener.name.broker.sasl.enabled.mechanisms=SCRAM-SHA-256
-            listener.name.controller.scram-sha-256.sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password} user_admin=${password};
-            listener.name.broker.scram-sha-256.sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password} user_admin=${password};
-            listener.name.controller.ssl.client.auth=required
-            listener.name.broker.ssl.client.auth=required
+            # listener.name.sasl_ssl.scram-sha-256.sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password} user_admin=${password};
+            # listener.name.controller.sasl.enabled.mechanisms=SCRAM-SHA-256
+            # listener.name.broker.sasl.enabled.mechanisms=SCRAM-SHA-256
+            # listener.name.controller.scram-sha-256.sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password} user_admin=${password};
+            # listener.name.broker.scram-sha-256.sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password} user_admin=${password};
+            # listener.name.controller.ssl.client.auth=required
+            # listener.name.broker.ssl.client.auth=required
             ssl.client.auth=required
             ssl.enabled.protocols=TLSv1.2,TLSv1.1,TLSv1
             ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
@@ -372,6 +372,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster53", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster54", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
