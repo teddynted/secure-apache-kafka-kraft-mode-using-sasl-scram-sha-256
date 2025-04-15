@@ -212,7 +212,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster5: 
+    KafkaKraftCluster6: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -269,20 +269,16 @@ resources:
             EOF
             sudo chmod +x /opt/kafka/scripts/kafka-format.sh
             
-            sudo touch /opt/kafka/config/kraft/jaas.config
-            sudo cat <<EOF > /opt/kafka/config/kraft/jaas.config
+            sudo touch /opt/kafka/config/kraft/jaas.conf
+            sudo cat <<EOF > /opt/kafka/config/kraft/jaas.conf
             KafkaServer {
-                org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password};
+                org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password} user_admin=${password} user_broker1=${password};
             };
-            EOF
-
-            sudo touch /opt/kafka/config/kraft/client.properties
-            sudo cat <<EOF > /opt/kafka/config/kraft/client.properties
-            security.protocol=SASL_SSL
-            ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
-            ssl.truststore.password=${password}
-            sasl.mechanism=SCRAM-SHA-256
-            sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password};
+            KafkaController {
+              org.apache.kafka.common.security.scram.ScramLoginModule required
+              username="controller"
+              password=${password};
+            };
             EOF
 
             sudo touch /opt/kafka/config/kraft/log4j.properties
@@ -324,6 +320,7 @@ resources:
             # listener.name.controller.ssl.client.auth=required
             # listener.name.broker.ssl.client.auth=required
             # ssl.client.auth=required
+            ssl.protocol=TLS
             ssl.enabled.protocols=TLSv1.2,TLSv1.1,TLSv1
             ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
             ssl.truststore.type=PKCS12
@@ -332,7 +329,7 @@ resources:
             ssl.keystore.type=PKCS12
             ssl.keystore.password=${password}
             ssl.key.password=${password}
-            ssl.endpoint.identification.algorithm=https
+            ssl.endpoint.identification.algorithm=
             authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
             #authorizer.class.name=kafka.security.authorizer.AclAuthorizer
             allow.everyone.if.no.acl.found=true
@@ -347,7 +344,7 @@ resources:
             EOF'
             
             echo 'export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' >> /etc/environment
-            echo 'export KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"' >> /etc/environment
+            echo 'export KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.conf"' >> /etc/environment
             echo 'export KAFKA_JVM_PERFORMANCE_OPTS="-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"' >> /etc/environment
             echo 'KAFKA_LOG4J_OPTS="-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"' >> /etc/environment
 
@@ -366,7 +363,7 @@ resources:
             Environment="KAFKA_HEAP_OPTS='-Xms1G -Xmx1G'"
             Environment="CLUSTER_ID=$CLUSTER_ID"
             Environment="KAFKA_LOG4J_OPTS=-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"
-            Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.config"
+            Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.conf"
             Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
             ExecStartPre=sudo /opt/kafka/scripts/kafka-format.sh
             ExecStart=sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties
@@ -404,6 +401,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster5", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster6", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
