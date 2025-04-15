@@ -17,15 +17,6 @@ KRAFT_ADVERTISED_LISTENERS=$(cat /opt/kafka/config/kraft/server.properties | gre
 echo 'KRAFT_ADVERTISED_LISTENERS '$KRAFT_ADVERTISED_LISTENERS''
 if [[ $KRAFT_ADVERTISED_LISTENERS -eq 0 ]] 
 then
-sudo touch /opt/kafka/config/kraft/client.properties
-sudo cat <<EOF > /opt/kafka/config/kraft/client.properties
-bootstrap.servers=$PRIVATE_DNS_NAME:9092
-security.protocol=SASL_SSL
-ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
-ssl.truststore.password=$1
-sasl.mechanism=SCRAM-SHA-256
-sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=$2 password=$1;
-EOF
 sudo sed -i s/offsets.topic.replication.factor=1/offsets.topic.replication.factor=2/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/transaction.state.log.replication.factor=1/transaction.state.log.replication.factor=2/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/socket.receive.buffer.bytes=102400/socket.receive.buffer.bytes=1048576/ /opt/kafka/config/kraft/server.properties
@@ -81,6 +72,16 @@ echo 'SASL_SCRAM_PASSWORD username'$2' password:'$1' region:'$3''
 # sudo systemctl status kafka -l
 # sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-controller $PRIVATE_IP_ADDRESS:9093 describe --status
 fi
+
+sudo touch /opt/kafka/config/kraft/client.properties
+sudo cat <<EOF > /opt/kafka/config/kraft/client.properties
+bootstrap.servers=$PRIVATE_DNS_NAME:9092
+security.protocol=SASL_SSL
+ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
+ssl.truststore.password=$1
+sasl.mechanism=SCRAM-SHA-256
+sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=$2 password=$1;
+EOF
 
 # cat /var/log/cloud-init-output.log
 # cat /opt/kafka/logs/server.log
