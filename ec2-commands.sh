@@ -74,7 +74,7 @@ echo 'SASL_SCRAM_PASSWORD username'$2' password:'$1' region:'$3''
 fi
 
 sudo touch /opt/kafka/config/kraft/client.properties
-sudo cat <<EOF > /opt/kafka/config/kraft/client.properties
+sudo tee /opt/kafka/config/kraft/client.properties > /dev/null <<EOF
 bootstrap.servers=$PRIVATE_DNS_NAME:9092
 security.protocol=SASL_SSL
 ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
