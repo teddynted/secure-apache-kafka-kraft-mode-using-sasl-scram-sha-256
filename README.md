@@ -25,7 +25,19 @@ sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server <ec2-private-dn
 
 ```cli
 sudo /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server <ec2-private-dns-name>:9092 --topic testtopic --producer.config /opt/kafka/config/kraft/client.properties
+```
 
+### Add a new ACL user
+
+```cli
+sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server <ec2-private-dns-name>:9092 --command-config /opt/kafka/config/kraft/client.properties --alter --add-config "SCRAM-SHA-256=[password='p@ssw0rd']" --entity-type users --entity-name admin
+```
+
+### Allow principal
+
+```cli
+sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server <ec2-private-dns-name>:9092 --command-config /opt/kafka/config/kraft/client.properties --add --allow-principal "User:admin" --operation ClusterAction --cluster
+```
 
 ### Commands
 
