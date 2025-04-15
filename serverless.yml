@@ -181,6 +181,10 @@ resources:
         VpcId: !Ref MyVPC
         SecurityGroupIngress:
           - IpProtocol: tcp
+            FromPort: '22'
+            ToPort: '22'
+            CidrIp: "0.0.0.0/0"  
+          - IpProtocol: tcp
             FromPort: '9092'
             ToPort: '9092'
             CidrIp: "0.0.0.0/0"  # Allow external clients to connect
@@ -208,7 +212,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster60: 
+    KafkaKraftCluster61: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -400,6 +404,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster60", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster61", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
