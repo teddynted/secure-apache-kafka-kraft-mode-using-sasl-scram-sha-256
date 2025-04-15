@@ -124,8 +124,8 @@ resources:
             FromPort: 22
             ToPort: 22
             CidrIp: 0.0.0.0/0
-        SecurityGroupEgress:
-          - IpProtocol: -1
+        # SecurityGroupEgress:
+        #   - IpProtocol: -1
     BrokerSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
@@ -137,8 +137,8 @@ resources:
             FromPort: 9092
             ToPort: 9092
             CidrIp: 0.0.0.0/0
-        SecurityGroupEgress:
-          - IpProtocol: -1
+        # SecurityGroupEgress:
+        #   - IpProtocol: -1
     InterBrokerSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
@@ -150,8 +150,8 @@ resources:
             FromPort: 9093
             ToPort: 9093
             CidrIp: 0.0.0.0/0
-        SecurityGroupEgress:
-          - IpProtocol: -1
+        # SecurityGroupEgress:
+        #   - IpProtocol: -1
     QuorumSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
@@ -163,8 +163,8 @@ resources:
             FromPort: 9094
             ToPort: 9094
             CidrIp: 0.0.0.0/0
-        SecurityGroupEgress:
-          - IpProtocol: -1
+        # SecurityGroupEgress:
+        #   - IpProtocol: -1
     IcmpSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
