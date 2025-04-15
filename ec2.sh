@@ -1,7 +1,7 @@
 #!/bin/bash
 
 instance_id=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].InstanceId" --filters "Name=tag:Name,Values='Apache Kafka Kraft Instance'" "Name=instance-state-name,Values=running" --output text)
-availability_zone=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].Placement.AvailabilityZone" --filters "Name=tag:Name,Values='Kafka Kraft Instance'" "Name=instance-state-name,Values=running" --output text)
+availability_zone=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].Placement.AvailabilityZone" --filters "Name=tag:Name,Values='Apache Kafka Kraft Instance'" "Name=instance-state-name,Values=running" --output text)
 public_dns_name=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicDnsName" --filters "Name=tag:Name,Values='Apache Kafka Kraft Instance'" "Name=instance-state-name,Values=running" --output text)
 
 # Generate RSA key pair
