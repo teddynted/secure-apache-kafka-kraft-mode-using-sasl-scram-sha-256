@@ -119,6 +119,8 @@ resources:
             FromPort: 22
             ToPort: 22
             CidrIp: 0.0.0.0/0
+        SecurityGroupEgress:
+          - IpProtocol: -1
     BrokerSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
@@ -129,6 +131,8 @@ resources:
             FromPort: 9092
             ToPort: 9092
             CidrIp: 0.0.0.0/0
+        SecurityGroupEgress:
+          - IpProtocol: -1
     InterBrokerSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
@@ -139,6 +143,8 @@ resources:
             FromPort: 9093
             ToPort: 9093
             CidrIp: 0.0.0.0/0
+        SecurityGroupEgress:
+          - IpProtocol: -1
     QuorumSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
@@ -149,16 +155,15 @@ resources:
             FromPort: 9094
             ToPort: 9094
             CidrIp: 0.0.0.0/0
+        SecurityGroupEgress:
+          - IpProtocol: -1
     IcmpSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: "Allow outbound traffic on all ports"
         GroupName: ${self:provider.stage}-ec2-s-g-icmp
-        SecurityGroupIngress:
+        SecurityGroupEgress:
           - IpProtocol: -1
-            # FromPort: -1
-            # ToPort: -1
-            # CidrIp: 0.0.0.0/0
     LaunchTemplate:
       Type: 'AWS::EC2::LaunchTemplate'
       Properties:
@@ -175,7 +180,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster58: 
+    KafkaKraftCluster59: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -192,6 +197,7 @@ resources:
             sudo yum update -y
             sudo yum install -y java-11-amazon-corretto
             sudo yum install -y git
+            sudo yum -y install telnet
             export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto
             export PATH=$PATH:$JAVA_HOME/bin
             wget https://downloads.apache.org/kafka/3.9.0/kafka_2.12-3.9.0.tgz
@@ -366,6 +372,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster58", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster59", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
