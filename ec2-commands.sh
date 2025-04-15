@@ -26,7 +26,7 @@ sudo sed -i s/controller.quorum.voters=1@localhost:9093/controller.quorum.voters
 # Note that the hostname here is optional, the absence of hostname represents binding to 0.0.0.0 i.e., all interfaces
 sudo sed -i s/listeners=PLAINTEXT:\\/\\/:9092,CONTROLLER:\\/\\/:9093/listeners=SASL_SSL:\\/\\/:9092,CONTROLLER:\\/\\/:9093/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/inter.broker.listener.name=PLAINTEXT/inter.broker.listener.name=SASL_SSL/ /opt/kafka/config/kraft/server.properties
-sudo sed -i s/advertised.listeners=PLAINTEXT:\\/\\/localhost:9092,CONTROLLER:\\/\\/localhost:9093/advertised.listeners=SASL_SSL:\\/\\/$PRIVATE_DNS_NAME:9092/ /opt/kafka/config/kraft/server.properties
+sudo sed -i s/advertised.listeners=PLAINTEXT:\\/\\/localhost:9092,CONTROLLER:\\/\\/localhost:9093/advertised.listeners=SASL_SSL:\\/\\/$PRIVATE_DNS_NAME:9092,CONTROLLER:\\/\\/$PRIVATE_DNS_NAME:9093/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL/listener.security.protocol.map=CONTROLLER:SASL_SSL,BROKER:SASL_SSL,SASL_SSL:SASL_SSL/ /opt/kafka/config/kraft/server.properties
 #sudo echo CN=${PRIVATE_DNS_NAME} >> /etc/environment
 # sudo sh -c 'cat << EOF >> /opt/kafka/config/kraft/server.properties
@@ -54,13 +54,22 @@ sudo sed -i s/listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAI
 # EOF'
 # sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --add --allow-principal "User:broker1" --operation ClusterAction --cluster
 # sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --list --cluster
+sudo touch /opt/kafka/config/kraft/client.properties
+sudo tee /opt/kafka/config/kraft/client.properties > /dev/null <<EOF
+bootstrap.servers=$PRIVATE_DNS_NAME:9092
+security.protocol=SASL_SSL
+ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
+ssl.truststore.password=$1
+sasl.mechanism=SCRAM-SHA-256
+sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=$2 password=$1;
+EOF
 sudo systemctl daemon-reexec
 sudo systemctl daemon-reload
 sudo systemctl enable kafka
 sudo systemctl start kafka
 sudo systemctl status kafka
-#sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PUBLIC_DNS_NAME:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/client.properties
-#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PUBLIC_DNS_NAME:9092 --list --command-config /opt/kafka/config/kraft/client.properties
+sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PUBLIC_DNS_NAME:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/client.properties
+sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PUBLIC_DNS_NAME:9092 --list --command-config /opt/kafka/config/kraft/client.properties
 echo 'SASL_SCRAM_PASSWORD username'$2' password:'$1' region:'$3''
 #sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --alter --add-config 'SCRAM-SHA-256=[password='$1']' --entity-type users --entity-name admin
 # sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092 --alter --add-config 'SCRAM-SHA-256=[password='$1']' --entity-type users --entity-name broker
@@ -72,16 +81,6 @@ echo 'SASL_SCRAM_PASSWORD username'$2' password:'$1' region:'$3''
 # sudo systemctl status kafka -l
 # sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-controller $PRIVATE_IP_ADDRESS:9093 describe --status
 fi
-
-sudo touch /opt/kafka/config/kraft/client.properties
-sudo tee /opt/kafka/config/kraft/client.properties > /dev/null <<EOF
-bootstrap.servers=$PRIVATE_DNS_NAME:9092
-security.protocol=SASL_SSL
-ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
-ssl.truststore.password=$1
-sasl.mechanism=SCRAM-SHA-256
-sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=$2 password=$1;
-EOF
 
 # cat /var/log/cloud-init-output.log
 # cat /opt/kafka/logs/server.log
