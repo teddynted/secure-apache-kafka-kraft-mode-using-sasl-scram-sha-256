@@ -72,3 +72,4 @@ jobs:
       env:
         SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
         SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
+        REGION: ${{ secrets.AWS_REGION }}
