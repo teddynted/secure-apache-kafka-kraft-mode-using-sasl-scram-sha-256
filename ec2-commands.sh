@@ -2,8 +2,10 @@
 
 PUBLIC_IP_ADDRESS=$(ec2-metadata --public-ipv4 | cut -d " " -f 2);
 PRIVATE_IP_ADDRESS=$(ec2-metadata --local-ipv4 | cut -d " " -f 2);
-PRIVATE_DNS_NAME="ip-${PRIVATE_IP_ADDRESS//./-}.ec2.internal"
-PUBLIC_DNS_NAME="ip-${PUBLIC_IP_ADDRESS//./-}.ec2.internal"
+#PRIVATE_DNS_NAME="ip-${PRIVATE_IP_ADDRESS//./-}.ec2.internal"
+#PUBLIC_DNS_NAME="ip-${PUBLIC_IP_ADDRESS//./-}.ec2.internal"
+PRIVATE_DNS_NAME=$(curl -s http://${PRIVATE_IP_ADDRESS}/latest/meta-data/private-hostname)
+PUBLIC_DNS_NAME=$(curl -s http://${PUBLIC_IP_ADDRESS}/latest/meta-data/public-hostname)
 echo "EC2 PUBLIC_DNS_NAME: '$PUBLIC_DNS_NAME'"
 echo "EC2 PRIVATE_DNS_NAME: '$PRIVATE_DNS_NAME'"
 echo "EC2 PUBLIC_IP_ADDRESS: '$PUBLIC_IP_ADDRESS'"
