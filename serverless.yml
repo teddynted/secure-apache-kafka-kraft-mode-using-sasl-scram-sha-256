@@ -118,7 +118,7 @@ resources:
       Properties:
         GroupDescription: allow SSH via static IP
         GroupName: ${self:provider.stage}-ec2-security-group-ssh
-        VpcId: {'Ref': 'MyVPC'}
+        # VpcId: {'Ref': 'MyVPC'}
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 22
@@ -131,7 +131,7 @@ resources:
       Properties:
         GroupDescription: "Allow inbound traffic on port 9092"
         GroupName: ${self:provider.stage}-ec2-sg-sasl
-        VpcId: {'Ref': 'MyVPC'}
+        # VpcId: {'Ref': 'MyVPC'}
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 9092
@@ -144,7 +144,7 @@ resources:
       Properties:
         GroupDescription: "Allow inbound traffic on port 9093"
         GroupName: ${self:provider.stage}-ec2-sg-internal
-        VpcId: {'Ref': 'MyVPC'}
+        # VpcId: {'Ref': 'MyVPC'}
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 9093
@@ -157,7 +157,7 @@ resources:
       Properties:
         GroupDescription: "Allow inbound traffic on port 9094"
         GroupName: ${self:provider.stage}-ec2-sg-controller
-        VpcId: {'Ref': 'MyVPC'}
+        # VpcId: {'Ref': 'MyVPC'}
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 9094
@@ -170,7 +170,7 @@ resources:
       Properties:
         GroupDescription: "Allow outbound traffic on all ports"
         GroupName: ${self:provider.stage}-ec2-s-g-icmp
-        VpcId: {'Ref': 'MyVPC'}
+        # VpcId: {'Ref': 'MyVPC'}
         SecurityGroupEgress:
           - IpProtocol: -1
     LaunchTemplate:
