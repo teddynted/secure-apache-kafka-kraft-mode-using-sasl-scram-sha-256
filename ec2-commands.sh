@@ -67,6 +67,9 @@ sudo systemctl daemon-reload
 sudo systemctl enable kafka
 sudo systemctl start kafka
 sudo systemctl status kafka
+echo "Delay Starts..."
+sudo sleep 10
+echo "Delay Ends..."
 sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PRIVATE_DNS_NAME:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/client.properties
 sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --list --command-config /opt/kafka/config/kraft/client.properties
 sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties describe --status
@@ -76,9 +79,6 @@ sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092
 sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092 --command-config /opt/kafka/config/kraft/client.properties --add --allow-principal "User:admin" --operation ClusterAction --cluster
 sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092 --command-config /opt/kafka/config/kraft/client.properties --add --allow-principal "User:broker1" --operation ClusterAction --cluster
 sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092 --command-config /opt/kafka/config/kraft/client.properties --add --allow-principal "User:controller" --operation ClusterAction --cluster
-sudo systemctl restart kafka
-sudo systemctl status kafka -l
-sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-controller $PRIVATE_IP_ADDRESS:9092 --command-config /opt/kafka/config/kraft/client.properties describe --status
 fi
 
 # cat /var/log/cloud-init-output.log
