@@ -59,11 +59,9 @@ sudo systemctl daemon-reload
 sudo systemctl enable kafka
 sudo systemctl start kafka
 sudo systemctl status kafka
-#sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists 
-#--command-config /opt/kafka/config/kraft/client.properties
-#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --list 
-#--command-config /opt/kafka/config/kraft/client.properties
-echo 'SASL_SCRAM_PASSWORD username'$2' password:'$1''
+sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PUBLIC_DNS_NAME:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/client.properties
+sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PUBLIC_DNS_NAME:9092 --list --command-config /opt/kafka/config/kraft/client.properties
+echo 'SASL_SCRAM_PASSWORD username'$2' password:'$1' region:'$3''
 #sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --alter --add-config 'SCRAM-SHA-256=[password='$1']' --entity-type users --entity-name admin
 # sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092 --alter --add-config 'SCRAM-SHA-256=[password='$1']' --entity-type users --entity-name broker
 # sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_IP_ADDRESS:9092 --alter --add-config 'SCRAM-SHA-256=[password='$1']' --entity-type users --entity-name controller
