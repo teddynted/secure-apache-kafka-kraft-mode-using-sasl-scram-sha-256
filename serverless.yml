@@ -180,6 +180,7 @@ resources:
         LaunchTemplateData:
           InstanceType: { 'Ref': 'InstanceType' }
           ImageId: { 'Ref': 'LatestAmiId' }
+          VpcId: {'Ref': 'MyVPC'}
           SecurityGroupIds:
             - { 'Fn::GetAtt': ['Ec2SecurityGroupSSH', 'GroupId'] }
             - { 'Fn::GetAtt': ['BrokerSecurityGroup', 'GroupId'] }
