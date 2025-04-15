@@ -16,7 +16,7 @@ KRAFT_ADVERTISED_LISTENERS=$(cat /opt/kafka/config/kraft/server.properties | gre
 echo 'KRAFT_ADVERTISED_LISTENERS '$KRAFT_ADVERTISED_LISTENERS''
 if [[ $KRAFT_ADVERTISED_LISTENERS -eq 0 ]] 
 then
-#echo CN=${PRIVATE_DNS_NAME} >> /etc/environment
+echo CN=${PRIVATE_DNS_NAME} >> /etc/environment
 sudo sed -i s/offsets.topic.replication.factor=1/offsets.topic.replication.factor=2/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/transaction.state.log.replication.factor=1/transaction.state.log.replication.factor=2/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/socket.receive.buffer.bytes=102400/socket.receive.buffer.bytes=1048576/ /opt/kafka/config/kraft/server.properties
