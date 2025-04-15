@@ -5,15 +5,27 @@ Secure and monitor your Amazon Linux 2023 EC2 self-hosted Apache Kafka using SAS
 ### Create Topic
 
 ```cli
-/opt/kafka/bin/kafka-topics.sh --create --bootstrap-server <ec2-public-ip-address>:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/admin.config
+/opt/kafka/bin/kafka-topics.sh --create --bootstrap-server <ec2-private-dns-name>:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/admin.config
 ```
 
 
 ### List Topics
 
 ```cli
-/opt/kafka/bin/kafka-topics.sh kafka-topics --bootstrap-server <ec2-public-ip-address>:9092 --list --command-config /opt/kafka/config/kraft/admin.config
+/opt/kafka/bin/kafka-topics.sh kafka-topics --bootstrap-server <ec2-private-dns-name>:9092 --list --command-config /opt/kafka/config/kraft/admin.config
 ```
+
+### Consuming Message
+
+```cli
+sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server <ec2-private-dns-name>:9092 --topic testtopic --from-beginning --consumer.config /opt/kafka/config/kraft/client.properties
+```
+
+### Produce Messsage
+
+```cli
+sudo /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server <ec2-private-dns-name>:9092 --topic testtopic --producer.config /opt/kafka/config/kraft/client.properties
+
 
 ### Commands
 

@@ -212,7 +212,7 @@ resources:
           KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
           IamInstanceProfile:
             Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
-    KafkaKraftCluster14: 
+    KafkaKraftCluster15: 
       Type: "AWS::EC2::Instance"
       Properties:
         AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
@@ -376,11 +376,6 @@ resources:
             sudo sed -i 's/#ClientAliveInterval 0/ClientAliveInterval 300/' /etc/ssh/sshd_config
             sudo sed -i 's/#ClientAliveCountMax 3/ClientAliveCountMax 3/' /etc/ssh/sshd_config
 
-            # sudo systemctl daemon-reload
-            # sudo systemctl enable kafka
-            # sudo systemctl start kafka
-            # sudo systemctl status kafka
-
           - username: { "Fn::Sub": [ "${username}", { "username": "${env:SASL_SCRAM_USERNAME}" } ] }
             password: { "Fn::Sub": [ "${password}", { "password": "${env:SASL_SCRAM_PASSWORD}" } ] }
             state: { "Fn::Sub": [ "${state}", { "state": "${env:STATE}" } ] }
@@ -401,6 +396,6 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster14", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster15", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
