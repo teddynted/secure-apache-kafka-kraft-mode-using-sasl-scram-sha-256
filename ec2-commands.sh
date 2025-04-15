@@ -45,6 +45,7 @@ sudo sed -i s/listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAI
 # EOF'
 # sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --add --allow-principal "User:broker1" --operation ClusterAction --cluster
 # sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PUBLIC_IP_ADDRESS:9092 --list --cluster
+sudo systemctl daemon-reexec
 sudo systemctl daemon-reload
 sudo systemctl enable kafka
 sudo systemctl start kafka
