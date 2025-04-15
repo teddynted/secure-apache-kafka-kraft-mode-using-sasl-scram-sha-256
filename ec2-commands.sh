@@ -26,7 +26,7 @@ sudo sed -i s/controller.quorum.voters=1@localhost:9093/controller.quorum.voters
 # Note that the hostname here is optional, the absence of hostname represents binding to 0.0.0.0 i.e., all interfaces
 sudo sed -i s/listeners=PLAINTEXT:\\/\\/:9092,CONTROLLER:\\/\\/:9093/listeners=SASL_SSL:\\/\\/:9092,CONTROLLER:\\/\\/:9093/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/inter.broker.listener.name=PLAINTEXT/inter.broker.listener.name=SASL_SSL/ /opt/kafka/config/kraft/server.properties
-sudo sed -i s/advertised.listeners=PLAINTEXT:\\/\\/localhost:9092,CONTROLLER:\\/\\/localhost:9093/advertised.listeners=SASL_SSL:\\/\\/$PRIVATE_DNS_NAME:9092,CONTROLLER:\\/\\/$PRIVATE_DNS_NAME:9093/ /opt/kafka/config/kraft/server.properties
+sudo sed -i s/advertised.listeners=PLAINTEXT:\\/\\/localhost:9092,CONTROLLER:\\/\\/localhost:9093/advertised.listeners=SASL_SSL:\\/\\/$PRIVATE_DNS_NAME:9092/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL/listener.security.protocol.map=CONTROLLER:SASL_SSL,BROKER:SASL_SSL,SASL_SSL:SASL_SSL/ /opt/kafka/config/kraft/server.properties
 #sudo echo CN=${PRIVATE_DNS_NAME} >> /etc/environment
 # sudo sh -c 'cat << EOF >> /opt/kafka/config/kraft/server.properties
