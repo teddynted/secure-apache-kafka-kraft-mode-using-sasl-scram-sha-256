@@ -17,6 +17,7 @@ provider:
     COUNTRY: ${env:COUNTRY}
     ORGANIZATION_UNIT: ${env:ORGANIZATION_UNIT}
     CITY: ${env:CITY}
+    VPC_ID: ${env:VPC_ID}
 
 resources:
   Parameters: 
@@ -38,6 +39,9 @@ resources:
         - t2.large
         - t2.medium
         - t3.medium
+    MyVPC:
+      Type: AWS::EC2::VPC::Id
+      Default: ${env:VPC_ID}
   Resources:
     Ec2RolePolicies: 
       Type: AWS::IAM::Policy
@@ -114,54 +118,59 @@ resources:
       Properties:
         GroupDescription: allow SSH via static IP
         GroupName: ${self:provider.stage}-ec2-security-group-ssh
+        VpcId: {'Ref': 'MyVPC'}
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 22
             ToPort: 22
             CidrIp: 0.0.0.0/0
-        # SecurityGroupEgress:
-        #   - IpProtocol: -1
+        SecurityGroupEgress:
+          - IpProtocol: -1
     BrokerSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: "Allow inbound traffic on port 9092"
         GroupName: ${self:provider.stage}-ec2-sg-sasl
+        VpcId: {'Ref': 'MyVPC'}
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 9092
             ToPort: 9092
             CidrIp: 0.0.0.0/0
-        # SecurityGroupEgress:
-        #   - IpProtocol: -1
+        SecurityGroupEgress:
+          - IpProtocol: -1
     InterBrokerSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: "Allow inbound traffic on port 9093"
         GroupName: ${self:provider.stage}-ec2-sg-internal
+        VpcId: {'Ref': 'MyVPC'}
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 9093
             ToPort: 9093
             CidrIp: 0.0.0.0/0
-        # SecurityGroupEgress:
-        #   - IpProtocol: -1
+        SecurityGroupEgress:
+          - IpProtocol: -1
     QuorumSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: "Allow inbound traffic on port 9094"
         GroupName: ${self:provider.stage}-ec2-sg-controller
+        VpcId: {'Ref': 'MyVPC'}
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: 9094
             ToPort: 9094
             CidrIp: 0.0.0.0/0
-        # SecurityGroupEgress:
-        #   - IpProtocol: -1
+        SecurityGroupEgress:
+          - IpProtocol: -1
     IcmpSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: "Allow outbound traffic on all ports"
         GroupName: ${self:provider.stage}-ec2-s-g-icmp
+        VpcId: {'Ref': 'MyVPC'}
         SecurityGroupEgress:
           - IpProtocol: -1
     LaunchTemplate:

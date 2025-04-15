@@ -21,6 +21,7 @@ jobs:
       COUNTRY: ${{ secrets.COUNTRY }}
       ORGANIZATION_UNIT: ${{ secrets.ORGANIZATION_UNIT }}
       CITY: ${{ secrets.CITY }}
+      VPC_ID: ${{ secrets.VPC_ID }}
     defaults:
       run:
         shell: bash
