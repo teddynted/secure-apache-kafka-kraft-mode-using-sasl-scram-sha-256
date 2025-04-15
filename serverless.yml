@@ -195,7 +195,7 @@ resources:
     LaunchTemplate:
       Type: 'AWS::EC2::LaunchTemplate'
       Properties:
-        LaunchTemplateName: ${self:provider.stage}-KafkaEC2LaunchTemplate
+        LaunchTemplateName: ${self:provider.stage}-ApacheKafkaEC2LaunchTemplate
         LaunchTemplateData:
           InstanceType: { 'Ref': 'InstanceType' }
           ImageId: { 'Ref': 'LatestAmiId' }
