@@ -32,25 +32,56 @@ ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.
 ssl.truststore.password=$1
 sasl.mechanism=SCRAM-SHA-256
 sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=$2 password=$1;
+log4j.logger.kafka=DEBUG
+EOF
+sudo touch /opt/kafka/config/kraft/ssl-consumer.properties
+sudo tee /opt/kafka/config/kraft/ssl-consumer.properties > /dev/null <<EOF
+bootstrap.servers=$PRIVATE_DNS_NAME:9092
+security.protocol=SASL_SSL
+ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
+ssl.truststore.password=$1
+sasl.mechanism=SCRAM-SHA-256
+sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=$2 password=$1;
+log4j.logger.kafka=DEBUG
+group.id=demo-consumer-group
+EOF
+sudo touch /opt/kafka/config/kraft/ssl-producer.properties
+sudo tee /opt/kafka/config/kraft/ssl-producer.properties > /dev/null <<EOF
+bootstrap.servers=$PRIVATE_DNS_NAME:9092
+compression.type=none
+security.protocol=SASL_SSL
+ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
+ssl.truststore.password=$1
+sasl.mechanism=SCRAM-SHA-256
+sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=$2 password=$1;
+log4j.logger.kafka=DEBUG
 EOF
 sudo systemctl daemon-reload
 sudo systemctl enable kafka
 sudo systemctl start kafka
 sudo systemctl status kafka
 sudo sleep 10
-sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PRIVATE_DNS_NAME:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/client.properties
+sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PRIVATE_DNS_NAME:9092 --replication-factor 3 --partitions 1 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/client.properties
 sudo sleep 10
 sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --list --command-config /opt/kafka/config/kraft/client.properties
 sudo sleep 10
+sudo /opt/kafka/bin/kafka-topics.sh --describe --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --topic first-topic
+sudo sleep 10
 sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties describe --status
 sudo sleep 10
-sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --list --cluster
+sudo /opt/kafka/bin/bin/kafka-dump-log.sh --cluster-metadata-decoder --files /opt/kafka/config/kraft/kraft-combined-logs/__cluster_metadata-0/00000000000000000000.log
+sudo sleep 
+sudo /opt/kafka/bin/kafka-dump-log.sh --cluster-metadata-decoder --files /opt/kafka/config/kraft/kraft-combined-logs/metadata_log_dir/__cluster_metadata-0/00000000000000000100-0000000001.checkpoint
 fi
 
 # Consuming Message
-#sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --topic testtopic --from-beginning --consumer.config /opt/kafka/config/kraft/client.properties
+#sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server :9093 --topic testtopic --group console-consumer-14078 --reset-offsets --to-earliest --consumer.config /opt/kafka/config/kraft/ssl-consumer.properties
 # Produce Messsage
-#sudo /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --topic testtopic --producer.config /opt/kafka/config/kraft/client.properties
-#sudo /opt/kafka/bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list <broker>:9092 --topic testtopic --time -1
+#sudo /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server :9092 --topic testtopic --producer.config /opt/kafka/config/kraft/ssl-producer.properties
+#sudo /opt/kafka/bin/kafka-topics.sh --list --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties
+#sudo /opt/kafka/bin/kafka-topics.sh --describe --topic tesstopic --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties
+#sudo /opt/kafka/bin/kafka-consumer-groups.sh --bootstrap-server :9092 --list --command-config /opt/kafka/config/kraft/client.properties
+#sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server :9092 --topic testtopic --group-id driver-request --from-beginning --command-config /opt/kafka/config/kraft/client.properties
+#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties --list | grep __consumer_offsets 
 
 

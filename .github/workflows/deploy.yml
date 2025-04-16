@@ -21,7 +21,6 @@ jobs:
       COUNTRY: ${{ secrets.COUNTRY }}
       ORGANIZATION_UNIT: ${{ secrets.ORGANIZATION_UNIT }}
       CITY: ${{ secrets.CITY }}
-      VPC_ID: ${{ secrets.VPC_ID }}
     defaults:
       run:
         shell: bash
@@ -46,8 +45,8 @@ jobs:
 
     - name: Create Key Pair
       run: |
-        chmod +x ./create-key-pair.sh
-        ./create-key-pair.sh
+        chmod +x ./shell-scripts/create-key-pair.sh
+        ./shell-scripts/create-key-pair.sh
       env:
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
         KEY_PAIR_BUCKET_NAME: ${{ secrets.KEY_PAIR_BUCKET_NAME }}
@@ -60,15 +59,15 @@ jobs:
 
     - name: Update EC2 Launch Template Version
       run: |
-        chmod +x ./modify-launch-template-version.sh
+        chmod +x ./shell-scripts/modify-launch-template-version.sh
         ./modify-launch-template-version.sh
       env:
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
     
     - name: Connect Kafka Cluster And Run Commands
       run: |
-        chmod +x ./ec2.sh
-        ./ec2.sh
+        chmod +x ./shell-scripts/ec2.sh
+        ./shell-scripts/ec2.sh
       env:
         SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
         SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}

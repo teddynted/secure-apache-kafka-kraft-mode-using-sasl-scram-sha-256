@@ -73,3 +73,8 @@ grep -i "authentication failed" /opt/kafka/log/kafka/server.log
 ```cli
 sudo ss -tulnp | grep java
 ```
+
+### Keywords
+
+SSL (Secure Sockets Layer): Encrypts data between two parties (e.g. Kafka client and broker)
+SCRAM (Salted Challenge Response Authentication Mechanism): stores SCRAM credentials with the salt.

@@ -1,0 +1,21 @@
+KeyPairName: 
+  Description: EC2 Key Pair Name
+  Default: '${env:KEY_PAIR_NAME}'
+  Type: String
+LatestAmiId:
+  Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+  Default: '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64'
+InstanceType:
+  Description: Apache Kafka EC2 instance type
+  Type: String
+  Default: t3.medium
+  AllowedValues:
+    - t2.nano
+    - t2.micro
+    - t2.small
+    - t2.large
+    - t2.medium
+    - t3.medium
+MyVPC:
+  Type: AWS::EC2::VPC::Id
+  Default: ${env:VPC_ID}

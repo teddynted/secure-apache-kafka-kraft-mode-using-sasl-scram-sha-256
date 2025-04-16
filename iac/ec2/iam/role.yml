@@ -1,0 +1,18 @@
+Type: AWS::IAM::Role
+Properties:
+  AssumeRolePolicyDocument:
+    Statement:
+    - Effect: Allow
+      Principal:
+        Service:
+          - ec2.amazonaws.com
+      Action:
+        - sts:AssumeRole
+  ManagedPolicyArns:
+    - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+    - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+    - arn:aws:iam::aws:policy/AmazonInspector2ManagedCispolicy
+    - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
+  Path: /
+  Policies: { 'Ref': 'AWS::NoValue' }
+  RoleName: { 'Ref': 'AWS::NoValue' }

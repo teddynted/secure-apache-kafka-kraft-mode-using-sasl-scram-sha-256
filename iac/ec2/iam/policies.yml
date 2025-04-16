@@ -1,0 +1,43 @@
+Type: AWS::IAM::Policy
+Properties:
+  PolicyName: Ec2RolePolicies
+  PolicyDocument:
+    Version: "2012-10-17"
+    Statement:
+      - Effect: "Allow"
+        Action:
+          - "s3:GetObject"
+          - "s3:List*"
+        Resource: "*"
+      - Effect: "Allow"
+        Action:
+          - "cloudwatch:PutMetricData"
+          - "ec2:DescribeVolumes"
+          - "ec2:DescribeInstances"
+          - "ec2:DescribeTags"
+          - "logs:PutLogEvents"
+          - "logs:DescribeLogStreams"
+          - "logs:DescribeLogGroups"
+          - "logs:CreateLogStream"
+          - "logs:CreateLogGroup"
+          - "ec2:DescribeLaunchTemplates"
+          - "ec2:DescribeLaunchTemplateVersions"
+        Resource: "*"
+      - Effect: "Allow" 
+        Action:
+          - "ssm:GetParameter"
+          - "ssm:PutParameter"
+        Resource: "arn:aws:ssm:*:*:parameter/EC2-Custom-Metrics-*"
+      - Effect: "Allow"
+        Action:
+          - "ssm:SendCommand"
+          - "ssm:ListCommandInvocations"
+          - "ssm:DescribeInstanceInformation"
+        Resource: "*"
+      - Effect: "Allow"
+        Action: 
+          - "iam:GetInstanceProfile"
+          - "iam:SimulatePrincipalPolicy"
+        Resource: "*"
+  Roles:
+    - { "Ref": "Ec2IAMRole" } 

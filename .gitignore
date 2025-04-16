@@ -1,1 +1,4 @@
 *.pem
+backup.sh
+backup.yml
+ip.txt

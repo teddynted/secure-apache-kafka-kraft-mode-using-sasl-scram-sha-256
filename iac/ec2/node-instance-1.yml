@@ -1,0 +1,159 @@
+Type: "AWS::EC2::Instance"
+Properties:
+  AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
+  LaunchTemplate:
+    LaunchTemplateId: { "Ref": "LaunchTemplate" }
+    Version: { "Fn::GetAtt" : [ "LaunchTemplate", "DefaultVersionNumber" ] }
+  Tags:
+    - Key: Name
+      Value: Apache Kafka Kraft Instance
+  UserData:
+    Fn::Base64: !Sub 
+    - |
+      #!/bin/bash -u
+      sudo yum update -y
+      sudo yum install -y java-11-amazon-corretto
+      sudo yum install -y git
+      sudo yum -y install telnet
+      export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto
+      export PATH=$PATH:$JAVA_HOME/bin
+      wget https://downloads.apache.org/kafka/3.9.0/kafka_2.12-3.9.0.tgz
+      tar xzf kafka_2.12-3.9.0.tgz
+      sudo mv -f kafka_2.12-3.9.0 /opt
+      sudo ln -s kafka_2.12-3.9.0 /opt/kafka
+      sudo chown ec2-user:ec2-user /opt/kafka && sudo chmod u+s /opt/kafka
+      ls -l 
+      ls -l /opt/kafka/
+      # Generate TLS Certificate and Stores
+      sudo mkdir /opt/kafka/config/kafka-ssl
+      git clone https://github.com/confluentinc/confluent-platform-security-tools.git  /opt/kafka/config/kafka-ssl
+      sudo chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
+      cd /opt/kafka/config/kafka-ssl/
+      echo COUNTRY=${country} >> /etc/environment
+      echo STATE=${state} >> /etc/environment
+      echo ORGANIZATION_UNIT=PX >> /etc/environment
+      echo CITY=Johannesburg >> /etc/environment
+      echo PASSWORD=${password} >> /etc/environment
+      echo USERNAME=${username} >> /etc/environment
+      sudo ./kafka-generate-ssl-automatic.sh
+      ls -l
+      cd ../../../../
+      ls -l
+      CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
+      sudo mkdir /opt/kafka/scripts
+      sudo mkdir /opt/kafka/config/kraft/kraft-combined-logs
+      sudo touch /opt/kafka/scripts/kafka-format.sh
+      sudo cat <<EOF > /opt/kafka/scripts/kafka-format.sh
+      #!/bin/bash
+      set -euo pipefail
+      echo "Formatting Kafka KRaft storage with CLUSTER_ID=$CLUSTER_ID"
+      sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=${username},password=${password}] --ignore-formatted
+      EOF
+      sudo chmod +x /opt/kafka/scripts/kafka-format.sh
+      
+      sudo touch /opt/kafka/config/kraft/jaas.conf
+      sudo cat <<EOF > /opt/kafka/config/kraft/jaas.conf
+      KafkaServer {
+          org.apache.kafka.common.security.scram.ScramLoginModule required username=${username} password=${password} user_admin=${password} user_broker1=${password};
+      };
+      KafkaController {
+        org.apache.kafka.common.security.scram.ScramLoginModule required
+        username="controller"
+        password=${password};
+      };
+      EOF
+      sudo touch /opt/kafka/config/kraft/log4j.properties
+      sudo cat <<EOF > /opt/kafka/config/kraft/log4j.properties
+      log4j.rootLogger=INFO, stdout, kafkaAppender
+      log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+      log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+      log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n
+      log4j.appender.kafkaAppender=org.apache.log4j.RollingFileAppender
+      log4j.appender.kafkaAppender.File=/var/log/kafka/server.log
+      log4j.appender.kafkaAppender.MaxFileSize=100MB
+      log4j.appender.kafkaAppender.MaxBackupIndex=10
+      log4j.appender.kafkaAppender.layout=org.apache.log4j.PatternLayout
+      log4j.appender.kafkaAppender.layout.ConversionPattern=[%d] %p %m (%c)%n
+      log4j.logger.org.apache.kafka.metadata=INFO
+      log4j.logger.org.apache.kafka.raft=INFO
+      log4j.logger.org.apache.kafka.controller=INFO
+      log4j.logger.org.apache.kafka.quorum=DEBUG
+      EOF
+      sudo mkdir -p /var/lib/kafka/logs
+      sudo chmod -R 700 /var/lib/kafka
+      sudo chown -R ec2-user:ec2-user /var/lib/kafka
+      sudo sed -i s/num.partitions=1/num.partitions=8/ /opt/kafka/config/kraft/server.properties
+      sudo sed -i s/log.dirs=\\/tmp\\/kraft-combined-logs/log.dirs=\\/opt\\/kafka\\/config\\/kraft\\/kraft-combined-logs/ /opt/kafka/config/kraft/server.properties
+
+      sudo sh -c 'cat << EOF >> /opt/kafka/config/kraft/server.properties
+      sasl.enabled.mechanisms=SCRAM-SHA-256
+      sasl.mechanism.controller.protocol=SCRAM-SHA-256
+      # security.inter.broker.protocol=SASL_SSL 
+      sasl.mechanism.inter.broker.protocol=SCRAM-SHA-256
+      # ssl.client.auth=required
+      ssl.protocol=TLS
+      ssl.enabled.protocols=TLSv1.2,TLSv1.1,TLSv1
+      ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
+      ssl.truststore.type=PKCS12
+      ssl.truststore.password=${password}
+      ssl.keystore.location=/opt/kafka/config/kafka-ssl/keystore/kafka.keystore.jks
+      ssl.keystore.type=PKCS12
+      ssl.keystore.password=${password}
+      ssl.key.password=${password}
+      ssl.endpoint.identification.algorithm=
+      group.initial.rebalance.delay.ms=3000
+      partition.assignment.strategy=cooperative-sticky
+      offsets.topic.num.partitions=50 
+      offsets.topic.replication.factor=3
+      session.timeout.ms=45000
+      heartbeat.interval.ms=15000
+      max.poll.interval.ms=300000
+      authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
+      #authorizer.class.name=kafka.security.authorizer.AclAuthorizer
+      allow.everyone.if.no.acl.found=true
+      super.users=User:admin;User:controller;User:broker;User:producer;User:consumer
+      delete.topic.enable=true
+      default.replication.factor=2
+      min.insync.replicas=2
+      auto.create.topics.enable=true
+      unclean.leader.election.enable=false
+      log4j.logger.org.apache.kafka.common.network.SslTransportLayer=DEBUG
+      log4j.logger.org.apache.kafka.common.security.ssl.SslFactory=DEBUG
+      EOF'
+      
+      echo 'export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' >> /etc/environment
+      echo 'export KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.conf"' >> /etc/environment
+      echo 'export KAFKA_JVM_PERFORMANCE_OPTS="-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"' >> /etc/environment
+      echo 'KAFKA_LOG4J_OPTS="-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"' >> /etc/environment
+      # Create Kafka service
+      sudo cat <<EOF > /etc/systemd/system/kafka.service
+      [Unit]
+      Description=Kafka Service
+      After=network-online.target
+      Requires=network-online.target
+       
+      [Service]
+      Type=simple
+      User=ec2-user
+      Restart=on-failure
+      SyslogIdentifier=kafka
+      Environment="KAFKA_HEAP_OPTS='-Xms1G -Xmx1G'"
+      Environment="CLUSTER_ID=$CLUSTER_ID"
+      Environment="KAFKA_LOG4J_OPTS=-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"
+      Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.conf"
+      Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
+      ExecStartPre=sudo /opt/kafka/scripts/kafka-format.sh
+      ExecStart=sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties
+      ExecStop=sudo /opt/kafka/bin/kafka-server-stop.sh /opt/kafka/config/kraft/server.properties
+       
+      [Install]
+      WantedBy=multi-user.target
+      EOF
+      sudo sed -i 's/#ClientAliveInterval 0/ClientAliveInterval 300/' /etc/ssh/sshd_config
+      sudo sed -i 's/#ClientAliveCountMax 3/ClientAliveCountMax 3/' /etc/ssh/sshd_config
+    - username: { "Fn::Sub": [ "${username}", { "username": "${env:SASL_SCRAM_USERNAME}" } ] }
+      password: { "Fn::Sub": [ "${password}", { "password": "${env:SASL_SCRAM_PASSWORD}" } ] }
+      state: { "Fn::Sub": [ "${state}", { "state": "${env:STATE}" } ] }
+      country: { "Fn::Sub": [ "${country}", { "country": "${env:COUNTRY}" } ] }
+      unit: { "Fn::Sub": [ "${unit}", { "unit": "${env:ORGANIZATION_UNIT}" } ] }
+      city: { "Fn::Sub": [ "${city}", { "city": "${env:CITY}" } ] }

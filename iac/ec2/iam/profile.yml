@@ -1,0 +1,6 @@
+Type: AWS::IAM::InstanceProfile
+DependsOn: Ec2IAMRole
+Properties:
+  Path: /
+  Roles:
+    - { 'Ref': 'Ec2IAMRole' }
