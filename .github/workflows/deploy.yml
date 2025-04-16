@@ -61,7 +61,7 @@ jobs:
     - name: Update EC2 Launch Template Version
       run: |
         chmod +x ./shell-scripts/modify-launch-template-version.sh
-        ./modify-launch-template-version.sh
+        ./shell-scripts/modify-launch-template-version.sh
       env:
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
     
