@@ -2,12 +2,21 @@
 
 Secure and monitor your Amazon Linux 2023 EC2 self-hosted Apache Kafka using SASL/SCRAM
 
+## Pre-requisites
+
+- Kafka version: 3.5+ (with KRaft mode support)
+- Mode: KRaft (no Zookeeper)
+- Nodes: Multiple EC2 instances for controller and brokers
+- Auth: SASL/SCRAM
+- Clients: External (from public internet or other networks)
+
+## Apache and Amazon Linux CLI Commands
+
 ### Create Topic
 
 ```cli
 /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server <ec2-private-dns-name>:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/admin.config
 ```
-
 
 ### List Topics
 
@@ -38,8 +47,6 @@ sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server <ec2-private-dns-name>:9
 ```cli
 sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server <ec2-private-dns-name>:9092 --command-config /opt/kafka/config/kraft/client.properties --add --allow-principal "User:admin" --operation ClusterAction --cluster
 ```
-
-### Commands
 
 #### Check that Kafka is running
 
@@ -74,7 +81,9 @@ grep -i "authentication failed" /opt/kafka/log/kafka/server.log
 sudo ss -tulnp | grep java
 ```
 
-### Keywords
+## Keywords
 
-SSL (Secure Sockets Layer): Encrypts data between two parties (e.g. Kafka client and broker)
-SCRAM (Salted Challenge Response Authentication Mechanism): stores SCRAM credentials with the salt.
+**SSL (Secure Sockets Layer)**: Encrypts data between two parties (e.g. Kafka client and broker)
+**SCRAM (Salted Challenge Response Authentication Mechanism)**: stores SCRAM credentials with the salt.
+**SASL (Simple Authentication and Security Layer)**: A framework that enables secure authentication between clients and brokers using various mechanisms like GSSAPI(Kerberos), Plain, SCRAM, and OAUTHBEARER.
+**KRaft (Mode)**: let's Kafka manage it's own data without needing Zookeeper. This makes the entire setup simpler and more efficient.
