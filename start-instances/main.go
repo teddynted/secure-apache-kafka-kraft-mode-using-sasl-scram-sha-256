@@ -34,17 +34,19 @@ func AssociateElasticIP(client *ec2.EC2, instanceID string) {
 	if err != nil {
 		log.Fatalf("failed to describe Elastic IPs: %v", err)
 	}
+	fmt.Print(eipResp)
 	log.Print(*eipResp)
-	allocationID := *eipResp.Addresses[0].AllocationId
-	input := &ec2.AssociateAddressInput{
-		InstanceId:   aws.String(instanceID),
-		AllocationId: aws.String(allocationID),
-	}
-	result, err := client.AssociateAddress(input)
-	if err != nil {
-		log.Fatalf("failed to associate addresses, %v", err)
-	}
-	fmt.Printf("Elastic IP associated successfully! Association ID: %s\n", *result.AssociationId)
+	// allocationID := *eipResp.Addresses[0].AllocationId
+	// input := &ec2.AssociateAddressInput{
+	// 	InstanceId:   aws.String(instanceID),
+	// 	AllocationId: aws.String(allocationID),
+	// }
+	// fmt.Print(input)
+	// result, err := client.AssociateAddress(input)
+	// if err != nil {
+	// 	log.Fatalf("failed to associate addresses, %v", err)
+	// }
+	// fmt.Printf("Elastic IP associated successfully! Association ID: %s\n", *result.AssociationId)
 }
 
 func GetStoppedInstances(client *ec2.EC2) (*ec2.DescribeInstancesOutput, error) {
