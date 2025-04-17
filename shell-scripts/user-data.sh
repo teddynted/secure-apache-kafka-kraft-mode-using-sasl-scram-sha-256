@@ -56,29 +56,29 @@ EOF
 
 sudo touch /opt/kafka/config/kraft/log4j.properties
 sudo cat <<EOF > /opt/kafka/config/kraft/log4j.properties
-# log4j.rootLogger=INFO, stdout, kafkaAppender
-# log4j.appender.stdout=org.apache.log4j.ConsoleAppender
-# log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
-# log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n
-# log4j.appender.kafkaAppender=org.apache.log4j.RollingFileAppender
-# log4j.appender.kafkaAppender.File=/var/log/kafka/server.log
-# log4j.appender.kafkaAppender.MaxFileSize=100MB
-# log4j.appender.kafkaAppender.MaxBackupIndex=10
-# log4j.appender.kafkaAppender.layout=org.apache.log4j.PatternLayout
-# log4j.appender.kafkaAppender.layout.ConversionPattern=[%d] %p %m (%c)%n
-# log4j.logger.org.apache.kafka.metadata=DEBUG
-# log4j.logger.org.apache.kafka.raft=DEBUG
-# log4j.logger.org.apache.kafka.controller=DEBUG
-# log4j.logger.org.apache.kafka.quorum=DEBUG
-# log4j.logger.org.apache.kafka.common.network.SslTransportLayer=DEBUG
-# log4j.logger.org.apache.kafka.common.security.ssl.SslFactory=DEBUG
-# log4j.logger.kafka=INFO
-# log4j.logger.org.apache.kafka.clients=DEBUG
-# log4j.logger.org.apache.kafka.common.network.Selector=DEBUG
-# log4j.logger.kafka.log.Log=DEBUG
-# log4j.logger.kafka.raft.RaftClient=TRACE
-# log4j.logger.org.apache.kafka.clients.consumer.internals=DEBUG
-# log4j.logger.org.apache.kafka.clients.consumer.internals.ConsumerCoordinator=DEBUG
+log4j.rootLogger=INFO, stdout, kafkaAppender
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n
+log4j.appender.kafkaAppender=org.apache.log4j.RollingFileAppender
+log4j.appender.kafkaAppender.File=/var/log/kafka/server.log
+log4j.appender.kafkaAppender.MaxFileSize=100MB
+log4j.appender.kafkaAppender.MaxBackupIndex=10
+log4j.appender.kafkaAppender.layout=org.apache.log4j.PatternLayout
+log4j.appender.kafkaAppender.layout.ConversionPattern=[%d] %p %m (%c)%n
+log4j.logger.org.apache.kafka.metadata=DEBUG
+log4j.logger.org.apache.kafka.raft=DEBUG
+log4j.logger.org.apache.kafka.controller=DEBUG
+log4j.logger.org.apache.kafka.quorum=DEBUG
+log4j.logger.org.apache.kafka.common.network.SslTransportLayer=DEBUG
+log4j.logger.org.apache.kafka.common.security.ssl.SslFactory=DEBUG
+log4j.logger.kafka=INFO
+log4j.logger.org.apache.kafka.clients=DEBUG
+log4j.logger.org.apache.kafka.common.network.Selector=DEBUG
+log4j.logger.kafka.log.Log=DEBUG
+log4j.logger.kafka.raft.RaftClient=TRACE
+log4j.logger.org.apache.kafka.clients.consumer.internals=DEBUG
+log4j.logger.org.apache.kafka.clients.consumer.internals.ConsumerCoordinator=DEBUG
 EOF
 
 sudo mkdir -p /var/lib/kafka/logs
@@ -135,7 +135,8 @@ EOF'
 echo 'export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' >> /etc/environment
 echo 'export KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.conf"' >> /etc/environment
 echo 'export KAFKA_JVM_PERFORMANCE_OPTS="-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"' >> /etc/environment
-echo 'KAFKA_LOG4J_OPTS="-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"' >> /etc/environment
+# Debugging errors
+# echo 'KAFKA_LOG4J_OPTS="-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"' >> /etc/environment
 # Create Kafka service
 sudo cat <<EOF > /etc/systemd/system/kafka.service
 [Unit]
