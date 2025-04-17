@@ -1,4 +1,3 @@
-#!/bin/bash
 Region=$AWS_DEFAULT_REGION
 Bucket=$KEY_PAIR_BUCKET_NAME
 KeyPairName=$KEY_PAIR_NAME
