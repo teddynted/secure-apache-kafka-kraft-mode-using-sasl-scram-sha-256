@@ -1,0 +1,32 @@
+StopInstances:
+  handler: bootstrap
+  runtime: provided.al2
+  package:
+    artifact: build/stop-instances.zip
+    individually: true
+  role: { "Fn::GetAtt": ["Ec2InstanceLambdaIamRole", "Arn"] }
+  name: stop-ec2-instances-lambda
+  memorySize: 128
+  timeout: 240
+  events:
+    - schedule:
+        rate: cron(0 19 ? * * *)
+        enabled: true
+        method: scheduler
+        timezone: Africa/Johannesburg
+StartInstances:
+  handler: bootstrap
+  runtime: provided.al2
+  package:
+    artifact: build/start-instances.zip
+    individually: true
+  role: { "Fn::GetAtt": ["Ec2InstanceLambdaIamRole", "Arn"] }
+  name: start-ec2-instances-lambda
+  memorySize: 128
+  timeout: 240
+  events:
+    - schedule:
+        rate: cron(0 17 ? * * *)
+        enabled: true
+        method: scheduler
+        timezone: Africa/Johannesburg

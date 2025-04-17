@@ -116,7 +116,7 @@ Properties:
       allow.everyone.if.no.acl.found=true
       super.users=User:admin;User:controller;User:broker;User:producer;User:consumer
       delete.topic.enable=true
-      default.replication.factor=2
+      default.replication.factor=1
       min.insync.replicas=2
       auto.create.topics.enable=true
       unclean.leader.election.enable=false

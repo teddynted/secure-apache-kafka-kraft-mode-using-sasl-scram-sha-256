@@ -9,20 +9,25 @@ provider:
   region: ${env:AWS_REGION}
   stage: "dev"
   environment: ${file(./iac/environment.yml)}
-    
+functions: ${file(./iac/lambda.yml)}
 resources:
   Parameters: ${file(./iac/parameters.yml)}
   Resources:
     Ec2RolePolicies: ${file(./iac/ec2/iam/policies.yml)}
     Ec2IAMRole: ${file(./iac/ec2/iam/role.yml)}
     Ec2IAMProfile: ${file(./iac/ec2/iam/profile.yml)}
+    Ec2InstanceLambdaIamRole: ${file(./iac/ec2/iam/lambda-role.yml)}
     MyKafkaSecurityGroup: ${file(./iac/ec2/security-group/kafka-sg.yml)}
     LaunchTemplate: ${file(./iac/ec2/launch-template.yml)}
-    KafkaKraftCluster18: ${file(./iac/ec2/node-0.yml)}
-
+    NodeZero1: ${file(./iac/ec2/node-0.yml)}
+    NodeZeroElasticIP: ${file(./iac/ec2/elastic-ip/ip.yml)}
+    NodeZeroElasticIPAssociation: ${file(./iac/ec2/elastic-ip/ip-association.yml)}
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster18", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["NodeZero1", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
+    ElasticIP:
+      Description: 'The allocated Elastic IP'
+      Value: { 'Ref': 'NodeZeroElasticIP' }

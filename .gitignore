@@ -1,4 +1,56 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, output of `go test -c`
+*.test
+
+# Output of `go build`
+/bin/
+/build/
+/dist/
+*.out
+
+# Vendor directory (if using `go mod vendor`)
+/vendor/
+
+# Go workspace file (Go 1.18+)
+/go.work
+/go.work.sum
+
+# IDE/editor configs
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Coverage reports
+*.cover
+*.coverprofile
+coverage.*
+
+# Environment and secrets
+.env
+.env.*
+*.key
 *.pem
+*.crt
+*.cert
+*.enc
+
+# Node Modules
+node_modules
+
+# Local files
 backup.sh
 backup.yml
 ip.txt

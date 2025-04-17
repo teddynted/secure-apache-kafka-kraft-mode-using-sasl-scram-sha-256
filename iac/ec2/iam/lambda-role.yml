@@ -1,0 +1,39 @@
+Type: AWS::IAM::Role
+Properties:
+  AssumeRolePolicyDocument:
+    Version: "2012-10-17"
+    Statement:
+      - Effect: Allow
+        Principal:
+          Service:
+            - lambda.amazonaws.com
+            - scheduler.amazonaws.com
+        Action:
+          - sts:AssumeRole
+  Policies:
+    - PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: "lambda:InvokeFunction"
+            Resource: '*'
+          - Action:
+              - "scheduler:*"
+            Effect: "Allow"
+            Resource: "*"
+          - Action:
+              - "logs:CreateLogGroup"
+              - "logs:CreateLogStream"
+              - "logs:PutLogEvents"
+            Effect: "Allow"
+            Resource: "*"
+          - Action:
+              - "ec2:Start*"
+              - "ec2:Stop*"
+            Effect: "Allow"
+            Resource: "*"
+          - Effect: 'Allow'
+            Action:
+              - ec2:DescribeInstances
+            Resource: '*'
+      PolicyName: !Join ["", [{"Ref": "AWS::StackName"}, "event-bridge"]]

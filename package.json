@@ -1,0 +1,28 @@
+{
+  "name": "kafka_kraft_sasl_scram_sha_256",
+  "version": "1.0.0",
+  "description": "Apache Kafka Kraft Mode Authentication with SASL/SCRAM-256",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/teddynted/secure-apache-kafka-kraft-mode-using-sasl-scram-sha-256"
+  },
+  "keywords": [
+    "Apache",
+    "Kafka",
+    "Kraft",
+    "SCRAM",
+    "SASL",
+    "SSL",
+    "TLS",
+    "Golang"
+  ],
+  "author": "Teddy Kekana",
+  "license": "ISC",
+  "dependencies": {
+    "lefthook": "^1.11.10"
+  }
+}
