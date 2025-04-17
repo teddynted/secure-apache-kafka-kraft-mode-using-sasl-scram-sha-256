@@ -1,15 +1,19 @@
 #!/bin/bash
 
 
-PUBLIC_IP_ADDRESS=$(ec2-metadata --public-ipv4 | cut -d " " -f 2);
-PRIVATE_IP_ADDRESS=$(ec2-metadata --local-ipv4 | cut -d " " -f 2);
-echo "EC2 PUBLIC_IP_ADDRESS: '$PUBLIC_IP_ADDRESS'"
-echo "EC2 PRIVATE_IP_ADDRESS: '$PRIVATE_IP_ADDRESS'"
-PRIVATE_DNS_NAME="ip-${PRIVATE_IP_ADDRESS//./-}.$3.compute.internal"
-PUBLIC_DNS_NAME="ec2-${PUBLIC_IP_ADDRESS//./-}.$3.compute.amazonaws.com"
+# PUBLIC_IP_ADDRESS=$(ec2-metadata --public-ipv4 | cut -d " " -f 2);
+# PRIVATE_IP_ADDRESS=$(ec2-metadata --local-ipv4 | cut -d " " -f 2);
+# echo "EC2 PUBLIC_IP_ADDRESS: '$PUBLIC_IP_ADDRESS'"
+# echo "EC2 PRIVATE_IP_ADDRESS: '$PRIVATE_IP_ADDRESS'"
+# PRIVATE_DNS_NAME="ip-${PRIVATE_IP_ADDRESS//./-}.$3.compute.internal"
+# PUBLIC_DNS_NAME="ec2-${PUBLIC_IP_ADDRESS//./-}.$3.compute.amazonaws.com"
+# echo "EC2 PUBLIC_DNS_NAME: '$PUBLIC_DNS_NAME'"
+# echo "EC2 PRIVATE_DNS_NAME: '$PRIVATE_DNS_NAME'"
+
+PRIVATE_DNS_NAME=$5
+PUBLIC_DNS_NAME=$4
 echo "EC2 PUBLIC_DNS_NAME: '$PUBLIC_DNS_NAME'"
 echo "EC2 PRIVATE_DNS_NAME: '$PRIVATE_DNS_NAME'"
-
 
 KRAFT_ADVERTISED_LISTENERS=$(cat /opt/kafka/config/kraft/server.properties | grep -c "advertised.listeners=SASL_SSL://$PRIVATE_DNS_NAME:9092")
 echo 'KRAFT_ADVERTISED_LISTENERS '$KRAFT_ADVERTISED_LISTENERS''
@@ -32,7 +36,6 @@ ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.
 ssl.truststore.password=$1
 sasl.mechanism=SCRAM-SHA-256
 sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=$2 password=$1;
-log4j.logger.kafka=DEBUG
 EOF
 sudo touch /opt/kafka/config/kraft/ssl-consumer.properties
 sudo tee /opt/kafka/config/kraft/ssl-consumer.properties > /dev/null <<EOF
@@ -42,7 +45,6 @@ ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.
 ssl.truststore.password=$1
 sasl.mechanism=SCRAM-SHA-256
 sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=$2 password=$1;
-log4j.logger.kafka=DEBUG
 group.id=demo-consumer-group
 EOF
 sudo touch /opt/kafka/config/kraft/ssl-producer.properties
