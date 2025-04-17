@@ -54,7 +54,6 @@ ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.
 ssl.truststore.password=$1
 sasl.mechanism=SCRAM-SHA-256
 sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=$2 password=$1;
-log4j.logger.kafka=DEBUG
 EOF
 sudo systemctl daemon-reload
 sudo systemctl enable kafka
@@ -68,10 +67,6 @@ sudo sleep 10
 sudo /opt/kafka/bin/kafka-topics.sh --describe --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --topic first-topic
 sudo sleep 10
 sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties describe --status
-sudo sleep 10
-sudo /opt/kafka/bin/bin/kafka-dump-log.sh --cluster-metadata-decoder --files /opt/kafka/config/kraft/kraft-combined-logs/__cluster_metadata-0/00000000000000000000.log
-sudo sleep 
-sudo /opt/kafka/bin/kafka-dump-log.sh --cluster-metadata-decoder --files /opt/kafka/config/kraft/kraft-combined-logs/metadata_log_dir/__cluster_metadata-0/00000000000000000100-0000000001.checkpoint
 fi
 
 # Consuming Message

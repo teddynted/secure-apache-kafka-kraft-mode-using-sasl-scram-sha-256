@@ -18,11 +18,11 @@ resources:
     Ec2IAMProfile: ${file(./iac/ec2/iam/profile.yml)}
     MyKafkaSecurityGroup: ${file(./iac/ec2/security-group/kafka-sg.yml)}
     LaunchTemplate: ${file(./iac/ec2/launch-template.yml)}
-    KafkaKraftCluster16: ${file(./iac/ec2/node-0.yml)}
+    KafkaKraftCluster17: ${file(./iac/ec2/node-0.yml)}
 
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["KafkaKraftCluster16", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["KafkaKraftCluster17", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
