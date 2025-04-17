@@ -35,6 +35,16 @@ ssl.truststore.password=$1
 sasl.mechanism=SCRAM-SHA-256
 sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=$2 password=$1;
 group.id=demo-consumer-group
+group.instance.id=demo-consumer-group-1
+key.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+auto.offset.reset=earliest
+enable.auto.commit=true
+auto.commit.interval.ms=5000
+session.timeout.ms=45000
+heartbeat.interval.ms=15000
+max.poll.interval.ms=300000
+partition.assignment.strategy=org.apache.kafka.clients.consumer.CooperativeStickyAssignor
 EOF
 sudo touch /opt/kafka/config/kraft/ssl-producer.properties
 sudo tee /opt/kafka/config/kraft/ssl-producer.properties > /dev/null <<EOF
@@ -61,9 +71,12 @@ sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server $PRIVATE_DNS_NAM
 sudo sleep 5
 sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --alter --add-config 'SCRAM-SHA-256=[iterations=4096,password='$1']' --entity-type users --entity-name admin
 sudo sleep 5
+sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --add --allow-principal User:admin --operation Describe --cluster
+sudo sleep 5
 sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --list --command-config /opt/kafka/config/kraft/client.properties
 fi
 
 #sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties --alter --add-config 'SCRAM-SHA-256=[iterations=4096,password=Passw0rd123]' --entity-type users --entity-name admin
 #sudo /opt/kafka/bin/kafka-console-producer.sh --broker-list :9092 --topic testtopic --producer.config /opt/kafka/config/kraft/client.properties
-#sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server :9092 --topic my-topic --consumer.config /opt/kafka/config/kraft/client.properties --from-beginning
+#sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server :9092 --topic testtopic --consumer.config /opt/kafka/config/kraft/ssl-consumer.properties --from-beginning
+#sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties --add --allow-principal User:admin --operation Describe --cluster
