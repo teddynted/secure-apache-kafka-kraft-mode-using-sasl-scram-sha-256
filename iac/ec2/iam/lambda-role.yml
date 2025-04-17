@@ -37,5 +37,6 @@ Properties:
               - ec2:DescribeInstances
               - ec2:DescribeAddresses
               - ec2:DisassociateAddress
+              - ec2:ReleaseAddress
             Resource: '*'
       PolicyName: !Join ["", [{"Ref": "AWS::StackName"}, "event-bridge"]]
