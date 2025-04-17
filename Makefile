@@ -4,5 +4,5 @@ build:
 	env GOOS=linux GOARCH=arm64 go build -o build/stop-instances/bootstrap stop-instances/main.go
 
 zip:
-	zip -j build/start-instance.zip build/start-instances/bootstrap
-	zip -j build/stop-instance.zip build/stop-instances/bootstrap
+	zip -j build/start-instances.zip build/start-instances/bootstrap
+	zip -j build/stop-instances.zip build/stop-instances/bootstrap
