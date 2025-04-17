@@ -86,7 +86,11 @@ sudo ss -tulnp | grep java
 ### Kafka
 
 - Local Dev: 1 replication factor
-- Production: 3 replicaation factor, for high availability
+- Production: 3 replicaation factor, for high availability  (have at least ec2 instances)
+
+### AWS
+
+- Use Elastic IP for you Kafka broker so the public IP remains static and doesn't change when the EC@ instance restarts
 
 ## Keywords
 
