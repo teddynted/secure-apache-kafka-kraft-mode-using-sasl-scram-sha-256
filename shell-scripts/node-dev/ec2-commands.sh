@@ -81,4 +81,4 @@ fi
 #sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server :9092 --topic testtopic --consumer.config /opt/kafka/config/kraft/ssl-consumer.properties --from-beginning
 #sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties --add --allow-principal User:admin --operation Describe --cluster
 #sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties --list | grep __consumer_offsets
-#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server ip-172-31-23-15.eu-west-1.compute.internal:9092 --command-config /opt/kafka/config/kraft/client.properties --topic __consumer_offsets --partitions 3 --replication-factor 1 --config cleanup.policy=compact --create
+#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties --topic __consumer_offsets --partitions 3 --replication-factor 1 --config cleanup.policy=compact --create
