@@ -78,6 +78,7 @@ EOF
 sudo mkdir -p /var/lib/kafka/logs
 sudo chmod -R 700 /var/lib/kafka
 sudo chown -R ec2-user:ec2-user /var/lib/kafka
+sudo sed -i s/node.id=1/node.id=$7/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/num.partitions=1/num.partitions=8/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/log.dirs=\\/tmp\\/kraft-combined-logs/log.dirs=\\/opt\\/kafka\\/config\\/kraft\\/kraft-combined-logs/ /opt/kafka/config/kraft/server.properties
 

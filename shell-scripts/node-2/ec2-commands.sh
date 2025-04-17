@@ -1,7 +1,6 @@
 #!/bin/bash
 
 PRIVATE_DNS_NAME=$5
-PUBLIC_DNS_NAME=$4
 PUBLIC_IP_ADDRESS=$6
 
 KRAFT_ADVERTISED_LISTENERS=$(cat /opt/kafka/config/kraft/server.properties | grep -c "advertised.listeners=SASL_SSL://$PRIVATE_DNS_NAME:9092")
@@ -12,7 +11,7 @@ sudo sed -i s/offsets.topic.replication.factor=1/offsets.topic.replication.facto
 sudo sed -i s/transaction.state.log.replication.factor=1/transaction.state.log.replication.factor=2/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/socket.receive.buffer.bytes=102400/socket.receive.buffer.bytes=1048576/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/socket.send.buffer.bytes=102400/socket.send.buffer.bytes=1048576/ /opt/kafka/config/kraft/server.properties
-sudo sed -i s/controller.quorum.voters=1@localhost:9093/controller.quorum.voters=1@$PRIVATE_DNS_NAME:9093/ /opt/kafka/config/kraft/server.properties
+sudo sed -i s/controller.quorum.voters=1@localhost:9093/controller.quorum.voters=1@$6:9093,2@$PRIVATE_DNS_NAME:9093,3@$7:9093/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/listeners=PLAINTEXT:\\/\\/:9092,CONTROLLER:\\/\\/:9093/listeners=SASL_SSL:\\/\\/:9092,CONTROLLER:\\/\\/:9093,EXTERNAL:\\/\\/:9094/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/inter.broker.listener.name=PLAINTEXT/inter.broker.listener.name=SASL_SSL/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/advertised.listeners=PLAINTEXT:\\/\\/localhost:9092,CONTROLLER:\\/\\/localhost:9093/advertised.listeners=SASL_SSL:\\/\\/$PRIVATE_DNS_NAME:9092,CONTROLLER:\\/\\/$PRIVATE_DNS_NAME:9093,EXTERNAL:\\/\\/$PUBLIC_IP_ADDRESS:9094/ /opt/kafka/config/kraft/server.properties
@@ -62,15 +61,4 @@ sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server $PRIVATE_DNS_NAM
 sudo sleep 5
 sudo cat /opt/kafka/config/kraft/server.properties
 fi
-
-# Consuming Message
-#sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server :9093 --topic testtopic --group console-consumer-14078 --reset-offsets --to-earliest --consumer.config /opt/kafka/config/kraft/ssl-consumer.properties
-# Produce Messsage
-#sudo echo "Hello, World" | /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server :9092 --topic testtopic --producer.config /opt/kafka/config/kraft/ssl-producer.properties
-#sudo /opt/kafka/bin/kafka-topics.sh --list --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties
-#sudo /opt/kafka/bin/kafka-topics.sh --describe --topic tesstopic --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties
-#sudo /opt/kafka/bin/kafka-consumer-groups.sh --bootstrap-server :9092 --list --command-config /opt/kafka/config/kraft/client.properties
-#sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server :9092 --topic testtopic --group-id driver-request --from-beginning --command-config /opt/kafka/config/kraft/client.properties
-#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties --list | grep __consumer_offsets 
-
 

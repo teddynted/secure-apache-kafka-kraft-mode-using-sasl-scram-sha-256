@@ -6,7 +6,7 @@ Properties:
     Version: { "Fn::GetAtt" : [ "LaunchTemplate", "DefaultVersionNumber" ] }
   Tags:
     - Key: Name
-      Value: Apache Kafka Kraft Instance
+      Value: Apache Kafka Kraft Instance 1
   UserData:
     Fn::Base64: !Sub 
     - |
@@ -30,4 +30,4 @@ Properties:
       country: { "Fn::Sub": [ "${country}", { "country": "${env:COUNTRY}" } ] }
       unit: { "Fn::Sub": [ "${unit}", { "unit": "${env:ORGANIZATION_UNIT}" } ] }
       city: { "Fn::Sub": [ "${city}", { "city": "${env:CITY}" } ] }
-      nodeId: { "Fn::Sub": [ "${nodeId}", { "nodeId": 0 } ] }
+      nodeId: { "Fn::Sub": [ "${nodeId}", { "nodeId": 1 } ] }

@@ -19,7 +19,9 @@ resources:
     Ec2InstanceLambdaIamRole: ${file(./iac/ec2/iam/lambda-role.yml)}
     MyKafkaSecurityGroup: ${file(./iac/ec2/security-group/kafka-sg.yml)}
     LaunchTemplate: ${file(./iac/ec2/launch-template.yml)}
-    NodeZero9: ${file(./iac/ec2/node-0.yml)}
+    NodeOne: ${file(./iac/ec2/instance/node-1.yml)}
+    NodeTwo: ${file(./iac/ec2/instance/node-2.yml)}
+    NodeThree: ${file(./iac/ec2/instance/node-2.yml)}
     ApacheKafkaBucket: ${file(./iac/s3/apache-kafka-bucket.yml)}
     ApacheKafkaBucketPolicy: ${file(./iac/s3/apache-kafka-bucket-policy.yml)}
     # NodeZeroElasticIP: ${file(./iac/ec2/elastic-ip/ip.yml)}
