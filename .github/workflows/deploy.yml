@@ -87,30 +87,39 @@ jobs:
         ./shell-scripts/modify-launch-template-version.sh
       env:
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-    
-    - name: Connect to Kafka Node 1
-      run: |
-        chmod +x ./shell-scripts/node-1/ec2.sh
-        ./shell-scripts/node-1/ec2.sh
-      env:
-        SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
-        SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
-        REGION: ${{ secrets.AWS_REGION }}
 
-    - name: Connect to Kafka Node 2
+    - name: Connect to Kafka Node Dev
       run: |
-        chmod +x ./shell-scripts/node-2/ec2.sh
-        ./shell-scripts/node-2/ec2.sh
+        chmod +x ./shell-scripts/node-dev/ec2.sh
+        ./shell-scripts/node-dev/ec2.sh
       env:
         SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
         SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
         REGION: ${{ secrets.AWS_REGION }}
+    
+    # - name: Connect to Kafka Node 1
+    #   run: |
+    #     chmod +x ./shell-scripts/node-1/ec2.sh
+    #     ./shell-scripts/node-1/ec2.sh
+    #   env:
+    #     SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
+    #     SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
+    #     REGION: ${{ secrets.AWS_REGION }}
+
+    # - name: Connect to Kafka Node 2
+    #   run: |
+    #     chmod +x ./shell-scripts/node-2/ec2.sh
+    #     ./shell-scripts/node-2/ec2.sh
+    #   env:
+    #     SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
+    #     SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
+    #     REGION: ${{ secrets.AWS_REGION }}
   
-    - name: Connect to Kafka Node 3
-      run: |
-        chmod +x ./shell-scripts/node-2/ec2.sh
-        ./shell-scripts/node-2/ec2.sh
-      env:
-        SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
-        SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
-        REGION: ${{ secrets.AWS_REGION }}
+    # - name: Connect to Kafka Node 3
+    #   run: |
+    #     chmod +x ./shell-scripts/node-2/ec2.sh
+    #     ./shell-scripts/node-2/ec2.sh
+    #   env:
+    #     SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
+    #     SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
+    #     REGION: ${{ secrets.AWS_REGION }}

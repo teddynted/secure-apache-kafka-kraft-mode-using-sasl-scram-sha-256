@@ -19,30 +19,30 @@ resources:
     Ec2InstanceLambdaIamRole: ${file(./iac/ec2/iam/lambda-role.yml)}
     MyKafkaSecurityGroup: ${file(./iac/ec2/security-group/kafka-sg.yml)}
     LaunchTemplate: ${file(./iac/ec2/launch-template.yml)}
-    NodeOne: ${file(./iac/ec2/instance/node-1.yml)}
-    NodeTwo: ${file(./iac/ec2/instance/node-2.yml)}
-    NodeThree: ${file(./iac/ec2/instance/node-3.yml)}
+    # NodeOne: ${file(./iac/ec2/instance/node-1.yml)}
+    # NodeTwo: ${file(./iac/ec2/instance/node-2.yml)}
+    # NodeThree: ${file(./iac/ec2/instance/node-3.yml)}
     NodeDev: ${file(./iac/ec2/instance/node-dev.yml)}
     ApacheKafkaBucket: ${file(./iac/s3/apache-kafka-bucket.yml)}
     ApacheKafkaBucketPolicy: ${file(./iac/s3/apache-kafka-bucket-policy.yml)}
     # NodeZeroElasticIP: ${file(./iac/ec2/elastic-ip/ip.yml)}
     # NodeZeroElasticIPAssociation: ${file(./iac/ec2/elastic-ip/ip-association.yml)}
   Outputs:
-    NodeOnePublicIp:
-      Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["NodeOne", "PublicIp"] }
-      Export:
-        Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-" }
-    NodeTwoPublicIp:
-      Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["NodeTwo", "PublicIp"] }
-      Export:
-        Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-2" }
-    NodeThreePublicIp:
-      Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["NodeThree", "PublicIp"] }
-      Export:
-        Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-3" }
+    # NodeOnePublicIp:
+    #   Description: Cluster Instance IP Address
+    #   Value: { "Fn::GetAtt": ["NodeOne", "PublicIp"] }
+    #   Export:
+    #     Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-" }
+    # NodeTwoPublicIp:
+    #   Description: Cluster Instance IP Address
+    #   Value: { "Fn::GetAtt": ["NodeTwo", "PublicIp"] }
+    #   Export:
+    #     Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-2" }
+    # NodeThreePublicIp:
+    #   Description: Cluster Instance IP Address
+    #   Value: { "Fn::GetAtt": ["NodeThree", "PublicIp"] }
+    #   Export:
+    #     Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-3" }
     NodeDevPublicIp:
       Description: Cluster Instance IP Address
       Value: { "Fn::GetAtt": ["NodeDev", "PublicIp"] }
