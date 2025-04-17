@@ -27,7 +27,7 @@ Secure and monitor your Amazon Linux 2023 EC2 self-hosted Apache Kafka using SAS
 ### Consuming Message
 
 ```cli
-sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server <ec2-private-dns-name>:9092 --topic testtopic --from-beginning --consumer.config /opt/kafka/config/kraft/client.properties
+sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server <ec2-private-dns-name>:9092 --topic testtopic --group kool-g-rap --consumer.config /opt/kafka/config/kraft/ssl-consumer.properties --from-beginning
 ```
 
 ### Produce Messsage

@@ -75,10 +75,3 @@ sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --co
 sudo sleep 5
 sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --list --command-config /opt/kafka/config/kraft/client.properties
 fi
-
-#sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties --alter --add-config 'SCRAM-SHA-256=[iterations=4096,password=Passw0rd123]' --entity-type users --entity-name admin
-#sudo /opt/kafka/bin/kafka-console-producer.sh --broker-list :9092 --topic testtopic --producer.config /opt/kafka/config/kraft/client.properties
-#sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server :9092 --topic testtopic --group kool-g-rap --consumer.config /opt/kafka/config/kraft/ssl-consumer.properties --from-beginning
-#sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties --add --allow-principal User:admin --operation Describe --cluster
-#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties --list | grep __consumer_offsets
-#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties --topic __consumer_offsets --partitions 3 --replication-factor 1 --config cleanup.policy=compact --create

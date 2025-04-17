@@ -22,7 +22,7 @@ resources:
     # NodeOne: ${file(./iac/ec2/instance/node-1.yml)}
     # NodeTwo: ${file(./iac/ec2/instance/node-2.yml)}
     # NodeThree: ${file(./iac/ec2/instance/node-3.yml)}
-    NodeDev12: ${file(./iac/ec2/instance/node-dev.yml)}
+    NodeDev13: ${file(./iac/ec2/instance/node-dev.yml)}
     ApacheKafkaBucket: ${file(./iac/s3/apache-kafka-bucket.yml)}
     ApacheKafkaBucketPolicy: ${file(./iac/s3/apache-kafka-bucket-policy.yml)}
     # NodeZeroElasticIP: ${file(./iac/ec2/elastic-ip/ip.yml)}
@@ -45,7 +45,7 @@ resources:
     #     Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-3" }
     NodeDevPublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["NodeDev12", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["NodeDev13", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-dev" }
     # ElasticIP:
