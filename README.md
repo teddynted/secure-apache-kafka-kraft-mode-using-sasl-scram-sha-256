@@ -81,6 +81,13 @@ grep -i "authentication failed" /opt/kafka/log/kafka/server.log
 sudo ss -tulnp | grep java
 ```
 
+## Best Practices
+
+### Kafka
+
+- Local Dev: 1 replication factor
+- Production: 3 replicaation factor, for high availability
+
 ## Keywords
 
 **SSL (Secure Sockets Layer)**: Encrypts data between two parties (e.g. Kafka client and broker)

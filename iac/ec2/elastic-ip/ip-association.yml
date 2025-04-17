@@ -1,4 +1,4 @@
 Type: AWS::EC2::EIPAssociation
 Properties:
-    AllocationId: { 'Fn::GetAtt': ['AKElasticIP', 'AllocationId'] }
-    InstanceId: { 'Ref': 'KafkaKraftCluster16' }
+    AllocationId: { 'Fn::GetAtt': ['NodeZeroElasticIP', 'AllocationId'] }
+    InstanceId: { 'Ref': 'NodeZero' }

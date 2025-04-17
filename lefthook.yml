@@ -1,0 +1,30 @@
+pre-push:
+  commands:
+    lint:
+      run: |
+        golangci-lint --version
+        golangci-lint run
+
+pre-commit:
+  parallel: true
+  commands:
+    eslint:
+      run: golangci-lint run
+    govet:
+      tags: backend style
+      files: git ls-files -m
+      glob: "*.go"
+      run: go vet
+    gofmt:
+      run: gofmt -s -w .
+    gotidy:
+      run: go mod tidy
+    commit:
+      run: git add -A .
+    make:
+      run: rm -rf build && make build && make zip
+  scripts:
+    "start-instance/main.go":
+      runner: go run
+    "stop-instance/main.go":
+      runner: go run

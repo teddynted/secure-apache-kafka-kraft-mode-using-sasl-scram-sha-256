@@ -1,0 +1,8 @@
+build:
+	echo "Building lambda binaries"
+	env GOOS=linux GOARCH=arm64 go build -o build/start-instances/bootstrap start-instances/main.go
+	env GOOS=linux GOARCH=arm64 go build -o build/stop-instances/bootstrap stop-instances/main.go
+
+zip:
+	zip -j build/start-instance.zip build/start-instances/bootstrap
+	zip -j build/stop-instance.zip build/stop-instances/bootstrap
