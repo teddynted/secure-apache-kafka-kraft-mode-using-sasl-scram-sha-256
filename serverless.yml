@@ -19,7 +19,7 @@ resources:
     Ec2InstanceLambdaIamRole: ${file(./iac/ec2/iam/lambda-role.yml)}
     MyKafkaSecurityGroup: ${file(./iac/ec2/security-group/kafka-sg.yml)}
     LaunchTemplate: ${file(./iac/ec2/launch-template.yml)}
-    NodeZero4: ${file(./iac/ec2/node-0.yml)}
+    NodeZero5: ${file(./iac/ec2/node-0.yml)}
     ApacheKafkaBucket: ${file(./iac/s3/apache-kafka-bucket.yml)}
     ApacheKafkaBucketPolicy: ${file(./iac/s3/apache-kafka-bucket-policy.yml)}
     # NodeZeroElasticIP: ${file(./iac/ec2/elastic-ip/ip.yml)}
@@ -27,7 +27,7 @@ resources:
   Outputs:
     PublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["NodeZero4", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["NodeZero5", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
     # ElasticIP:
