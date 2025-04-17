@@ -16,6 +16,7 @@ sudo sed -i s/listeners=PLAINTEXT:\\/\\/:9092,CONTROLLER:\\/\\/:9093/listeners=S
 sudo sed -i s/inter.broker.listener.name=PLAINTEXT/inter.broker.listener.name=SASL_SSL/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/advertised.listeners=PLAINTEXT:\\/\\/localhost:9092,CONTROLLER:\\/\\/localhost:9093/advertised.listeners=SASL_SSL:\\/\\/$PRIVATE_DNS_NAME:9092,CONTROLLER:\\/\\/$PRIVATE_DNS_NAME:9093,EXTERNAL:\\/\\/$PUBLIC_DNS_NAME:9094/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL/listener.security.protocol.map=CONTROLLER:SASL_SSL,EXTERNAL:SASL_SSL,SASL_SSL:SASL_SSL/ /opt/kafka/config/kraft/server.properties
+sudo echo 'Create client properties'
 sudo touch /opt/kafka/config/kraft/client.properties
 sudo tee /opt/kafka/config/kraft/client.properties > /dev/null <<EOF
 bootstrap.servers=$PRIVATE_DNS_NAME:9092
