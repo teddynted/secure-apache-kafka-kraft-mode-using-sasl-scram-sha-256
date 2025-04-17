@@ -7,7 +7,7 @@ KRAFT_ADVERTISED_LISTENERS=$(cat /opt/kafka/config/kraft/server.properties | gre
 echo 'KRAFT_ADVERTISED_LISTENERS '$KRAFT_ADVERTISED_LISTENERS''
 if [[ $KRAFT_ADVERTISED_LISTENERS -eq 0 ]] 
 then
-sudo sed -i s/offsets.topic.replication.factor=1/offsets.topic.replication.factor=2/ /opt/kafka/config/kraft/server.properties
+sudo sed -i s/offsets.topic.replication.factor=1/offsets.topic.replication.factor=1/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/transaction.state.log.replication.factor=1/transaction.state.log.replication.factor=2/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/socket.receive.buffer.bytes=102400/socket.receive.buffer.bytes=1048576/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/socket.send.buffer.bytes=102400/socket.send.buffer.bytes=1048576/ /opt/kafka/config/kraft/server.properties
@@ -80,3 +80,5 @@ fi
 #sudo /opt/kafka/bin/kafka-console-producer.sh --broker-list :9092 --topic testtopic --producer.config /opt/kafka/config/kraft/client.properties
 #sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server :9092 --topic testtopic --consumer.config /opt/kafka/config/kraft/ssl-consumer.properties --from-beginning
 #sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties --add --allow-principal User:admin --operation Describe --cluster
+#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties --list | grep __consumer_offsets
+#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server ip-172-31-23-15.eu-west-1.compute.internal:9092 --command-config /opt/kafka/config/kraft/client.properties --topic __consumer_offsets --partitions 3 --replication-factor 1 --config cleanup.policy=compact --create
