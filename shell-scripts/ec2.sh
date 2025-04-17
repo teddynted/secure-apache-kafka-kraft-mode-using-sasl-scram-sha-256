@@ -5,9 +5,6 @@ availability_zone=$(aws ec2 describe-instances --query "Reservations[*].Instance
 public_dns_name=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicDnsName" --filters "Name=tag:Name,Values='Apache Kafka Kraft Instance'" "Name=instance-state-name,Values=running" --output text)
 private_dns_name=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PrivateDnsName" --filters "Name=tag:Name,Values='Apache Kafka Kraft Instance'" "Name=instance-state-name,Values=running" --output text)
 
-echo "Public DNS: '$public_dns_name'"
-echo "Private DNS: '$private_dns_name'"
-
 # Generate RSA key pair
 tmpfile=$(mktemp /tmp/ssh.XXXXXX)
 ssh-keygen -C "eic temp key" -q -f $tmpfile -t rsa -b 2048 -N "" <<< y
