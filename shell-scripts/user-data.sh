@@ -56,16 +56,16 @@ EOF
 
 sudo touch /opt/kafka/config/kraft/log4j.properties
 sudo cat <<EOF > /opt/kafka/config/kraft/log4j.properties
-log4j.rootLogger=INFO, stdout, kafkaAppender
-log4j.appender.stdout=org.apache.log4j.ConsoleAppender
-log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
-log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n
-log4j.appender.kafkaAppender=org.apache.log4j.RollingFileAppender
-log4j.appender.kafkaAppender.File=/var/log/kafka/server.log
-log4j.appender.kafkaAppender.MaxFileSize=100MB
-log4j.appender.kafkaAppender.MaxBackupIndex=10
-log4j.appender.kafkaAppender.layout=org.apache.log4j.PatternLayout
-log4j.appender.kafkaAppender.layout.ConversionPattern=[%d] %p %m (%c)%n
+# log4j.rootLogger=INFO, stdout, kafkaAppender
+# log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+# log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+# log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n
+# log4j.appender.kafkaAppender=org.apache.log4j.RollingFileAppender
+# log4j.appender.kafkaAppender.File=/var/log/kafka/server.log
+# log4j.appender.kafkaAppender.MaxFileSize=100MB
+# log4j.appender.kafkaAppender.MaxBackupIndex=10
+# log4j.appender.kafkaAppender.layout=org.apache.log4j.PatternLayout
+# log4j.appender.kafkaAppender.layout.ConversionPattern=[%d] %p %m (%c)%n
 # log4j.logger.org.apache.kafka.metadata=DEBUG
 # log4j.logger.org.apache.kafka.raft=DEBUG
 # log4j.logger.org.apache.kafka.controller=DEBUG

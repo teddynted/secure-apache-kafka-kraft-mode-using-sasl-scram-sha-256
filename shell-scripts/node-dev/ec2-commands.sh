@@ -65,7 +65,7 @@ sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PRIVATE_DNS_NAM
 sudo sleep 10
 sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --list --command-config /opt/kafka/config/kraft/client.properties
 sudo sleep 10
-sudo /opt/kafka/bin/kafka-topics.sh --describe --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --topic first-topic
+sudo /opt/kafka/bin/kafka-topics.sh --describe --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --topic testtopic
 sudo sleep 10
 sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties describe --status
 sudo sleep 5

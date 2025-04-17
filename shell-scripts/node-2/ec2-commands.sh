@@ -32,6 +32,16 @@ ssl.truststore.password=$1
 sasl.mechanism=SCRAM-SHA-256
 sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=$2 password=$1;
 group.id=demo-consumer-group
+group.instance.id=demo-consumer-group-1
+key.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+auto.offset.reset=earliest
+enable.auto.commit=true
+auto.commit.interval.ms=5000
+session.timeout.ms=45000
+heartbeat.interval.ms=15000
+max.poll.interval.ms=300000
+partition.assignment.strategy=org.apache.kafka.clients.consumer.CooperativeStickyAssignor
 EOF
 sudo touch /opt/kafka/config/kraft/ssl-producer.properties
 sudo tee /opt/kafka/config/kraft/ssl-producer.properties > /dev/null <<EOF
