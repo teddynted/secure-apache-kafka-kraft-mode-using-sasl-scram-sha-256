@@ -47,43 +47,6 @@ func main() {
 	lambda.Start(handler)
 }
 
-func DisassociateAndReleaseElasticIP(client *ec2.EC2) (*ec2.DescribeAddressesOutput, error) {
-	log.Println("Disassociate and release Elastic IP...")
-	result, err := client.DescribeAddresses(&ec2.DescribeAddressesInput{})
-	if err != nil {
-		log.Fatalf("failed to describe addresses, %v", err)
-	}
-	for _, address := range result.Addresses {
-		// Disassociate if associated
-		if address.AssociationId != nil {
-			fmt.Printf("Disassociating EIP: %v", address.PublicIp)
-			fmt.Printf("Disassociating EIP: %s\n", *address.PublicIp)
-			_, err := client.DisassociateAddress(&ec2.DisassociateAddressInput{
-				AssociationId: address.AssociationId,
-			})
-			if err != nil {
-				log.Printf("failed to disassociate EIP: %s, error: %v", *address.PublicIp, err)
-			}
-		}
-		// Release the Elastic IP
-		if address.AllocationId != nil {
-			fmt.Printf("Releasing EIP: %v", address.PublicIp)
-			fmt.Printf("Releasing EIP: %s\n", *address.PublicIp)
-			_, err := client.ReleaseAddress(&ec2.ReleaseAddressInput{
-				AllocationId: address.AllocationId,
-			})
-			if err != nil {
-				log.Printf("failed to release EIP: %s, error: %v", *address.PublicIp, err)
-			}
-		}
-	}
-	if err != nil {
-		return nil, err
-	}
-
-	return result, err
-}
-
 func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	log.Println("Stopped an Instance...")
 
@@ -113,13 +76,6 @@ func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 			}
 		}
 	}
-
-	disassociateIP, _err := DisassociateAndReleaseElasticIP(ec2Client)
-	if _err != nil {
-		fmt.Printf("Couldn't disassociate and release Elastic IP: %v", _err)
-	}
-
-	fmt.Print(disassociateIP)
 
 	response := events.APIGatewayProxyResponse{
 		StatusCode: 200,

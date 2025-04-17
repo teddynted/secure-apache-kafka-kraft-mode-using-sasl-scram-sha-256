@@ -18,37 +18,6 @@ func AwsRegion() string {
 	return os.Getenv("AWS_REGION")
 }
 
-// Associate an Elastic IP with an EC2 instance
-func AssociateElasticIP(client *ec2.EC2, instanceID string) {
-	log.Println("Associating Elastic IP...")
-	eipResp, err := client.DescribeAddresses(&ec2.DescribeAddressesInput{
-		Filters: []*ec2.Filter{
-			{
-				Name: aws.String("instance-id"),
-				Values: []*string{
-					aws.String(instanceID),
-				},
-			},
-		},
-	})
-	if err != nil {
-		log.Fatalf("failed to describe Elastic IPs: %v", err)
-	}
-	fmt.Print(eipResp)
-	log.Print(*eipResp)
-	// allocationID := *eipResp.Addresses[0].AllocationId
-	// input := &ec2.AssociateAddressInput{
-	// 	InstanceId:   aws.String(instanceID),
-	// 	AllocationId: aws.String(allocationID),
-	// }
-	// fmt.Print(input)
-	// result, err := client.AssociateAddress(input)
-	// if err != nil {
-	// 	log.Fatalf("failed to associate addresses, %v", err)
-	// }
-	// fmt.Printf("Elastic IP associated successfully! Association ID: %s\n", *result.AssociationId)
-}
-
 func GetStoppedInstances(client *ec2.EC2) (*ec2.DescribeInstancesOutput, error) {
 	result, err := client.DescribeInstances(&ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
@@ -104,8 +73,6 @@ func handler(_ctx context.Context, request events.APIGatewayProxyRequest) (event
 			if err != nil {
 				fmt.Printf("Couldn't start instance: %v", err)
 			}
-			AssociateElasticIP(ec2Client, *instance.InstanceId)
-
 		}
 	}
 
