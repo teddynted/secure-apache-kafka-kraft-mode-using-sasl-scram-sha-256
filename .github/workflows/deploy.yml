@@ -69,8 +69,8 @@ jobs:
 
     - name: Create Key Pair
       run: |
-        chmod +x ./shell-scripts/ssh-into-ec2.sh
-        ./shell-scripts/ssh-into-ec2.sh
+        chmod +x ./shell-scripts/create-key-pair.sh
+        ./shell-scripts/create-key-pair.sh
       env:
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
         KEY_PAIR_BUCKET_NAME: ${{ secrets.KEY_PAIR_BUCKET_NAME }}
