@@ -94,7 +94,7 @@ sudo ss -tulnp | grep java
 
 ## Keywords
 
-**SSL (Secure Sockets Layer)**: Encrypts data between two parties (e.g. Kafka client and broker)
-**SCRAM (Salted Challenge Response Authentication Mechanism)**: stores SCRAM credentials with the salt.
-**SASL (Simple Authentication and Security Layer)**: A framework that enables secure authentication between clients and brokers using various mechanisms like GSSAPI(Kerberos), Plain, SCRAM, and OAUTHBEARER.
-**KRaft (Mode)**: let's Kafka manage it's own data without needing Zookeeper. This makes the entire setup simpler and more efficient.
+- **SSL (Secure Sockets Layer)**: Encrypts data between two parties (e.g. Kafka client and broker)
+- **SCRAM (Salted Challenge Response Authentication Mechanism)**: stores SCRAM credentials with the salt.
+- **SASL (Simple Authentication and Security Layer)**: A framework that enables secure authentication between clients and brokers using various mechanisms like GSSAPI(Kerberos), Plain, SCRAM, and OAUTHBEARER.
+- **KRaft (Mode)**: let's Kafka manage it's own data without needing Zookeeper. This makes the entire setup simpler and more efficient.
