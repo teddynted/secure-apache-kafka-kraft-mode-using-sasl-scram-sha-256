@@ -77,6 +77,8 @@ log4j.logger.org.apache.kafka.clients=DEBUG
 log4j.logger.org.apache.kafka.common.network.Selector=DEBUG
 log4j.logger.kafka.log.Log=DEBUG
 log4j.logger.kafka.raft.RaftClient=TRACE
+log4j.logger.org.apache.kafka.clients.consumer.internals=DEBUG
+log4j.logger.org.apache.kafka.clients.consumer.internals.ConsumerCoordinator=DEBUG
 EOF
 
 sudo mkdir -p /var/lib/kafka/logs
