@@ -75,6 +75,8 @@ log4j.logger.org.apache.kafka.common.security.ssl.SslFactory=DEBUG
 log4j.logger.kafka=INFO
 log4j.logger.org.apache.kafka.clients=DEBUG
 log4j.logger.org.apache.kafka.common.network.Selector=DEBUG
+log4j.logger.kafka.log.Log=DEBUG
+log4j.logger.kafka.raft.RaftClient=TRACE
 EOF
 
 sudo mkdir -p /var/lib/kafka/logs
@@ -91,6 +93,7 @@ sasl.mechanism.controller.protocol=SCRAM-SHA-256
 sasl.mechanism.inter.broker.protocol=SCRAM-SHA-256
 # ssl.client.auth=required
 ssl.protocol=TLS
+ssl.cipher.suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 ssl.enabled.protocols=TLSv1.2,TLSv1.1,TLSv1
 ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
 ssl.truststore.type=PKCS12
@@ -116,6 +119,13 @@ default.replication.factor=1
 min.insync.replicas=2
 auto.create.topics.enable=true
 unclean.leader.election.enable=false
+controller.quorum.append.linger.ms=10
+controller.quorum.election.timeout.ms=2000
+num.replica.alter.log.dirs.threads=4
+controller.quorum.election.timeout.ms=1000
+connections.max.idle.ms=600000
+socket.connection.setup.timeout.ms=30000
+socket.connection.setup.timeout.max.ms=30000
 EOF'
       
 echo 'export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' >> /etc/environment

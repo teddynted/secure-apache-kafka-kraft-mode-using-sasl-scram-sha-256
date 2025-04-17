@@ -60,6 +60,8 @@ sudo sleep 10
 sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties describe --status
 sudo sleep 5
 sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --alter --add-config 'SCRAM-SHA-256=[iterations=4096,password='$1']' --entity-type users --entity-name admin
+sudo sleep 5
+sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --list --command-config /opt/kafka/config/kraft/client.properties
 fi
 
 #sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties --alter --add-config 'SCRAM-SHA-256=[iterations=4096,password=Passw0rd123]' --entity-type users --entity-name admin
