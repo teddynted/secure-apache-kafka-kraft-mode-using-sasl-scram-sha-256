@@ -28,6 +28,6 @@ resources:
       Value: { "Fn::GetAtt": ["NodeZero4", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
-    ElasticIP:
-      Description: 'The allocated Elastic IP'
-      Value: { 'Ref': 'NodeZeroElasticIP' }
+    # ElasticIP:
+    #   Description: 'The allocated Elastic IP'
+    #   Value: { 'Ref': 'NodeZeroElasticIP' }
