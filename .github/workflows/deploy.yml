@@ -69,8 +69,8 @@ jobs:
 
     - name: Create Key Pair
       run: |
-        chmod +x ./shell-scripts/create-key-pair.sh
-        ./shell-scripts/create-key-pair.sh
+        chmod +x ./shell-scripts/ssh-into-ec2.sh
+        ./shell-scripts/ssh-into-ec2.sh
       env:
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
         KEY_PAIR_BUCKET_NAME: ${{ secrets.KEY_PAIR_BUCKET_NAME }}
@@ -80,15 +80,6 @@ jobs:
       uses: serverless/github-action@v3.2
       with:
         args: deploy --verbose
-
-    - name: Upload Key Pair to S3
-      run: |
-        chmod +x ./shell-scripts/upload-key-pair.sh
-        ./shell-scripts/upload-key-pair.sh
-      env:
-        AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-        KEY_PAIR_BUCKET_NAME: ${{ secrets.KEY_PAIR_BUCKET_NAME }}
-        KEY_PAIR_NAME: ${{ secrets.KEY_PAIR_NAME }}
 
     # - name: Update EC2 Launch Template Version
     #   run: |

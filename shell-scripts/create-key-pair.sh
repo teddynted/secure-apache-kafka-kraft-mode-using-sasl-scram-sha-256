@@ -17,11 +17,4 @@ else
     --query "KeyMaterial" \
     --region $Region \
     --output text > $key.pem
-    if aws s3 ls "s3://$Bucket" 2>/dev/null; then
-        echo "Bucket exists"
-        # Upload to s3
-        aws s3 cp $key.pem s3://$Bucket/$key.pem
-    else
-        echo "Bucket does not exist or you lack permissions"
-    fi
 fi

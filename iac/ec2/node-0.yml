@@ -14,7 +14,7 @@ Properties:
       exec > >(tee /var/log/user-data.log) 2>&1
       
       # Download and execute with error handling
-      if ! curl -fSL https://github.com/teddynted/secure-apache-kafka-kraft-mode-using-sasl-scram-sha-256/blob/main/shell-scripts/user-data.sh -o /tmp/user-data.sh; then
+      if ! curl -fSL https://raw.githubusercontent.com/teddynted/secure-apache-kafka-kraft-mode-using-sasl-scram-sha-256/refs/heads/main/shell-scripts/user-data.sh -o /tmp/user-data.sh; then
         echo "ERROR: Failed to download script"
         exit 1
       fi
@@ -32,3 +32,4 @@ Properties:
       country: { "Fn::Sub": [ "${country}", { "country": "${env:COUNTRY}" } ] }
       unit: { "Fn::Sub": [ "${unit}", { "unit": "${env:ORGANIZATION_UNIT}" } ] }
       city: { "Fn::Sub": [ "${city}", { "city": "${env:CITY}" } ] }
+      nodeId: 0
