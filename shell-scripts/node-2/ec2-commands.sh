@@ -1,7 +1,7 @@
 #!/bin/bash
 
-PRIVATE_DNS_NAME=$5
-PUBLIC_IP_ADDRESS=$6
+PRIVATE_DNS_NAME=$4
+PUBLIC_IP_ADDRESS=$5
 
 KRAFT_ADVERTISED_LISTENERS=$(cat /opt/kafka/config/kraft/server.properties | grep -c "advertised.listeners=SASL_SSL://$PRIVATE_DNS_NAME:9092")
 echo 'KRAFT_ADVERTISED_LISTENERS '$KRAFT_ADVERTISED_LISTENERS''
