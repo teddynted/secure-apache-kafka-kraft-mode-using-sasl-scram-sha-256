@@ -5,7 +5,7 @@ StopInstances:
     artifact: build/stop-instances.zip
     individually: true
   role: { "Fn::GetAtt": ["Ec2InstanceLambdaIamRole", "Arn"] }
-  name: stop-ec2-instances-lambda
+  name: ${self:provider.stage}-stop-ec2-instances
   memorySize: 128
   timeout: 240
   events:
@@ -21,7 +21,7 @@ StartInstances:
     artifact: build/start-instances.zip
     individually: true
   role: { "Fn::GetAtt": ["Ec2InstanceLambdaIamRole", "Arn"] }
-  name: start-ec2-instances-lambda
+  name: ${self:provider.stage}-start-ec2-instances
   memorySize: 128
   timeout: 240
   events:
