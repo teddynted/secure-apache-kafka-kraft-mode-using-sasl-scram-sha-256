@@ -59,5 +59,9 @@ sudo /opt/kafka/bin/kafka-topics.sh --describe --bootstrap-server $PRIVATE_DNS_N
 sudo sleep 10
 sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties describe --status
 sudo sleep 5
-sudo cat /opt/kafka/config/kraft/server.properties
+sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --alter --add-config 'SCRAM-SHA-256=[iterations=4096,password='$1']' --entity-type users --entity-name admin
 fi
+
+#sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties --alter --add-config 'SCRAM-SHA-256=[iterations=4096,password=Passw0rd123]' --entity-type users --entity-name admin
+#sudo /opt/kafka/bin/kafka-console-producer.sh --broker-list :9092 --topic testtopic --producer.config /opt/kafka/config/kraft/client.properties
+#sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server :9092 --topic my-topic --consumer.config /opt/kafka/config/kraft/client.properties --from-beginning

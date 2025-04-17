@@ -66,13 +66,15 @@ log4j.appender.kafkaAppender.MaxFileSize=100MB
 log4j.appender.kafkaAppender.MaxBackupIndex=10
 log4j.appender.kafkaAppender.layout=org.apache.log4j.PatternLayout
 log4j.appender.kafkaAppender.layout.ConversionPattern=[%d] %p %m (%c)%n
-log4j.logger.org.apache.kafka.metadata=INFO
-log4j.logger.org.apache.kafka.raft=INFO
-log4j.logger.org.apache.kafka.controller=INFO
+log4j.logger.org.apache.kafka.metadata=DEBUG
+log4j.logger.org.apache.kafka.raft=DEBUG
+log4j.logger.org.apache.kafka.controller=DEBUG
 log4j.logger.org.apache.kafka.quorum=DEBUG
 log4j.logger.org.apache.kafka.common.network.SslTransportLayer=DEBUG
 log4j.logger.org.apache.kafka.common.security.ssl.SslFactory=DEBUG
-log4j.logger.kafka=DEBUG
+log4j.logger.kafka=INFO
+log4j.logger.org.apache.kafka.clients=DEBUG
+log4j.logger.org.apache.kafka.common.network.Selector=DEBUG
 EOF
 
 sudo mkdir -p /var/lib/kafka/logs
