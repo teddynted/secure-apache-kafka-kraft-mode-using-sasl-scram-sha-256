@@ -31,17 +31,17 @@ resources:
       Description: Cluster Instance IP Address
       Value: { "Fn::GetAtt": ["NodeOne", "PublicIp"] }
       Export:
-        Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
+        Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-" }
     NodeTwoPublicIp:
       Description: Cluster Instance IP Address
       Value: { "Fn::GetAtt": ["NodeTwo", "PublicIp"] }
       Export:
-        Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
+        Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-2" }
     NodeThreePublicIp:
       Description: Cluster Instance IP Address
       Value: { "Fn::GetAtt": ["NodeThree", "PublicIp"] }
       Export:
-        Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
+        Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-3" }
     # ElasticIP:
     #   Description: 'The allocated Elastic IP'
     #   Value: { 'Ref': 'NodeZeroElasticIP' }
