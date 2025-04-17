@@ -27,9 +27,19 @@ resources:
     # NodeZeroElasticIP: ${file(./iac/ec2/elastic-ip/ip.yml)}
     # NodeZeroElasticIPAssociation: ${file(./iac/ec2/elastic-ip/ip-association.yml)}
   Outputs:
-    PublicIp:
+    NodeOnePublicIp:
       Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["NodeZero9", "PublicIp"] }
+      Value: { "Fn::GetAtt": ["NodeOne", "PublicIp"] }
+      Export:
+        Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
+    NodeTwoPublicIp:
+      Description: Cluster Instance IP Address
+      Value: { "Fn::GetAtt": ["NodeTwo", "PublicIp"] }
+      Export:
+        Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
+    NodeThreePublicIp:
+      Description: Cluster Instance IP Address
+      Value: { "Fn::GetAtt": ["NodeThree", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress" }
     # ElasticIP:
