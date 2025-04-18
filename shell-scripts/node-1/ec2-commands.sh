@@ -60,15 +60,3 @@ sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --co
 sudo sleep 5
 sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --list --command-config /opt/kafka/config/kraft/client.properties
 fi
-
-# Consuming Message
-#sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server :9093 --topic testtopic --group console-consumer-14078 --reset-offsets --to-earliest --consumer.config /opt/kafka/config/kraft/ssl-consumer.properties
-# Producing Messsage
-#sudo echo "Hello, World" | /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server :9092 --topic testtopic --producer.config /opt/kafka/config/kraft/ssl-producer.properties
-#sudo /opt/kafka/bin/kafka-topics.sh --list --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties
-#sudo /opt/kafka/bin/kafka-topics.sh --describe --topic tesstopic --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties
-#sudo /opt/kafka/bin/kafka-consumer-groups.sh --bootstrap-server :9092 --list --command-config /opt/kafka/config/kraft/client.properties
-#sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server :9092 --topic testtopic --group-id driver-request --from-beginning --command-config /opt/kafka/config/kraft/client.properties
-#sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server :9092 --command-config /opt/kafka/config/kraft/client.properties --list | grep __consumer_offsets 
-
-
