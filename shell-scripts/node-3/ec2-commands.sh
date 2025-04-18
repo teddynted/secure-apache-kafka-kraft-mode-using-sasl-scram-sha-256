@@ -31,8 +31,8 @@ ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.
 ssl.truststore.password=$1
 sasl.mechanism=SCRAM-SHA-256
 sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=$2 password=$1;
-group.id=demo-consumer-group
-group.instance.id=demo-consumer-group-1
+# group.id=demo-consumer-group
+# group.instance.id=demo-consumer-group-1
 key.deserializer=org.apache.kafka.common.serialization.StringDeserializer
 value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
 auto.offset.reset=earliest
@@ -43,28 +43,22 @@ heartbeat.interval.ms=15000
 max.poll.interval.ms=300000
 partition.assignment.strategy=org.apache.kafka.clients.consumer.CooperativeStickyAssignor
 EOF
-sudo touch /opt/kafka/config/kraft/ssl-producer.properties
-sudo tee /opt/kafka/config/kraft/ssl-producer.properties > /dev/null <<EOF
-bootstrap.servers=$4:9092
-compression.type=none
-security.protocol=SASL_SSL
-ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
-ssl.truststore.password=$1
-sasl.mechanism=SCRAM-SHA-256
-sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=$2 password=$1;
-EOF
 sudo systemctl daemon-reload
 sudo systemctl enable kafka
 sudo systemctl start kafka
 sudo systemctl status kafka
 sudo sleep 10
-sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $4:9092 --replication-factor 3 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/client.properties
+sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PRIVATE_DNS_NAME:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/client.properties
 sudo sleep 10
-sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $4:9092 --list --command-config /opt/kafka/config/kraft/client.properties
+sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --list --command-config /opt/kafka/config/kraft/client.properties
 sudo sleep 10
-sudo /opt/kafka/bin/kafka-topics.sh --describe --bootstrap-server $4:9092 --command-config /opt/kafka/config/kraft/client.properties --topic first-topic
+sudo /opt/kafka/bin/kafka-topics.sh --describe --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --topic testtopic
 sudo sleep 10
-sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server $4:9092 --command-config /opt/kafka/config/kraft/client.properties describe --status
+sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties describe --status
 sudo sleep 5
-sudo cat /opt/kafka/config/kraft/server.properties
+sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --alter --add-config 'SCRAM-SHA-256=[iterations=4096,password='$1']' --entity-type users --entity-name admin
+sudo sleep 5
+sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --add --allow-principal User:admin --operation Describe --cluster
+sudo sleep 5
+sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --list --command-config /opt/kafka/config/kraft/client.properties
 fi

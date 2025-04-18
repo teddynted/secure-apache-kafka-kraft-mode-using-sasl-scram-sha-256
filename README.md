@@ -48,6 +48,12 @@ sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server <ec2-private-dns-name>:9
 sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server <ec2-private-dns-name>:9092 --command-config /opt/kafka/config/kraft/client.properties --add --allow-principal "User:admin" --operation ClusterAction --cluster
 ```
 
+### Create a Kafka group ID
+
+```cli
+sudo /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server ip-172-31-31-253.eu-west-1.compute.internal:9092 --topic testtopic --group my-scram-group --consumer.config /opt/kafka/config/kraft/client.properties
+```
+
 #### Check that Kafka is running
 
 ```cli
