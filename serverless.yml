@@ -21,15 +21,13 @@ resources:
     Ec2IAMProfile: ${file(./iac/ec2/iam/profile.yml)}
     Ec2InstanceLambdaIamRole: ${file(./iac/ec2/iam/lambda-role.yml)}
     KafkaConsumerLambdaRole: ${file(./iac/lambda/kafka-consumer-lambda-role.yml)}
-    KafkaSecurityGroupNodeOne: ${file(./iac/ec2/security-group/kafka-sg-node-1.yml)}
-    KafkaSecurityGroupNodeTwo: ${file(./iac/ec2/security-group/kafka-sg-node-2.yml)}
-    KafkaSecurityGroupNodeThree: ${file(./iac/ec2/security-group/kafka-sg-node-3.yml)}
+    KafkaNodeSecurityGroup: ${file(./iac/ec2/security-group/kafka-sg-node.yml)}
     PrometheusSecurityGroup: ${file(./iac/ec2/security-group/prometheus-sg.yml)}
     KafkaBrokerSaslScram256Secrets: ${file(./iac/secrets-manager.yml)}
     KafkaEventSource: ${file(./iac/lambda/apache-kafka-lambda-event-source.yml)}
     NodeOne: ${file(./iac/ec2/instance/node-1.yml)}
-    # NodeTwo: ${file(./iac/ec2/instance/node-2.yml)}
-    # NodeThree: ${file(./iac/ec2/instance/node-3.yml)}
+    NodeTwo: ${file(./iac/ec2/instance/node-2.yml)}
+    NodeThree: ${file(./iac/ec2/instance/node-3.yml)}
     Prometheus: ${file(./iac/ec2/instance/prometheus.yml)}
     ApacheKafkaPrometheus: ${file(./iac/ec2/instance/prometheus.yml)}
     ApacheKafkaSNSTopic: ${file(./iac/sns/sns-topic.yml)}

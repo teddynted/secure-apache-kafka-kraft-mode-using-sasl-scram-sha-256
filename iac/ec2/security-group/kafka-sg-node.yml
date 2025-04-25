@@ -1,7 +1,7 @@
 Type: AWS::EC2::SecurityGroup
 Properties:
   GroupDescription: "Kafka Security Group"
-  GroupName: ${self:provider.stage}-apache-kafka-security-group-node-3
+  GroupName: ${self:provider.stage}-apache-kafka-security-group-node
   VpcId: { 'Ref': 'ApacheKafkaVPC' }
   SecurityGroupEngress: []
   SecurityGroupIngress:

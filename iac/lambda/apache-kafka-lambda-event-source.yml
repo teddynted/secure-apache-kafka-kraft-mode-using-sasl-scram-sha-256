@@ -18,8 +18,6 @@ Properties:
         - { 'Ref': 'ApacheKafkaPrivateSubnet2' }
     - Type: VPC_SECURITY_GROUP
       VpcSecurityGroupIds:
-        - { 'Ref': 'KafkaSecurityGroupNodeOne' }
-        - { 'Ref': 'KafkaSecurityGroupNodeTwo' }
-        - { 'Ref': 'KafkaSecurityGroupNodeThree' }
+        - { 'Ref': 'KafkaNodeSecurityGroup' }
   SelfManagedKafkaEventSourceConfig:
     ConsumerGroupId: ${env:KAFKA_REQUEST_CONSUMER_GROUP_ID}
