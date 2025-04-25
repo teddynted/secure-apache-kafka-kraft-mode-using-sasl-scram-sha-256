@@ -22,6 +22,7 @@ resources:
     Ec2InstanceLambdaIamRole: ${file(./iac/ec2/iam/lambda-role.yml)}
     KafkaConsumerLambdaRole: ${file(./iac/lambda/kafka-consumer-lambda-role.yml)}
     MyKafkaSecurityGroup: ${file(./iac/ec2/security-group/kafka-sg.yml)}
+    PrometheusSecurityGroup: ${file(./iac/ec2/security-group/prometheus-sg.yml)}
     LaunchTemplate: ${file(./iac/ec2/launch-template.yml)}
     KafkaBrokerSaslScram256Secrets: ${file(./iac/secrets-manager.yml)}
     KafkaEventSource: ${file(./iac/lambda/apache-kafka-lambda-event-source.yml)}

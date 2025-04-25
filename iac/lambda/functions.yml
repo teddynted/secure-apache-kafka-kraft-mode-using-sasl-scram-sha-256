@@ -50,7 +50,7 @@ SNSConsumer:
   handler: bootstrap
   runtime: provided.al2
   package:
-    artifact: build/sns-consumer.zip
+    artifact: build/sns-receiver-lambda.zip
     individually: true
   role: { "Fn::GetAtt": ["LambdaSnsReceiverRole", "Arn"] }
   name: ${self:provider.stage}-sns-consumer-lambda
