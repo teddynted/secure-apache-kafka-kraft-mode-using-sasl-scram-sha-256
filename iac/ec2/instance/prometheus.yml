@@ -9,6 +9,7 @@ Properties:
   IamInstanceProfile: { 'Ref': 'Ec2IAMProfile' }
   NetworkInterfaces: 
     - AssociatePublicIpAddress: "true"
+      DeviceIndex: "0"
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
   Tags:
     - Key: Name

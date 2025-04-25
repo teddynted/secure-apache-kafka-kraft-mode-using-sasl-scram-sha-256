@@ -7,6 +7,7 @@ Properties:
   IamInstanceProfile: { 'Ref': 'Ec2IAMProfile' }
   NetworkInterfaces: 
     - AssociatePublicIpAddress: "true"
+      DeviceIndex: "0"
   SecurityGroupIds:
     - { 'Fn::GetAtt': ['KafkaNodeSecurityGroup', 'GroupId'] }
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
