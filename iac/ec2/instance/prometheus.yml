@@ -22,10 +22,4 @@ Properties:
       # Start Prometheus
       ./prometheus --config.file=prometheus.yml
 
-    # - username: { "Fn::Sub": [ "${username}", { "username": "${env:SASL_SCRAM_USERNAME}" } ] }
-    #   password: { "Fn::Sub": [ "${password}", { "password": "${env:SASL_SCRAM_PASSWORD}" } ] }
-    #   state: { "Fn::Sub": [ "${state}", { "state": "${env:STATE}" } ] }
-    #   country: { "Fn::Sub": [ "${country}", { "country": "${env:COUNTRY}" } ] }
-    #   unit: { "Fn::Sub": [ "${unit}", { "unit": "${env:ORGANIZATION_UNIT}" } ] }
-    #   city: { "Fn::Sub": [ "${city}", { "city": "${env:CITY}" } ] }
-    #   nodeId: { "Fn::Sub": [ "${nodeId}", { "nodeId": 1 } ] }
+    - nodeId: { "Fn::Sub": [ "${nodeId}", { "nodeId": 1 } ] }
