@@ -5,6 +5,8 @@ Properties:
   ImageId: { 'Ref': 'LatestAmiId' }
   SubnetId: { "Ref": "ApacheKafkaPrivateSubnet1" }
   IamInstanceProfile: { 'Ref': 'Ec2IAMProfile' }
+  NetworkInterfaces: 
+    - AssociatePublicIpAddress: "true"
   SecurityGroupIds:
     - { 'Fn::GetAtt': ['KafkaNodeSecurityGroup', 'GroupId'] }
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
