@@ -50,4 +50,4 @@ resources:
     DisconnectInvokePermission: ${file(./iac/websocket/disconnect-invoke-permission.yml)}
     MessageInvokePermission: ${file(./iac/websocket/message-invoke-permission.yml)}
 
-  Outputs: ${file(./iac/outputs.yml)}
+  #Outputs: ${file(./iac/outputs.yml)}

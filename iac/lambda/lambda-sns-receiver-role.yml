@@ -25,3 +25,8 @@ Properties:
               - logs:CreateLogStream
               - logs:PutLogEvents
             Resource: "*"
+          - Effect: "Allow"
+            Action:
+              - execute-api:ManageConnections
+              - execute-api:Invoke
+            Resource: "arn:aws:execute-api:*:*:*/@connections/*"
