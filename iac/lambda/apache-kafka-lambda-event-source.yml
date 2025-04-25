@@ -5,6 +5,7 @@ Properties:
   Topics:
     - ${env:KAFKA_REQUEST_TOPIC}
   FunctionName: { "Ref": "KafkaConsumerLambdaFunction" }
+  StartingPosition: LATEST
   SelfManagedEventSource:
     Endpoints:
       KafkaBootstrapServers:
