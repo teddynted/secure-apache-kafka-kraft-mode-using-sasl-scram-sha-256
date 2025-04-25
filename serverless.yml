@@ -13,9 +13,9 @@ functions: ${file(./iac/lambda/functions.yml)}
 resources:
   Parameters: ${file(./iac/parameters.yml)}
   Resources:
-    ApacheKafkaVPC: ${file(./iac/ec2/vpc/kakfa-vpc.yml)}
-    ApacheKafkaPrivateSubnet1: ${file(./iac/ec2/vpc/kakfa-private-subnet-1.yml)}
-    ApacheKafkaPrivateSubnet2: ${file(./iac/ec2/vpc/kakfa-private-subnet-2.yml)}
+    ApacheKafkaVPC: ${file(./iac/ec2/vpc/kafka-vpc.yml)}
+    ApacheKafkaPrivateSubnet1: ${file(./iac/ec2/vpc/kafka-private-subnet-1.yml)}
+    ApacheKafkaPrivateSubnet2: ${file(./iac/ec2/vpc/kafka-private-subnet-2.yml)}
     Ec2RolePolicies: ${file(./iac/ec2/iam/policies.yml)}
     Ec2IAMRole: ${file(./iac/ec2/iam/role.yml)}
     Ec2IAMProfile: ${file(./iac/ec2/iam/profile.yml)}
