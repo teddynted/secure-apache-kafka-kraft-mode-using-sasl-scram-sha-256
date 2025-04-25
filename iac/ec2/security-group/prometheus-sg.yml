@@ -1,7 +1,12 @@
 Type: AWS::EC2::SecurityGroup
 Properties:
   GroupDescription: "Security group for Prometheus EC2 instance"
+  VpcId: { 'Ref': 'ApacheKafkaVPC' }
   SecurityGroupIngress:
+    - IpProtocol: tcp # ssh into an instance
+      FromPort: 22
+      ToPort: 22
+      CidrIp: "0.0.0.0/0"
     - IpProtocol: tcp
       FromPort: 9090
       ToPort: 9090

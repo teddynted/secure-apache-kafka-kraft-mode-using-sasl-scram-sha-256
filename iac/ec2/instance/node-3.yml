@@ -1,9 +1,11 @@
 Type: "AWS::EC2::Instance"
 Properties:
   AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
-  LaunchTemplate:
-    LaunchTemplateId: { "Ref": "LaunchTemplate" }
-    Version: { "Fn::GetAtt" : [ "LaunchTemplate", "DefaultVersionNumber" ] }
+  InstanceType: { 'Ref': 'InstanceType' }
+  ImageId: { 'Ref': 'LatestAmiId' }
+  SecurityGroupIds:
+    - { 'Fn::GetAtt': ['KafkaSecurityNodeThree', 'GroupId'] }
+  KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
   Tags:
     - Key: Name
       Value: Apache Kafka Kraft Instance 3

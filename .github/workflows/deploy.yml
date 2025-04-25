@@ -90,21 +90,14 @@ jobs:
       with:
         args: deploy --verbose
 
-    - name: Update EC2 Launch Template Version
+    - name: Connect to Prometheus Instance
       run: |
-        chmod +x ./shell-scripts/modify-launch-template-version.sh
-        ./shell-scripts/modify-launch-template-version.sh
+        chmod +x ./shell-scripts/prothemeus/ec2.sh
+        ./shell-scripts/prothemeus/ec2.sh
       env:
-        AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-
-    # - name: Connect to Kafka Node Dev
-    #   run: |
-    #     chmod +x ./shell-scripts/node-dev/ec2.sh
-    #     ./shell-scripts/node-dev/ec2.sh
-    #   env:
-    #     SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
-    #     SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
-    #     REGION: ${{ secrets.AWS_REGION }}
+        SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
+        SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
+        REGION: ${{ secrets.AWS_REGION }}
     
     - name: Connect to Kafka Node 1
       run: |

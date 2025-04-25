@@ -1,0 +1,23 @@
+Type: AWS::EC2::SecurityGroup
+Properties:
+  GroupDescription: "Kafka Security Group"
+  GroupName: ${self:provider.stage}-apache-kafka-security-group-node-2
+  VpcId: { 'Ref': 'ApacheKafkaVPC' }
+  SecurityGroupEngress: []
+  SecurityGroupIngress:
+    - IpProtocol: tcp # ssh into an instance
+      FromPort: 22
+      ToPort: 22
+      CidrIp: "0.0.0.0/0"
+    - IpProtocol: tcp # for inter broker communication
+      FromPort: 9092
+      ToPort: 9092
+      CidrIp: "0.0.0.0/0"
+    - IpProtocol: tcp # for controller communication
+      FromPort: 9093
+      ToPort: 9093
+      CidrIp: "0.0.0.0/0"
+    - IpProtocol: tcp # for external clients communication
+      FromPort: 9094  
+      ToPort: 9094
+      CidrIp: "0.0.0.0/0"
