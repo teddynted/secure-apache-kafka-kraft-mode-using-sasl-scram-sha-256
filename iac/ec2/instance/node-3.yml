@@ -1,10 +1,10 @@
 Type: "AWS::EC2::Instance"
 Properties:
-  AvailabilityZone: { "Fn::Select": ["0", { "Fn::GetAZs": { "Ref": "AWS::Region" } }] }
+  AvailabilityZone: !Select [ 0, !GetAZs '' ]
   InstanceType: { 'Ref': 'InstanceType' }
   ImageId: { 'Ref': 'LatestAmiId' }
   SecurityGroupIds:
-    - { 'Fn::GetAtt': ['KafkaSecurityGroupNodeThree', 'GroupId'] }
+    - { 'Fn::GetAtt': ['KafkaNodeSecurityGroup', 'GroupId'] }
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
   Tags:
     - Key: Name
