@@ -3,4 +3,4 @@ Properties:
   FunctionName: { "Ref": "WebSocketDisconnectLambdaFunction" }
   Action: lambda:InvokeFunction
   Principal: apigateway.amazonaws.com
-  SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketAPI}/*/$disconnect
+  SourceArn: { "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketAPI}/*/$disconnect" }

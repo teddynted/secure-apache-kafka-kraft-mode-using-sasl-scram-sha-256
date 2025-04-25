@@ -2,5 +2,5 @@ Type: AWS::ApiGatewayV2::Integration
 Properties:
   ApiId: { "Ref": "WebSocketAPI" }
   IntegrationType: AWS_PROXY
-  IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WebSocketConnectLambdaFunction.Arn}/invocations
+  IntegrationUri: { "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WebSocketConnectLambdaFunction.Arn}/invocations" }
   IntegrationMethod: POST

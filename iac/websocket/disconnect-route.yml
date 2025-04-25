@@ -3,4 +3,4 @@ Properties:
   ApiId: {"Ref": "WebSocketAPI"}
   RouteKey: $disconnect
   AuthorizationType: NONE
-  Target: !Sub integrations/${DisconnectIntegration}
+  Target: { "Fn::Sub": "integrations/${DisconnectIntegration}" }

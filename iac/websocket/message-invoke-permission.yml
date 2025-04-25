@@ -3,4 +3,4 @@ Properties:
   FunctionName: { "Ref": "WebSocketMessageLambdaFunction" }
   Action: lambda:InvokeFunction
   Principal: apigateway.amazonaws.com
-  SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketAPI}/*/sendMessage
+  SourceArn: { "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketAPI}/*/sendMessage" }

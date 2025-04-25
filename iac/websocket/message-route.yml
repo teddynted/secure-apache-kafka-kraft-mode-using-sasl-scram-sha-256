@@ -3,4 +3,4 @@ Properties:
   ApiId: { "Ref": "WebSocketAPI" }
   RouteKey: sendMessage
   AuthorizationType: NONE
-  Target: !Sub integrations/${MessageIntegration}
+  Target: { "Fn::Sub": "integrations/${MessageIntegration}" }
