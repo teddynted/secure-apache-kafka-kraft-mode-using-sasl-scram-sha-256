@@ -4,6 +4,7 @@ instance_id=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].I
 public_dns_name=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicDnsName" --filters "Name=tag:Name,Values='Prometheus Instance'" "Name=instance-state-name,Values=running" --output text)
 availability_zone=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].Placement.AvailabilityZone" --filters "Name=tag:Name,Values='Prometheus Instance'" "Name=instance-state-name,Values=running" --output text)
 
+echo "1: $instance_id, 2: $public_dns_name, 3: $availability_zone"
 KAFKA_BOOTSTRAP_SERVER=$KAFKA_BOOTSTRAP_SERVER
 KAFKA_BOOTSTRAP_SERVER_TWO=$KAFKA_BOOTSTRAP_SERVER_TWO
 KAFKA_BOOTSTRAP_SERVER_THREE=$KAFKA_BOOTSTRAP_SERVER_THREE
