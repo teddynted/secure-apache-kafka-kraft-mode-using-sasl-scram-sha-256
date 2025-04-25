@@ -1,0 +1,18 @@
+NodeOnePublicIp:
+  Description: Cluster Instance IP Address
+  Value: { "Fn::GetAtt": ["NodeOne", "PublicIp"] }
+  Export:
+    Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-1" }
+NodeTwoPublicIp:
+  Description: Cluster Instance IP Address
+  Value: { "Fn::GetAtt": ["NodeTwo", "PublicIp"] }
+  Export:
+    Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-2" }
+NodeThreePublicIp:
+  Description: Cluster Instance IP Address
+  Value: { "Fn::GetAtt": ["NodeThree", "PublicIp"] }
+  Export:
+    Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-3" }
+WebSocketURL:
+  Description: WebSocket endpoint URL
+  Value: !Sub wss://${WebSocketAPI}.execute-api.${AWS::Region}.amazonaws.com/prod

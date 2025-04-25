@@ -14,6 +14,11 @@ StopInstances:
         enabled: true
         method: scheduler
         timezone: Africa/Johannesburg
+    - schedule:
+        rate: cron(0 */2 * * ? *)
+        enabled: true
+        method: scheduler
+        timezone: Africa/Johannesburg
   vpc: ${file(./iac/ec2/vpc/lambda-vpc-config.yml)}
 
 StartInstances:
@@ -60,3 +65,36 @@ SNSConsumer:
     - sns:
         arn: { "Ref": "ApacheKafkaSNSTopic" }
         topicName: ${self:provider.stage}-sns-consumer-lambda-topic
+
+WebSocketConnect:
+  handler: bootstrap
+  runtime: provided.al2
+  package:
+    artifact: build/websocket-connect.zip
+    individually: true
+  role: { "Fn::GetAtt": ["WebSocketLambdaRole", "Arn"] }
+  name: ${self:provider.stage}-websocket-connect-lambda
+  timeout: 500
+  memorySize: 1800
+
+WebSocketDisconnect:
+  handler: bootstrap
+  runtime: provided.al2
+  package:
+    artifact: build/websocket-disconnect.zip
+    individually: true
+  role: { "Fn::GetAtt": ["WebSocketLambdaRole", "Arn"] }
+  name: ${self:provider.stage}-websocket-disconnect-lambda
+  timeout: 500
+  memorySize: 1800
+
+WebSocketMessage:
+  handler: bootstrap
+  runtime: provided.al2
+  package:
+    artifact: build/websocket-message.zip
+    individually: true
+  role: { "Fn::GetAtt": ["WebSocketLambdaRole", "Arn"] }
+  name: ${self:provider.stage}-websocket-message-lambda
+  timeout: 500
+  memorySize: 1800

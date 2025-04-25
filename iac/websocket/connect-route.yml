@@ -1,0 +1,6 @@
+Type: AWS::ApiGatewayV2::Route
+Properties:
+  ApiId: { "Ref": "WebSocketAPI" }
+  RouteKey: $connect
+  AuthorizationType: NONE
+  Target: !Sub integrations/${ConnectIntegration}

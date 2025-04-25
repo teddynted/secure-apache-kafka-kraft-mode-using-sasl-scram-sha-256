@@ -1,0 +1,6 @@
+Type: AWS::ApiGatewayV2::Stage
+Properties:
+  ApiId: { "Ref": "WebSocketAPI" }
+  StageName: prod
+  DeploymentId: { "Ref": "WebSocketDeployment" }
+  AutoDeploy: true

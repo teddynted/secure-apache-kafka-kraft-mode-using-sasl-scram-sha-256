@@ -1,0 +1,5 @@
+Type: AWS::ApiGatewayV2::Api
+Properties:
+  Name: MyWebSocketAPI
+  ProtocolType: WEBSOCKET
+  RouteSelectionExpression: "$request.body.action"

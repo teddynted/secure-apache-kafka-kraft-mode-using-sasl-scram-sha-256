@@ -1,0 +1,6 @@
+Type: AWS::ApiGatewayV2::Route
+Properties:
+  ApiId: {"Ref": "WebSocketAPI"}
+  RouteKey: $disconnect
+  AuthorizationType: NONE
+  Target: !Sub integrations/${DisconnectIntegration}

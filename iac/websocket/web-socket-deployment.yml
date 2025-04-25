@@ -1,0 +1,4 @@
+Type: AWS::ApiGatewayV2::Deployment
+DependsOn: [ConnectRoute, DisconnectRoute, MessageRoute]
+Properties:
+  ApiId: {"Ref": "WebSocketAPI"}
