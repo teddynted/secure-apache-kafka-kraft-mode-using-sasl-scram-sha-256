@@ -10,6 +10,8 @@ Properties:
             - scheduler.amazonaws.com
         Action:
           - sts:AssumeRole
+  ManagedPolicyArns:
+    - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
   Policies:
     - PolicyDocument:
         Version: "2012-10-17"
@@ -19,12 +21,6 @@ Properties:
             Resource: '*'
           - Action:
               - "scheduler:*"
-            Effect: "Allow"
-            Resource: "*"
-          - Action:
-              - "logs:CreateLogGroup"
-              - "logs:CreateLogStream"
-              - "logs:PutLogEvents"
             Effect: "Allow"
             Resource: "*"
           - Action:
