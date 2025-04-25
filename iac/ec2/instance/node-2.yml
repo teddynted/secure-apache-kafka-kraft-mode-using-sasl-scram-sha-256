@@ -3,13 +3,17 @@ Properties:
   AvailabilityZone: { "Fn::Select": [0,{ "Fn::GetAZs": "" }] }
   InstanceType: { 'Ref': 'InstanceType' }
   ImageId: { 'Ref': 'LatestAmiId' }
-  SubnetId: { "Ref": "ApacheKafkaPrivateSubnet1" }
+  #SubnetId: { "Ref": "ApacheKafkaPrivateSubnet1" }
   IamInstanceProfile: { 'Ref': 'Ec2IAMProfile' }
   NetworkInterfaces: 
     - AssociatePublicIpAddress: "true"
       DeviceIndex: "0"
-  SecurityGroupIds:
-    - { 'Fn::GetAtt': ['KafkaNodeSecurityGroup', 'GroupId'] }
+      GroupSet: 
+        - {"Ref": "KafkaNodeSecurityGroup"}
+      SubnetId: 
+        {"Ref": "ApacheKafkaPrivateSubnet1"}
+  # SecurityGroupIds:
+  #   - { 'Fn::GetAtt': ['KafkaNodeSecurityGroup', 'GroupId'] }
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
   Tags:
     - Key: Name

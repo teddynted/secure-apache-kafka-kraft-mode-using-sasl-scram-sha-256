@@ -7,7 +7,7 @@ provider:
   name: aws
   architecture: arm64
   region: ${env:AWS_REGION}
-  stage: "dev"
+  stage: ${env:STAGE}
   environment: ${file(./iac/environment.yml)}
 functions: ${file(./iac/lambda/functions.yml)}
 resources:

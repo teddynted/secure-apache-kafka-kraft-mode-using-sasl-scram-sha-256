@@ -3,10 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	//"github.com/gorilla/websocket"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/apigatewaymanagementapi"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
 )
 
 // HandleRequest will be triggered by an SNS message
@@ -15,41 +20,34 @@ func HandleRequest(ctx context.Context, snsEvent events.SNSEvent) {
 		// Process the SNS message
 		fmt.Printf("Received message: %s\n", record.SNS.Message)
 	}
-	connectAndSendMessage()
 }
 
-func connectAndSendMessage() {
-	// websocketURL := "wss://<your-api-id>.execute-api.<region>.amazonaws.com/<stage>"
+func SendCustomMessage(ctx context.Context, event events.APIGatewayProxyRequest) error {
+	db := dynamodb.New(session.Must(session.NewSession()))
+	api := apigatewaymanagementapi.New(session.Must(session.NewSession()),
+		aws.NewConfig().WithEndpoint(fmt.Sprintf("https://%s.execute-api.%s.amazonaws.com/%s",
+			os.Getenv("API_ID"), os.Getenv("AWS_REGION"), os.Getenv("STAGE"))))
 
-	// u := url.URL{Scheme: "wss", Host: websocketURL[6:], Path: "/"} // remove wss://
+	connections, err := db.Scan(&dynamodb.ScanInput{
+		TableName: aws.String(os.Getenv("TABLE_NAME")),
+	})
+	if err != nil {
+		log.Println("Scan error:", err)
+		return err
+	}
 
-	// log.Printf("Connecting to %s", u.String())
+	for _, item := range connections.Items {
+		connID := *item["connectionId"].S
+		_, err := api.PostToConnection(&apigatewaymanagementapi.PostToConnectionInput{
+			ConnectionId: aws.String(connID),
+			Data:         []byte("Triggered from another Lambda"),
+		})
+		if err != nil {
+			log.Printf("Failed to send to %s: %v", connID, err)
+		}
+	}
 
-	// dialer := websocket.Dialer{
-	// 	HandshakeTimeout: 5 * time.Second,
-	// }
-
-	// conn, _, err := dialer.Dial(u.String(), nil)
-	// if err != nil {
-	// 	log.Fatalf("Failed to connect: %v", err)
-	// }
-	// defer conn.Close()
-
-	// log.Println("Connected to WebSocket")
-
-	// // Send a message
-	// err = conn.WriteJSON(map[string]string{"action": "sendMessage", "data": "Hello from Go client!"})
-	// if err != nil {
-	// 	log.Printf("Write error: %v", err)
-	// }
-
-	// // Read response (if expected)
-	// _, message, err := conn.ReadMessage()
-	// if err != nil {
-	// 	log.Printf("Read error: %v", err)
-	// } else {
-	// 	log.Printf("Received: %s", message)
-	// }
+	return err
 }
 
 func main() {

@@ -1,6 +1,6 @@
 Type: AWS::DynamoDB::Table
 Properties:
-  TableName: WebSocketConnections
+  TableName: ${self:provider.stage}WebSocketConnections
   AttributeDefinitions:
     - AttributeName: connectionId
       AttributeType: S
