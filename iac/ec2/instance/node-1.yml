@@ -24,6 +24,7 @@ Properties:
         echo "ERROR: Script execution failed"
         exit 1
       fi
+      echo "SUCCESS"
     - username: { "Fn::Sub": [ "${username}", { "username": "${env:SASL_SCRAM_USERNAME}" } ] }
       password: { "Fn::Sub": [ "${password}", { "password": "${env:SASL_SCRAM_PASSWORD}" } ] }
       state: { "Fn::Sub": [ "${state}", { "state": "${env:STATE}" } ] }
