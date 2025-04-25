@@ -9,8 +9,6 @@ Properties:
   IamInstanceProfile:
       Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
-  IamInstanceProfile:
-    Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
   Tags:
     - Key: Name
       Value: Prometheus Instance
