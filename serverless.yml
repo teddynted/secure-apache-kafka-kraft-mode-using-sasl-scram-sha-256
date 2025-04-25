@@ -9,45 +9,51 @@ provider:
   region: ${env:AWS_REGION}
   stage: "dev"
   environment: ${file(./iac/environment.yml)}
-functions: ${file(./iac/lambda.yml)}
+functions: ${file(./iac/lambda/functions.yml)}
 resources:
   Parameters: ${file(./iac/parameters.yml)}
   Resources:
+    ApacheKafkaVPC: ${file(./iac/ec2/vpc/kakfa-vpc.yml)}
+    ApacheKafkaPrivateSubnet1: ${file(./iac/ec2/vpc/kakfa-private-subnet-1.yml)}
+    ApacheKafkaPrivateSubnet2: ${file(./iac/ec2/vpc/kakfa-private-subnet-2.yml)}
     Ec2RolePolicies: ${file(./iac/ec2/iam/policies.yml)}
     Ec2IAMRole: ${file(./iac/ec2/iam/role.yml)}
     Ec2IAMProfile: ${file(./iac/ec2/iam/profile.yml)}
     Ec2InstanceLambdaIamRole: ${file(./iac/ec2/iam/lambda-role.yml)}
+    KafkaConsumerLambdaRole: ${file(./iac/lambda/kafka-consumer-lambda-role.yml)}
     MyKafkaSecurityGroup: ${file(./iac/ec2/security-group/kafka-sg.yml)}
     LaunchTemplate: ${file(./iac/ec2/launch-template.yml)}
-    # NodeOne: ${file(./iac/ec2/instance/node-1.yml)}
-    # NodeTwo: ${file(./iac/ec2/instance/node-2.yml)}
-    # NodeThree: ${file(./iac/ec2/instance/node-3.yml)}
-    NodeDev14: ${file(./iac/ec2/instance/node-dev.yml)}
+    KafkaBrokerSaslScram256Secrets: ${file(./iac/secrets-manager.yml)}
+    KafkaEventSource: ${file(./iac/lambda/apache-kafka-lambda-event-source.yml)}
+    NodeOne: ${file(./iac/ec2/instance/node-1.yml)}
+    NodeTwo: ${file(./iac/ec2/instance/node-2.yml)}
+    NodeThree: ${file(./iac/ec2/instance/node-3.yml)}
+    # NodeDev14: ${file(./iac/ec2/instance/node-dev.yml)}
     ApacheKafkaBucket: ${file(./iac/s3/apache-kafka-bucket.yml)}
     ApacheKafkaBucketPolicy: ${file(./iac/s3/apache-kafka-bucket-policy.yml)}
     # NodeZeroElasticIP: ${file(./iac/ec2/elastic-ip/ip.yml)}
     # NodeZeroElasticIPAssociation: ${file(./iac/ec2/elastic-ip/ip-association.yml)}
   Outputs:
-    # NodeOnePublicIp:
-    #   Description: Cluster Instance IP Address
+    NodeOnePublicIp:
+      Description: Cluster Instance IP Address
+      Value: { "Fn::GetAtt": ["NodeOne", "PublicIp"] }
+      Export:
+        Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-1" }
+    NodeTwoPublicIp:
+      Description: Cluster Instance IP Address
+      Value: { "Fn::GetAtt": ["NodeTwo", "PublicIp"] }
+      Export:
+        Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-2" }
+    NodeThreePublicIp:
+      Description: Cluster Instance IP Address
+      Value: { "Fn::GetAtt": ["NodeThree", "PublicIp"] }
+      Export:
+        Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-3" }
+    # NodeDevPublicIp:
+    #   Description: Node One IP Address
     #   Value: { "Fn::GetAtt": ["NodeOne", "PublicIp"] }
     #   Export:
-    #     Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-" }
-    # NodeTwoPublicIp:
-    #   Description: Cluster Instance IP Address
-    #   Value: { "Fn::GetAtt": ["NodeTwo", "PublicIp"] }
-    #   Export:
-    #     Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-2" }
-    # NodeThreePublicIp:
-    #   Description: Cluster Instance IP Address
-    #   Value: { "Fn::GetAtt": ["NodeThree", "PublicIp"] }
-    #   Export:
-    #     Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-3" }
-    NodeDevPublicIp:
-      Description: Cluster Instance IP Address
-      Value: { "Fn::GetAtt": ["NodeDev14", "PublicIp"] }
-      Export:
-        Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-dev" }
+    #     Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-dev" }
     # ElasticIP:
     #   Description: 'The allocated Elastic IP'
     #   Value: { 'Ref': 'NodeZeroElasticIP' }

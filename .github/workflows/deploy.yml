@@ -21,7 +21,13 @@ jobs:
       COUNTRY: ${{ secrets.COUNTRY }}
       ORGANIZATION_UNIT: ${{ secrets.ORGANIZATION_UNIT }}
       CITY: ${{ secrets.CITY }}
-      VPC_ID: ${{ secrets.VPC_ID }}
+      KAFKA_REQUEST_TOPIC: ${{ secrets.KAFKA_REQUEST_TOPIC }}
+      KAFKA_BOOTSTRAP_SERVER: ${{ secrets.KAFKA_BOOTSTRAP_SERVER }}
+      KAFKA_REQUEST_CONSUMER_GROUP_ID: ${{ secrets.KAFKA_REQUEST_CONSUMER_GROUP_ID }}
+      NODE_ONE_TOPIC: ${{ secrets.NODE_ONE_TOPIC }}
+      NODE_TWO_TOPIC: ${{ secrets.NODE_TWO_TOPIC }}
+      NODE_THREE_TOPIC: ${{ secrets.NODE_THREE_TOPIC }}
+
     defaults:
       run:
         shell: bash
@@ -88,38 +94,41 @@ jobs:
       env:
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
 
-    - name: Connect to Kafka Node Dev
+    # - name: Connect to Kafka Node Dev
+    #   run: |
+    #     chmod +x ./shell-scripts/node-dev/ec2.sh
+    #     ./shell-scripts/node-dev/ec2.sh
+    #   env:
+    #     SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
+    #     SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
+    #     REGION: ${{ secrets.AWS_REGION }}
+    
+    - name: Connect to Kafka Node 1
       run: |
-        chmod +x ./shell-scripts/node-dev/ec2.sh
-        ./shell-scripts/node-dev/ec2.sh
+        chmod +x ./shell-scripts/node-1/ec2.sh
+        ./shell-scripts/node-1/ec2.sh
       env:
         SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
         SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
         REGION: ${{ secrets.AWS_REGION }}
-    
-    # - name: Connect to Kafka Node 1
-    #   run: |
-    #     chmod +x ./shell-scripts/node-1/ec2.sh
-    #     ./shell-scripts/node-1/ec2.sh
-    #   env:
-    #     SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
-    #     SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
-    #     REGION: ${{ secrets.AWS_REGION }}
+        NODE_ONE_TOPIC: ${{ secrets.NODE_ONE_TOPIC }}
 
-    # - name: Connect to Kafka Node 2
-    #   run: |
-    #     chmod +x ./shell-scripts/node-2/ec2.sh
-    #     ./shell-scripts/node-2/ec2.sh
-    #   env:
-    #     SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
-    #     SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
-    #     REGION: ${{ secrets.AWS_REGION }}
+    - name: Connect to Kafka Node 2
+      run: |
+        chmod +x ./shell-scripts/node-2/ec2.sh
+        ./shell-scripts/node-2/ec2.sh
+      env:
+        SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
+        SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
+        REGION: ${{ secrets.AWS_REGION }}
+        NODE_TWO_TOPIC: ${{ secrets.NODE_TWO_TOPIC }}
   
-    # - name: Connect to Kafka Node 3
-    #   run: |
-    #     chmod +x ./shell-scripts/node-2/ec2.sh
-    #     ./shell-scripts/node-2/ec2.sh
-    #   env:
-    #     SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
-    #     SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
-    #     REGION: ${{ secrets.AWS_REGION }}
+    - name: Connect to Kafka Node 3
+      run: |
+        chmod +x ./shell-scripts/node-2/ec2.sh
+        ./shell-scripts/node-2/ec2.sh
+      env:
+        SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
+        SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
+        REGION: ${{ secrets.AWS_REGION }}
+        NODE_THREE_TOPIC: ${{ secrets.NODE_THREE_TOPIC }}

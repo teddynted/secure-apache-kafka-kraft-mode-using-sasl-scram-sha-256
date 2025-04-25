@@ -1,0 +1,36 @@
+Type: AWS::IAM::Role
+Properties:
+  AssumeRolePolicyDocument:
+    Version: "2012-10-17"
+    Statement:
+      - Effect: "Allow"
+        Principal:
+          Service:
+            - "lambda.amazonaws.com"
+        Action:
+          - "sts:AssumeRole"
+  Policies:
+    - PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Action:
+              - "logs:CreateLogGroup"
+              - "logs:CreateLogStream"
+              - "logs:PutLogEvents"
+              - "ec2:CreateNetworkInterface",
+              - "ec2:DescribeNetworkInterfaces",
+              - "ec2:DescribeVpcs",
+              - "ec2:DeleteNetworkInterface",
+              - "ec2:DescribeSubnets",
+              - "ec2:DescribeSecurityGroups",
+            Resource: "*"
+          - Effect: "Allow"
+            Action:
+              - "secretsmanager:GetRandomPassword"
+              - "secretsmanager:PutSecretValue"
+              - "secretsmanager:GetSecretValue"
+              - "secretsmanager:CreateSecret"
+            Resource: { "Ref": "KafkaBrokerSaslScram256Secrets" }
+      PolicyName:
+        { "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "KafkaAccessPolicy"]] }

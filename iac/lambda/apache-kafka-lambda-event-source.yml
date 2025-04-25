@@ -1,0 +1,16 @@
+Type: AWS::Lambda::EventSourceMapping
+Properties:
+  BatchSize: 2000
+  Enabled: true
+  Topics:
+    - ${env:KAFKA_REQUEST_TOPIC}
+  FunctionName: { "Ref": "KafkaConsumerLambdaFunction" }
+  SelfManagedEventSource:
+    Endpoints:
+      KafkaBootstrapServers:
+        - ${env:KAFKA_BOOTSTRAP_SERVER}
+  SourceAccessConfigurations:
+    - Type: SASL_SCRAM_256_AUTH
+      URI: { "Ref": "KafkaBrokerSaslScram256Secrets" }
+  SelfManagedKafkaEventSourceConfig:
+    ConsumerGroupId: ${env:KAFKA_REQUEST_CONSUMER_GROUP_ID}

@@ -1,0 +1,5 @@
+securityGroupIds:
+  - { 'Ref': 'MyKafkaSecurityGroup' }
+subnetIds:
+  - { 'Ref': 'ApacheKafkaPrivateSubnet1' }
+  - { 'Ref': 'ApacheKafkaPrivateSubnet2' }

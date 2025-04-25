@@ -46,11 +46,11 @@ sudo systemctl enable kafka
 sudo systemctl start kafka
 sudo systemctl status kafka
 sudo sleep 10
-sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PRIVATE_DNS_NAME:9092 --replication-factor 1 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/client.properties
+sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PRIVATE_DNS_NAME:9092 --replication-factor 3 --partitions 3 --topic $8 --if-not-exists --command-config /opt/kafka/config/kraft/client.properties
 sudo sleep 10
 sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --list --command-config /opt/kafka/config/kraft/client.properties
 sudo sleep 10
-sudo /opt/kafka/bin/kafka-topics.sh --describe --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --topic testtopic
+sudo /opt/kafka/bin/kafka-topics.sh --describe --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --topic $8
 sudo sleep 10
 sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties describe --status
 sudo sleep 5

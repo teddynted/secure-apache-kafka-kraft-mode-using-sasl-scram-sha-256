@@ -8,7 +8,7 @@ LatestAmiId:
 InstanceType:
   Description: Apache Kafka EC2 instance type
   Type: String
-  Default: t3.medium
+  Default: t3.micro
   AllowedValues:
     - t2.nano
     - t2.micro
@@ -16,6 +16,4 @@ InstanceType:
     - t2.large
     - t2.medium
     - t3.medium
-MyVPC:
-  Type: AWS::EC2::VPC::Id
-  Default: ${env:VPC_ID}
+    - t3.micro
