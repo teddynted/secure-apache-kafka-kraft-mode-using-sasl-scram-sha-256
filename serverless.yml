@@ -28,6 +28,7 @@ resources:
     NodeOne: ${file(./iac/ec2/instance/node-1.yml)}
     NodeTwo: ${file(./iac/ec2/instance/node-2.yml)}
     NodeThree: ${file(./iac/ec2/instance/node-3.yml)}
+    ApacheKafkaSNSTopic: ${file(./iac/sns-topic.yml)}
     # NodeDev14: ${file(./iac/ec2/instance/node-dev.yml)}
     ApacheKafkaBucket: ${file(./iac/s3/apache-kafka-bucket.yml)}
     ApacheKafkaBucketPolicy: ${file(./iac/s3/apache-kafka-bucket-policy.yml)}

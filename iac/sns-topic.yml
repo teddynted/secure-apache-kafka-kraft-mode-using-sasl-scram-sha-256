@@ -1,0 +1,4 @@
+Type: AWS::SNS::Topic
+Properties:
+  DisplayName: Apache Kafka SNS Topic - ${self:provider.stage}
+  TopicName: ${self:provider.stage}-apache-kafka-sns-topic
