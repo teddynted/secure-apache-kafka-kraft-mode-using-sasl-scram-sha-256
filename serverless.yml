@@ -25,7 +25,6 @@ resources:
     KafkaSecurityNodeTwo: ${file(./iac/ec2/security-group/kafka-sg-node-2.yml)}
     KafkaSecurityNodeThree: ${file(./iac/ec2/security-group/kafka-sg-node-3.yml)}
     PrometheusSecurityGroup: ${file(./iac/ec2/security-group/prometheus-sg.yml)}
-    LaunchTemplate: ${file(./iac/ec2/launch-template.yml)}
     KafkaBrokerSaslScram256Secrets: ${file(./iac/secrets-manager.yml)}
     KafkaEventSource: ${file(./iac/lambda/apache-kafka-lambda-event-source.yml)}
     NodeOne: ${file(./iac/ec2/instance/node-1.yml)}
@@ -39,8 +38,6 @@ resources:
     LambdaSnsReceiverRole: ${file(./iac/lambda/lambda-sns-receiver-role.yml)}
     ApacheKafkaBucket: ${file(./iac/s3/apache-kafka-bucket.yml)}
     ApacheKafkaBucketPolicy: ${file(./iac/s3/apache-kafka-bucket-policy.yml)}
-    # NodeZeroElasticIP: ${file(./iac/ec2/elastic-ip/ip.yml)}
-    # NodeZeroElasticIPAssociation: ${file(./iac/ec2/elastic-ip/ip-association.yml)}
   Outputs:
     NodeOnePublicIp:
       Description: Cluster Instance IP Address
@@ -57,11 +54,3 @@ resources:
       Value: { "Fn::GetAtt": ["NodeThree", "PublicIp"] }
       Export:
         Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-3" }
-    # NodeDevPublicIp:
-    #   Description: Node One IP Address
-    #   Value: { "Fn::GetAtt": ["NodeOne", "PublicIp"] }
-    #   Export:
-    #     Name: { "Fn::Sub": "${AWS::StackName}-ipaddress-node-dev" }
-    # ElasticIP:
-    #   Description: 'The allocated Elastic IP'
-    #   Value: { 'Ref': 'NodeZeroElasticIP' }
