@@ -1,5 +1,4 @@
 securityGroupIds:
-  - { 'Ref': 'MyKafkaSecurityGroup' }
   - { 'Ref': 'KafkaSecurityGroupNodeOne' }
   - { 'Ref': 'KafkaSecurityGroupNodeTwo' }
   - { 'Ref': 'KafkaSecurityGroupNodeThree' }
