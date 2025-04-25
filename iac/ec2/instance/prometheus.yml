@@ -6,8 +6,7 @@ Properties:
   SecurityGroupIds:
     - { 'Fn::GetAtt': ['PrometheusSecurityGroup', 'GroupId'] }
   SubnetId: { "Ref": "ApacheKafkaPrivateSubnet1" }
-  IamInstanceProfile:
-      Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
+  IamInstanceProfile: { 'Ref': 'Ec2IAMProfile' }
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
   Tags:
     - Key: Name
