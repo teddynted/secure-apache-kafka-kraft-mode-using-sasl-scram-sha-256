@@ -3,7 +3,7 @@ Properties:
   AvailabilityZone: { "Fn::Select": [0,{ "Fn::GetAZs": "" }] }
   InstanceType: { 'Ref': 'InstanceType' }
   ImageId: { 'Ref': 'LatestAmiId' }
-  SubnetId: { "Ref": "sApacheKafkaPrivateSubnet1" }
+  SubnetId: { "Ref": "ApacheKafkaPrivateSubnet1" }
   IamInstanceProfile:
       Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
   SecurityGroupIds:
