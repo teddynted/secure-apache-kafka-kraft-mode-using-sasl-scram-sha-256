@@ -18,5 +18,12 @@ SNS_TOPIC_NAME: ${env:SNS_TOPIC_NAME}
 KAFKA_BOOTSTRAP_SERVER_TWO: ${env:KAFKA_BOOTSTRAP_SERVER_TWO}
 KAFKA_BOOTSTRAP_SERVER_THREE: ${env:KAFKA_BOOTSTRAP_SERVER_THREE}
 STAGE: ${env:STAGE}
-API_ID: ${env:API_ID}
 TABLE_NAME: ${env:TABLE_NAME}
+ENDPOINT_URI:
+  {
+    "Fn::Sub":
+      [
+        "https://${RestApiId}.execute-api.${AWS::Region}.amazonaws.com/${env:STAGE}",
+        { "RestApiId": { "Ref": "WebSocketAPI" } },
+      ],
+  }
