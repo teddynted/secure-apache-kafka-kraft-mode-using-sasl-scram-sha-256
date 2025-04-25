@@ -4,7 +4,7 @@ Properties:
   InstanceType: { 'Ref': 'InstanceType' }
   ImageId: { 'Ref': 'LatestAmiId' }
   SecurityGroupIds:
-    - { 'Fn::GetAtt': ['KafkaSecurityNodeThree', 'GroupId'] }
+    - { 'Fn::GetAtt': ['KafkaSecurityGroupNodeThree', 'GroupId'] }
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
   Tags:
     - Key: Name
