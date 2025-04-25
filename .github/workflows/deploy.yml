@@ -112,6 +112,8 @@ jobs:
         SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
         REGION: ${{ secrets.AWS_REGION }}
         NODE_ONE_TOPIC: ${{ secrets.NODE_ONE_TOPIC }}
+        OFFSETS_TOPIC_REPLICATION_FACTOR: ${{ secrets.OFFSETS_TOPIC_REPLICATION_FACTOR }}
+        DEFAULT_REPLICATION_FACTOR: ${{ secrets.DEFAULT_REPLICATION_FACTOR }}
 
     - name: Connect to Kafka Node 2
       run: |
@@ -122,6 +124,8 @@ jobs:
         SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
         REGION: ${{ secrets.AWS_REGION }}
         NODE_TWO_TOPIC: ${{ secrets.NODE_TWO_TOPIC }}
+        OFFSETS_TOPIC_REPLICATION_FACTOR: ${{ secrets.OFFSETS_TOPIC_REPLICATION_FACTOR }}
+        DEFAULT_REPLICATION_FACTOR: ${{ secrets.DEFAULT_REPLICATION_FACTOR }}
   
     - name: Connect to Kafka Node 3
       run: |
@@ -132,3 +136,5 @@ jobs:
         SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
         REGION: ${{ secrets.AWS_REGION }}
         NODE_THREE_TOPIC: ${{ secrets.NODE_THREE_TOPIC }}
+        OFFSETS_TOPIC_REPLICATION_FACTOR: ${{ secrets.OFFSETS_TOPIC_REPLICATION_FACTOR }}
+        DEFAULT_REPLICATION_FACTOR: ${{ secrets.DEFAULT_REPLICATION_FACTOR }}

@@ -18,7 +18,6 @@ Properties:
               - "logs:CreateLogGroup"
               - "logs:CreateLogStream"
               - "logs:PutLogEvents"
-              - "ec2:CreateNetworkInterface"
               - "ec2:DescribeNetworkInterfaces"
               - "ec2:DescribeVpcs"
               - "ec2:DeleteNetworkInterface"

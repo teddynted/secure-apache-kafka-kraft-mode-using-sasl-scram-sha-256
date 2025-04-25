@@ -42,7 +42,7 @@ max.poll.interval.ms=300000
 partition.assignment.strategy=org.apache.kafka.clients.consumer.CooperativeStickyAssignor
 EOF
 sudo sleep 10
-sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PRIVATE_DNS_NAME:9092 --replication-factor 3 --partitions 3 --topic $8 --if-not-exists --command-config /opt/kafka/config/kraft/client.properties
+sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PRIVATE_DNS_NAME:9092 --replication-factor $10 --partitions $10 --topic $8 --if-not-exists --command-config /opt/kafka/config/kraft/client.properties
 sudo sleep 10
 sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --list --command-config /opt/kafka/config/kraft/client.properties
 sudo sleep 10
