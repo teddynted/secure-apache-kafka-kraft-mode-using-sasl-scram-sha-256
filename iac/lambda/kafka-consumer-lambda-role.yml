@@ -21,6 +21,7 @@ Properties:
               - ec2:DescribeNetworkInterfaces
               - ec2:DeleteNetworkInterface
               - ec2:DetachNetworkInterface
+              - ec2:DescribeSecurityGroups
             Resource: "*"
           - Effect: "Allow"
             Action:

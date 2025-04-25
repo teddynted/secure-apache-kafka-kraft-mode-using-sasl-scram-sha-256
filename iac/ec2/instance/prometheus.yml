@@ -19,6 +19,12 @@ Properties:
       # Update and install Prometheus
       sudo yum update -y
       sudo yum install -y wget
+
+      sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+      sudo chmod +x /usr/local/bin/yq
+
+      yq --version
+
       wget https://github.com/prometheus/prometheus/releases/download/v2.33.0/prometheus-2.33.0.linux-amd64.tar.gz
       tar xvf prometheus-2.33.0.linux-amd64.tar.gz
       mv prometheus-2.33.0.linux-amd64/ prometheus-file
