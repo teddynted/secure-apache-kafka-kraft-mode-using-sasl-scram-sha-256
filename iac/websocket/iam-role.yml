@@ -11,3 +11,19 @@ Properties:
   ManagedPolicyArns:
     - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
     - arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess
+  Policies:
+    - PolicyName: LambdaSNSPolicy
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: "Allow"
+            Action:
+              - execute-api:ManageConnections
+              - execute-api:Invoke
+            Resource: "arn:aws:execute-api:*:*:*/@connections/*"
+          - Effect: Allow
+            Action:
+              - dynamodb:PutItem
+              - dynamodb:DeleteItem
+              - dynamodb:Scan
+            Resource: { "Fn::GetAtt": ["ConnectionsTable","Arn"] }

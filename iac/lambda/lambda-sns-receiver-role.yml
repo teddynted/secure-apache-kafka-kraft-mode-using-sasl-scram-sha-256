@@ -30,3 +30,9 @@ Properties:
               - execute-api:ManageConnections
               - execute-api:Invoke
             Resource: "arn:aws:execute-api:*:*:*/@connections/*"
+          - Effect: Allow
+            Action:
+              - dynamodb:PutItem
+              - dynamodb:DeleteItem
+              - dynamodb:Scan
+            Resource: { "Fn::GetAtt": ["ConnectionsTable","Arn"] }

@@ -28,7 +28,7 @@ resources:
     NodeOne: ${file(./iac/ec2/instance/node-1.yml)}
     NodeTwo: ${file(./iac/ec2/instance/node-2.yml)}
     NodeThree: ${file(./iac/ec2/instance/node-3.yml)}
-    Prometheus: ${file(./iac/ec2/instance/prometheus.yml)}
+    #Prometheus: ${file(./iac/ec2/instance/prometheus.yml)}
     ApacheKafkaPrometheus: ${file(./iac/ec2/instance/prometheus.yml)}
     ApacheKafkaSNSTopic: ${file(./iac/sns/sns-topic.yml)}
     ApacheKafkaSNSTopicSubscription: ${file(./iac/sns/sns-subscription.yml)}
@@ -49,5 +49,6 @@ resources:
     ConnectInvokePermission: ${file(./iac/websocket/connect-invoke-permission.yml)}
     DisconnectInvokePermission: ${file(./iac/websocket/disconnect-invoke-permission.yml)}
     MessageInvokePermission: ${file(./iac/websocket/message-invoke-permission.yml)}
+    ConnectionsTable: ${file(./iac/dynamo-db.yml)}
 
   #Outputs: ${file(./iac/outputs.yml)}
