@@ -1,10 +1,13 @@
 Type: "AWS::EC2::Instance"
 Properties:
-  AvailabilityZone: !Select [ 0, !GetAZs '' ]
+  AvailabilityZone: { "Fn::Select": [0,{ "Fn::GetAZs": "" }] }
   InstanceType: { 'Ref': 'InstanceType' }
   ImageId: { 'Ref': 'LatestAmiId' }
   SecurityGroupIds:
     - { 'Fn::GetAtt': ['PrometheusSecurityGroup', 'GroupId'] }
+  SubnetId: { "Ref": "sApacheKafkaPrivateSubnet1" }
+  IamInstanceProfile:
+      Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
   IamInstanceProfile:
     Arn: { 'Fn::GetAtt': ['Ec2IAMProfile', 'Arn'] }
