@@ -19,5 +19,8 @@ Properties:
     - Type: VPC_SECURITY_GROUP
       VpcSecurityGroupIds:
         - { 'Ref': 'MyKafkaSecurityGroup' }
+        - { 'Ref': 'KafkaSecurityGroupNodeOne' }
+        - { 'Ref': 'KafkaSecurityGroupNodeTwo' }
+        - { 'Ref': 'KafkaSecurityGroupNodeThree' }
   SelfManagedKafkaEventSourceConfig:
     ConsumerGroupId: ${env:KAFKA_REQUEST_CONSUMER_GROUP_ID}

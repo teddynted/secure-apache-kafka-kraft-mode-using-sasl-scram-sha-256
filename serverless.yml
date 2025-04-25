@@ -21,9 +21,9 @@ resources:
     Ec2IAMProfile: ${file(./iac/ec2/iam/profile.yml)}
     Ec2InstanceLambdaIamRole: ${file(./iac/ec2/iam/lambda-role.yml)}
     KafkaConsumerLambdaRole: ${file(./iac/lambda/kafka-consumer-lambda-role.yml)}
-    KafkaSecurityNodeOne: ${file(./iac/ec2/security-group/kafka-sg-node-1.yml)}
-    KafkaSecurityNodeTwo: ${file(./iac/ec2/security-group/kafka-sg-node-2.yml)}
-    KafkaSecurityNodeThree: ${file(./iac/ec2/security-group/kafka-sg-node-3.yml)}
+    KafkaSecurityGroupNodeOne: ${file(./iac/ec2/security-group/kafka-sg-node-1.yml)}
+    KafkaSecurityGroupNodeTwo: ${file(./iac/ec2/security-group/kafka-sg-node-2.yml)}
+    KafkaSecurityGroupNodeThree: ${file(./iac/ec2/security-group/kafka-sg-node-3.yml)}
     PrometheusSecurityGroup: ${file(./iac/ec2/security-group/prometheus-sg.yml)}
     KafkaBrokerSaslScram256Secrets: ${file(./iac/secrets-manager.yml)}
     KafkaEventSource: ${file(./iac/lambda/apache-kafka-lambda-event-source.yml)}
