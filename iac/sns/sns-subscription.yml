@@ -1,0 +1,5 @@
+Type: AWS::SNS::Subscription
+Properties:
+  Endpoint: { "Fn::GetAtt": ["SNSConsumerLambdaFunction", "Arn"] }
+  Protocol: lambda
+  TopicArn: { "Ref": "ApacheKafkaSNSTopic" }

@@ -29,6 +29,7 @@ jobs:
       NODE_THREE_TOPIC: ${{ secrets.NODE_THREE_TOPIC }}
       OFFSETS_TOPIC_REPLICATION_FACTOR: ${{ secrets.OFFSETS_TOPIC_REPLICATION_FACTOR }}
       DEFAULT_REPLICATION_FACTOR: ${{ secrets.DEFAULT_REPLICATION_FACTOR }}
+      SNS_TOPIC_NAME: ${{ secrets.SNS_TOPIC_NAME }}
 
     defaults:
       run:

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
@@ -31,6 +32,21 @@ func init() {
 	snsClient = sns.New(sess)
 }
 
+func AwsRegion() string {
+
+	return os.Getenv("AWS_REGION")
+}
+
+func AwsSnsTopicName() string {
+
+	return os.Getenv("SNS_TOPIC_NAME")
+}
+
+func AwsAccountID() string {
+
+	return os.Getenv("ACCOUNT_ID")
+}
+
 // Lambda triggered by Apache Kafka Event Source
 func handleRequest(ctx context.Context, event KafkaEvent) error {
 	log.Printf("Processing Kafka event from source: %s", event.EventSource)
@@ -40,9 +56,12 @@ func handleRequest(ctx context.Context, event KafkaEvent) error {
 			log.Printf("Partition: %s, Offset: %s, Key: %s, Value: %s", record.Partition, record.Offset, record.Key, record.Value)
 		}
 	}
+	awsRegion := AwsRegion()
+	snsTopicName := AwsSnsTopicName()
+	accountID := AwsAccountID()
 	input := &sns.PublishInput{
 		Message:  aws.String("Hello from Lambda triggered SNS!"),
-		TopicArn: aws.String("arn:aws:sns:region:account-id:MySNSTopic"),
+		TopicArn: aws.String(fmt.Sprintf("arn:aws:sns:%s:%s:%s", awsRegion, accountID, snsTopicName)),
 	}
 
 	result, err := snsClient.Publish(input)
