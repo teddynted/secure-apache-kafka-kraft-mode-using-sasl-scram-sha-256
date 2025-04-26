@@ -51,12 +51,14 @@ resources:
     ConnectionsTable: ${file(./iac/dynamo-db.yml)}
     KafkaInternetGateway:
       Type: AWS::EC2::InternetGateway
+      Properties:
+        Attachments:
+          - VpcId: { "Ref": "ApacheKafkaVPC" }
     KafkaAttachGateway:
       Type: AWS::EC2::VPCGatewayAttachment
       Properties:
         VpcId: { "Ref": "ApacheKafkaVPC" }
         InternetGatewayId: { "Ref": "KafkaInternetGateway" }
-
     KafkaPublicSubnet:
       Type: AWS::EC2::Subnet
       Properties:
@@ -64,23 +66,20 @@ resources:
         CidrBlock: 10.0.3.0/24
         MapPublicIpOnLaunch: true
         AvailabilityZone: { "Fn::Select": [0, !GetAZs ''] }
-
-    KafkaRouteTable:
-      Type: AWS::EC2::RouteTable
-      Properties:
-        VpcId: { "Ref": "ApacheKafkaVPC" }
-
-    PublicRoute:
-      Type: AWS::EC2::Route
-      Properties:
-        RouteTableId: { "Ref": "KafkaRouteTable" }
-        DestinationCidrBlock: 0.0.0.0/0
-        GatewayId: { "Ref": "KafkaInternetGateway" }
-
-    RouteTableAssociation:
-      Type: AWS::EC2::SubnetRouteTableAssociation
-      Properties:
-        SubnetId: { "Ref": "KafkaPublicSubnet" }
-        RouteTableId: { "Ref": "KafkaRouteTable" }
+    # KafkaRouteTable:
+    #   Type: AWS::EC2::RouteTable
+    #   Properties:
+    #     VpcId: { "Ref": "ApacheKafkaVPC" }
+    # PublicRoute:
+    #   Type: AWS::EC2::Route
+    #   Properties:
+    #     RouteTableId: { "Ref": "KafkaRouteTable" }
+    #     DestinationCidrBlock: 0.0.0.0/0
+    #     GatewayId: { "Ref": "KafkaInternetGateway" }
+    # RouteTableAssociation:
+    #   Type: AWS::EC2::SubnetRouteTableAssociation
+    #   Properties:
+    #     SubnetId: { "Ref": "KafkaPublicSubnet" }
+    #     RouteTableId: { "Ref": "KafkaRouteTable" }
 
   Outputs: ${file(./iac/outputs.yml)}
