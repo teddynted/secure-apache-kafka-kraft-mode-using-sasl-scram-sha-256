@@ -28,7 +28,7 @@ resources:
     NodeOne1: ${file(./iac/ec2/instance/node-1.yml)}
     NodeTwo1: ${file(./iac/ec2/instance/node-2.yml)}
     NodeThree1: ${file(./iac/ec2/instance/node-3.yml)}
-    ApacheKafkaPrometheus1: ${file(./iac/ec2/instance/prometheus.yml)}
+    ApacheKafkaPrometheus2: ${file(./iac/ec2/instance/prometheus.yml)}
     ApacheKafkaSNSTopic: ${file(./iac/sns/sns-topic.yml)}
     ApacheKafkaSNSTopicSubscription: ${file(./iac/sns/sns-subscription.yml)}
     ApacheKafkaSNSTopicLambdaPermission: ${file(./iac/sns/sns-lambda-invoke-permission.yml)}
