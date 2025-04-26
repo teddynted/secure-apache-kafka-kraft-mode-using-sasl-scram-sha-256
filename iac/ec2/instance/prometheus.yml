@@ -49,6 +49,8 @@ Properties:
       sudo chown -R prometheus:prometheus /etc/prometheus/console_libraries
 
       sudo chown prometheus:prometheus /etc/prometheus/prometheus.yml
+
+      cat /etc/prometheus/prometheus.yml
       
       sudo cat <<EOF > /etc/systemd/system/prometheus.service
       [Unit]
@@ -60,7 +62,7 @@ Properties:
       User=prometheus
       Group=prometheus
       Type=simple
-      ExecStart=/usr/local/bin/prometheus \
+      ExecStart=sudo /usr/local/bin/prometheus \
           --config.file /etc/prometheus/prometheus.yml \
           --storage.tsdb.path /var/lib/prometheus/ \
           --web.console.templates=/etc/prometheus/consoles \

@@ -27,7 +27,7 @@ Properties:
       fi
       
       chmod +x /tmp/user-data.sh
-      if ! /tmp/user-data.sh ${username} ${password} ${state} ${country} ${unit} ${city} ${nodeId} $offsets_topic_replication_factor $default_replication_factor; then
+      if ! /tmp/user-data.sh ${username} ${password} ${state} ${country} ${unit} ${city} ${nodeId} ${offsets_topic_replication_factor} ${default_replication_factor}; then
         echo "ERROR: Script execution failed"
         exit 1
       fi

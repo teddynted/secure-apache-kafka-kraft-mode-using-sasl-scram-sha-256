@@ -1,6 +1,6 @@
 #!/bin/bash -u
 
-echo $1 $2 $3 $4 $5 $6 $7
+echo $1 $2 $3 $4 $5 $6 $7 $8 $9
 sudo yum update -y
 sudo yum install -y java-11-amazon-corretto
 sudo yum install -y git
