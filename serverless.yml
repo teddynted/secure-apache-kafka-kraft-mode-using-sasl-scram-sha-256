@@ -63,10 +63,10 @@ resources:
         CidrBlock: 10.0.3.0/24
         MapPublicIpOnLaunch: true
         AvailabilityZone: { "Fn::Select": [0, !GetAZs ''] }
-    # KafkaRouteTable:
-    #   Type: AWS::EC2::RouteTable
-    #   Properties:
-    #     VpcId: { "Ref": "ApacheKafkaVPC" }
+    KafkaRouteTable:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId: { "Ref": "ApacheKafkaVPC" }
     # PublicRoute:
     #   Type: AWS::EC2::Route
     #   Properties:
