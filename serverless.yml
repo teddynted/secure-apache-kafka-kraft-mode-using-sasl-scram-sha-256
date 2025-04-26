@@ -67,12 +67,12 @@ resources:
       Type: AWS::EC2::RouteTable
       Properties:
         VpcId: { "Ref": "ApacheKafkaVPC" }
-    # PublicRoute:
-    #   Type: AWS::EC2::Route
-    #   Properties:
-    #     RouteTableId: { "Ref": "KafkaRouteTable" }
-    #     DestinationCidrBlock: 0.0.0.0/0
-    #     GatewayId: { "Ref": "KafkaInternetGateway" }
+    KafkaPublicRoute:
+      Type: AWS::EC2::Route
+      Properties:
+        RouteTableId: { "Ref": "KafkaRouteTable" }
+        DestinationCidrBlock: 0.0.0.0/0
+        GatewayId: { "Ref": "KafkaInternetGateway" }
     # RouteTableAssociation:
     #   Type: AWS::EC2::SubnetRouteTableAssociation
     #   Properties:
