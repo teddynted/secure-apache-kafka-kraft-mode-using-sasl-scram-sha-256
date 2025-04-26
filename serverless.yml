@@ -51,9 +51,6 @@ resources:
     ConnectionsTable: ${file(./iac/dynamo-db.yml)}
     KafkaInternetGateway:
       Type: AWS::EC2::InternetGateway
-      Properties:
-        Attachments:
-          - VpcId: { "Ref": "ApacheKafkaVPC" }
     KafkaAttachGateway:
       Type: AWS::EC2::VPCGatewayAttachment
       Properties:
