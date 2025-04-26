@@ -14,11 +14,12 @@ NODE_TWO_TOPIC: ${env:NODE_TWO_TOPIC}
 NODE_THREE_TOPIC: ${env:NODE_THREE_TOPIC}
 OFFSETS_TOPIC_REPLICATION_FACTOR: ${env:OFFSETS_TOPIC_REPLICATION_FACTOR}
 DEFAULT_REPLICATION_FACTOR: ${env:DEFAULT_REPLICATION_FACTOR}
-SNS_TOPIC_NAME: ${env:SNS_TOPIC_NAME}
+SNS_ARN: { "Fn::Sub": ["${SnsArn}", { "SnsArn": { "Ref": "ApacheKafkaSNSTopic" } }] } #${env:SNS_TOPIC_NAME}
+SNS_TOPIC_NAME: { "Fn::Select": [5, {"Fn::Split": [":", {"Ref": "ApacheKafkaSNSTopic"}]} ] }
 KAFKA_BOOTSTRAP_SERVER_TWO: ${env:KAFKA_BOOTSTRAP_SERVER_TWO}
 KAFKA_BOOTSTRAP_SERVER_THREE: ${env:KAFKA_BOOTSTRAP_SERVER_THREE}
 STAGE: ${env:STAGE}
-TABLE_NAME: {"Fn:Sub": ["${TableName}", { "TableName": { "Ref": "ConnectionsTable" } }]} #${env:TABLE_NAME}
+TABLE_NAME: { "Fn::Sub": ["${TableName}", { "TableName": { "Ref": "ConnectionsTable" } }] } #${env:TABLE_NAME}
 REST_API_ENDPOINT_URI:
   {
     "Fn::Sub":
