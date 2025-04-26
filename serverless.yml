@@ -73,10 +73,10 @@ resources:
         RouteTableId: { "Ref": "KafkaRouteTable" }
         DestinationCidrBlock: 0.0.0.0/0
         GatewayId: { "Ref": "KafkaInternetGateway" }
-    # RouteTableAssociation:
-    #   Type: AWS::EC2::SubnetRouteTableAssociation
-    #   Properties:
-    #     SubnetId: { "Ref": "KafkaPublicSubnet" }
-    #     RouteTableId: { "Ref": "KafkaRouteTable" }
+    RouteTableAssociation:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId: { "Ref": "KafkaPublicSubnet" }
+        RouteTableId: { "Ref": "KafkaRouteTable" }
 
   Outputs: ${file(./iac/outputs.yml)}
