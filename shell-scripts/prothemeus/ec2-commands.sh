@@ -20,8 +20,8 @@ echo "Setup Prometheus Configuration"
 
 #sudo cat /etc/prometheus/prometheus.yml
 
-sudo systemctl daemon-reload
-sudo systemctl start prometheus
-sudo systemctl status prometheus
+# sudo systemctl daemon-reload
+# sudo systemctl start prometheus
+# sudo systemctl status prometheus
 
 #http://<prometheus-ip>:9090/graph
