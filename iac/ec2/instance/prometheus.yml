@@ -9,8 +9,7 @@ Properties:
       DeviceIndex: "0"
       GroupSet: 
         - {"Ref": "PrometheusSecurityGroup"}
-      SubnetId: 
-        {"Ref": "ApacheKafkaPrivateSubnet1"}
+      SubnetId: {"Ref": "KafkaPublicSubnet"}
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
   Tags:
     - Key: Name

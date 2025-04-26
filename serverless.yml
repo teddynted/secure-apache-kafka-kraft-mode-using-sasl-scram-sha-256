@@ -49,5 +49,38 @@ resources:
     DisconnectInvokePermission: ${file(./iac/websocket/disconnect-invoke-permission.yml)}
     MessageInvokePermission: ${file(./iac/websocket/message-invoke-permission.yml)}
     ConnectionsTable: ${file(./iac/dynamo-db.yml)}
+    KafkaInternetGateway:
+      Type: AWS::EC2::InternetGateway
+    KafkaAttachGateway:
+      Type: AWS::EC2::VPCGatewayAttachment
+      Properties:
+        VpcId: { "Ref": "ApacheKafkaVPC" }
+        InternetGatewayId: { "Ref": "KafkaInternetGateway" }
 
-  #Outputs: ${file(./iac/outputs.yml)}
+    KafkaPublicSubnet:
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId: { "Ref": "ApacheKafkaVPC" }
+        CidrBlock: 10.0.1.0/24
+        MapPublicIpOnLaunch: true
+        AvailabilityZone: { "Fn::Select": [0, !GetAZs ''] }
+
+    KafkaRouteTable:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId: { "Ref": "ApacheKafkaVPC" }
+
+    PublicRoute:
+      Type: AWS::EC2::Route
+      Properties:
+        RouteTableId: { "Ref": "KafkaRouteTable" }
+        DestinationCidrBlock: 0.0.0.0/0
+        GatewayId: { "Ref": "KafkaInternetGateway" }
+
+    RouteTableAssociation:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId: { "Ref": "KafkaPublicSubnet" }
+        RouteTableId: { "Ref": "KafkaRouteTable" }
+
+  Outputs: ${file(./iac/outputs.yml)}
