@@ -1,3 +1,3 @@
 WebSocketURL:
-  Value: { "Fn::Sub": [ "wss://${WebSocketApi}.execute-api.${AWS::Region}.amazonaws.com/${stageName}", { "stageName": "${env:STAGE}" }] }
+  Value: { "Fn::Sub": [ "wss://${WebSocketAPI}.execute-api.${AWS::Region}.amazonaws.com/${stageName}", { "stageName": "${env:STAGE}" }] }
   Description: WebSocket API endpoint URL
