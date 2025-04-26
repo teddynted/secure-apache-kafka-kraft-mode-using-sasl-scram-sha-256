@@ -3,9 +3,6 @@ Properties:
   AvailabilityZone: { "Fn::Select": [0,{ "Fn::GetAZs": "" }] }
   InstanceType: { 'Ref': 'InstanceType' }
   ImageId: { 'Ref': 'LatestAmiId' }
-  # SecurityGroupIds:
-  #   - { 'Fn::GetAtt': ['PrometheusSecurityGroup', 'GroupId'] }
-  # SubnetId: { "Ref": "ApacheKafkaPrivateSubnet1" }
   IamInstanceProfile: { 'Ref': 'Ec2IAMProfile' }
   NetworkInterfaces: 
     - AssociatePublicIpAddress: "true"
