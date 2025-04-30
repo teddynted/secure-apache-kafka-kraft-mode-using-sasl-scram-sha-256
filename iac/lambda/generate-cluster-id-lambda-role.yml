@@ -8,8 +8,7 @@ Properties:
           Service: lambda.amazonaws.com
         Action: sts:AssumeRole
   Policies:
-    - PolicyName: generate-cluster-id-lambda-logs
-      PolicyDocument:
+    - PolicyDocument:
         Version: "2012-10-17"
         Statement:
           - Effect: Allow
@@ -18,3 +17,5 @@ Properties:
               - logs:CreateLogStream
               - logs:PutLogEvents
             Resource: "*"
+      PolicyName: { "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "generateClusterIdLambdaLogs"]] }
+      
