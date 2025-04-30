@@ -32,6 +32,7 @@ jobs:
       OFFSETS_TOPIC_REPLICATION_FACTOR: ${{ secrets.OFFSETS_TOPIC_REPLICATION_FACTOR }}
       DEFAULT_REPLICATION_FACTOR: ${{ secrets.DEFAULT_REPLICATION_FACTOR }}
       STAGE: ${{ secrets.STAGE }}
+      PROMETHEUS_VERSION: ${{ secrets.PROMETHEUS_VERSION }}
 
     defaults:
       run:
