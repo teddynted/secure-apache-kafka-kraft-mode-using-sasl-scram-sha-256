@@ -133,8 +133,8 @@ controller.quorum.election.timeout.ms=1000
 connections.max.idle.ms=600000
 socket.connection.setup.timeout.ms=30000
 socket.connection.setup.timeout.max.ms=30000
-log.retention.hours=1 # for t3.micro instance
-log.segment.bytes=10485760 # for t3.micro instance
+log.retention.hours=1
+log.segment.bytes=10485760
 EOF'
       
 #echo 'export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' >> /etc/environment
