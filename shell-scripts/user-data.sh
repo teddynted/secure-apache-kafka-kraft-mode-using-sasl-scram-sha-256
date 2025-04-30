@@ -154,7 +154,7 @@ Restart=on-failure
 SyslogIdentifier=kafka
 Environment="KAFKA_HEAP_OPTS='-Xms1G -Xmx1G'"
 Environment="CLUSTER_ID=$CLUSTER_ID"
-#Environment="KAFKA_LOG4J_OPTS=-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"
+Environment="KAFKA_LOG4J_OPTS=-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"
 Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.conf"
 Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
 ExecStartPre=sudo /opt/kafka/scripts/kafka-format.sh
