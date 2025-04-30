@@ -30,6 +30,7 @@ ls -l
 cd ../../../../
 ls -l
 #CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
+echo "Region: $10"
 CLUSTER_ID=$(aws ssm get-parameter --name /kafka/cluster-id --query "Parameter.Value" --output text --region $10)
 echo "CLUSTER_ID: $CLUSTER_ID"
 sudo mkdir /opt/kafka/scripts
