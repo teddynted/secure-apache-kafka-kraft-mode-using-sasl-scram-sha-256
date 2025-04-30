@@ -47,8 +47,6 @@ resources:
     ApacheKafkaSNSTopicSubscription: ${file(./iac/sns/sns-subscription.yml)}
     ApacheKafkaSNSTopicLambdaPermission: ${file(./iac/sns/sns-lambda-invoke-permission.yml)}
     LambdaSnsReceiverRole: ${file(./iac/lambda/lambda-sns-receiver-role.yml)}
-    ApacheKafkaBucket: ${file(./iac/s3/apache-kafka-bucket.yml)}
-    ApacheKafkaBucketPolicy: ${file(./iac/s3/apache-kafka-bucket-policy.yml)}
     WebSocketLambdaRole: ${file(./iac/websocket/iam-role.yml)}
     WebSocketAPI: ${file(./iac/websocket/wb-api.yml)}
     ConnectIntegration: ${file(./iac/websocket/connect-integration.yml)}

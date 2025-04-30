@@ -1,8 +1,0 @@
-Type: AWS::S3::Bucket
-Properties:
-  BucketName: ${self:provider.stage}-pt-apache-kafka-bucket
-  PublicAccessBlockConfiguration:
-    BlockPublicAcls: false
-    BlockPublicPolicy: false
-    IgnorePublicAcls: false
-    RestrictPublicBuckets: false
