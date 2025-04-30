@@ -22,7 +22,7 @@ func HandleRequest(ctx context.Context, snsEvent events.SNSEvent) {
 	}
 }
 
-func SendCustomMessage(ctx context.Context, event events.APIGatewayProxyRequest) error {
+func SendCustomMessage(ctx context.Context) error {
 	db := dynamodb.New(session.Must(session.NewSession()))
 	api := apigatewaymanagementapi.New(session.Must(session.NewSession()),
 		aws.NewConfig().WithEndpoint(fmt.Sprintf("https://%s.execute-api.%s.amazonaws.com/%s",
