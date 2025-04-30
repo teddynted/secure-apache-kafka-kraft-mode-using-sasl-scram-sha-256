@@ -3,7 +3,11 @@ Properties:
   GroupDescription: "Kafka Security Group"
   GroupName: ${self:provider.stage}-apache-kafka-security-group-node
   VpcId: { 'Ref': 'ApacheKafkaVPC' }
-  SecurityGroupEngress: []
+  SecurityGroupEgress: 
+    - IpProtocol: tcp
+      FromPort: 443
+      ToPort: 443
+      CidrIp: "0.0.0.0/0"
   SecurityGroupIngress:
     - IpProtocol: tcp # ssh into an instance
       FromPort: 22
