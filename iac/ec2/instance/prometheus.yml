@@ -32,7 +32,7 @@ Properties:
       sudo mkdir /etc/prometheus
       sudo mkdir /var/lib/prometheus
 
-      PROM_VERSION=${prometheusVersion}
+      PROM_VERSION=$prometheusVersion
 
       # Download and extract
       wget https://github.com/prometheus/prometheus/releases/download/v$PROM_VERSION/prometheus-$PROM_VERSION.linux-amd64.tar.gz
