@@ -41,19 +41,23 @@ heartbeat.interval.ms=15000
 max.poll.interval.ms=300000
 partition.assignment.strategy=org.apache.kafka.clients.consumer.CooperativeStickyAssignor
 EOF
-sudo sleep 10
-sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PRIVATE_DNS_NAME:9092 --replication-factor $10 --partitions $10 --topic $8 --if-not-exists --command-config /opt/kafka/config/kraft/client.properties
-sudo sleep 10
-sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --list --command-config /opt/kafka/config/kraft/client.properties
-sudo sleep 10
-sudo /opt/kafka/bin/kafka-topics.sh --describe --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --topic $8
-sudo sleep 10
-sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties describe --status
-sudo sleep 5
-sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --alter --add-config 'SCRAM-SHA-256=[iterations=4096,password='$1']' --entity-type users --entity-name admin
-sudo sleep 5
-sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --add --allow-principal User:admin --operation Describe --cluster
-sudo sleep 5
-sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --list --command-config /opt/kafka/config/kraft/client.properties
+sudo systemctl daemon-reload
+sudo systemctl enable kafka
+sudo systemctl start kafka
+sudo systemctl status kafka
+# sudo sleep 10
+# sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PRIVATE_DNS_NAME:9092 --replication-factor $10 --partitions $10 --topic $8 --if-not-exists --command-config /opt/kafka/config/kraft/client.properties
+# sudo sleep 10
+# sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --list --command-config /opt/kafka/config/kraft/client.properties
+# sudo sleep 10
+# sudo /opt/kafka/bin/kafka-topics.sh --describe --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --topic $8
+# sudo sleep 10
+# sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties describe --status
+# sudo sleep 5
+# sudo /opt/kafka/bin/kafka-configs.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --alter --add-config 'SCRAM-SHA-256=[iterations=4096,password='$1']' --entity-type users --entity-name admin
+# sudo sleep 5
+# sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --command-config /opt/kafka/config/kraft/client.properties --add --allow-principal User:admin --operation Describe --cluster
+# sudo sleep 5
+# sudo /opt/kafka/bin/kafka-acls.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --list --command-config /opt/kafka/config/kraft/client.properties
 fi
 
