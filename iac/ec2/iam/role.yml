@@ -15,12 +15,14 @@ Properties:
     - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
   Path: /
   Policies: 
-   - PolicyDocument:
-      Version: "2012-10-17"
-      Statement:
-        - Effect: Allow
-          Action:
-            - ssm:GetParameter
-            - ssm:GetParameters
-          Resource: { "Fn::Sub": "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/kafka/cluster-id" }
+    - PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - ssm:GetParameter
+              - ssm:GetParameters
+            Resource: { "Fn::Sub": "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/kafka/cluster-id" }
+      PolicyName:
+        { "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "Ec2AccessPolicy"]] }
   RoleName: { 'Ref': 'AWS::NoValue' }
