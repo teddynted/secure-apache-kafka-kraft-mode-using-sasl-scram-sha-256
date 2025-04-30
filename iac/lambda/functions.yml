@@ -1,3 +1,4 @@
+# Disable vpc for some of the lambda function to avoid using NAT Gateway
 StopInstances:
   handler: bootstrap
   runtime: provided.al2
