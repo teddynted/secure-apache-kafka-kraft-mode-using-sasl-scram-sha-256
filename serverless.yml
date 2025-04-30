@@ -26,7 +26,7 @@ resources:
       DependsOn: GenerateClusterIdLambdaFunction
       Type: Custom::GenerateUUID
       Properties:
-        ServiceToken: { "Fn::GetAtt": ["GenerateClusterIdFunction", "Arn"] }
+        ServiceToken: { "Fn::GetAtt": ["GenerateClusterIdLambdaFunction", "Arn"] }
     ApacheKafkaVPC: ${file(./iac/ec2/vpc/kafka-vpc.yml)}
     ApacheKafkaPrivateSubnet1: ${file(./iac/ec2/vpc/kafka-private-subnet-1.yml)}
     ApacheKafkaPrivateSubnet2: ${file(./iac/ec2/vpc/kafka-private-subnet-2.yml)}
