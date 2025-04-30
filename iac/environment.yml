@@ -19,7 +19,6 @@ SNS_ARN: { "Fn::Sub": ["${SnsArn}", { "SnsArn": { "Ref": "ApacheKafkaSNSTopic" }
 SNS_TOPIC_NAME: { "Fn::Select": [5, {"Fn::Split": [":", {"Ref": "ApacheKafkaSNSTopic"}]} ] }
 KAFKA_BOOTSTRAP_SERVER_TWO: ${env:KAFKA_BOOTSTRAP_SERVER_TWO}
 KAFKA_BOOTSTRAP_SERVER_THREE: ${env:KAFKA_BOOTSTRAP_SERVER_THREE}
-AWS_REGION: ${env:AWS_REGION}
 REGION: ${env:AWS_REGION}
 TABLE_NAME: { "Fn::Sub": ["${TableName}", { "TableName": { "Ref": "ConnectionsTable" } }] }
 REST_API_ENDPOINT_URI:
