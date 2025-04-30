@@ -1,6 +1,6 @@
 Type: AWS::IAM::Role
 Properties:
-  RoleName: generateClusterIdLambdaLogs-${self:provider.stage}-
+  RoleName: generateClusterIdLambdaLogs-${self:provider.stage}
   AssumeRolePolicyDocument:
     Version: "2012-10-17"
     Statement:
