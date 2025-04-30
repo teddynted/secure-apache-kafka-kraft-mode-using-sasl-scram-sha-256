@@ -98,7 +98,7 @@ sudo ss -tulnp | grep java
 
 - Use Elastic IP for you Kafka broker so the public IP remains static and doesn't change when the EC@ instance restarts
 
-## Keywords
+## Terms
 
 - **SSL (Secure Sockets Layer)**: Encrypts data between two parties (e.g. Kafka client and broker)
 - **SCRAM (Salted Challenge Response Authentication Mechanism)**: stores SCRAM credentials with the salt.
