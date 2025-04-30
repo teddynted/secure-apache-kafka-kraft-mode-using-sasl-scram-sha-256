@@ -8,7 +8,7 @@ Properties:
           Service: lambda.amazonaws.com
         Action: sts:AssumeRole
   Policies:
-    - PolicyName: LambdaSNSPolicy
+    - PolicyName: ${self:provider.stage}-LambdaSNSPolicy
       PolicyDocument:
         Version: '2012-10-17'
         Statement:

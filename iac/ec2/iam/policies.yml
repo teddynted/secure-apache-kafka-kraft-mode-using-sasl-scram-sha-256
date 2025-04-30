@@ -1,6 +1,6 @@
 Type: AWS::IAM::Policy
 Properties:
-  PolicyName: Ec2RolePolicies
+  PolicyName: ${self:provider.stage}-Ec2RolePolicies
   PolicyDocument:
     Version: "2012-10-17"
     Statement:

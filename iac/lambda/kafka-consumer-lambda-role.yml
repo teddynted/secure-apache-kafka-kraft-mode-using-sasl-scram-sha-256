@@ -36,4 +36,4 @@ Properties:
               - sns:Publish
             Resource: { "Ref": "ApacheKafkaSNSTopic" }
       PolicyName:
-        { "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "KafkaAccessPolicy"]] }
+        { "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "${self:provider.stage}-KafkaAccessPolicy"]] }
