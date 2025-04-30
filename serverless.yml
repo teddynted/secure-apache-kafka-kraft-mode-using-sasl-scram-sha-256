@@ -23,7 +23,7 @@ resources:
         Description: Kafka KRaft Cluster ID
         Tier: Standard
     GenerateClusterId:
-      DependsOn: GenerateClusterIdLambdaFunction
+      #DependsOn: GenerateClusterIdLambdaFunction
       Type: Custom::GenerateUUID
       Properties:
         ServiceToken: { "Fn::GetAtt": ["GenerateClusterIdLambdaFunction", "Arn"] }

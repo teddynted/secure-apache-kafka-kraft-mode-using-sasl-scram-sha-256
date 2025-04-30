@@ -25,8 +25,8 @@ func HandleRequest(ctx context.Context, snsEvent events.SNSEvent) {
 func SendCustomMessage(ctx context.Context) error {
 	db := dynamodb.New(session.Must(session.NewSession()))
 	api := apigatewaymanagementapi.New(session.Must(session.NewSession()),
-		aws.NewConfig().WithEndpoint(fmt.Sprintf("https://%s.execute-api.%s.amazonaws.com/%s",
-			os.Getenv("API_ID"), os.Getenv("AWS_REGION"), os.Getenv("STAGE"))))
+		aws.NewConfig().WithEndpoint(*aws.String(
+			os.Getenv("REST_API_ENDPOINT_URI"))))
 
 	connections, err := db.Scan(&dynamodb.ScanInput{
 		TableName: aws.String(os.Getenv("TABLE_NAME")),

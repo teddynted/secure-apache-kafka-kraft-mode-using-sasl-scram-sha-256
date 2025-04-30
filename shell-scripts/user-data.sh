@@ -155,7 +155,8 @@ Type=simple
 User=ec2-user
 Restart=on-failure
 SyslogIdentifier=kafka
-Environment="KAFKA_HEAP_OPTS='-Xms1G -Xmx1G'"
+#Environment="KAFKA_HEAP_OPTS='-Xms1G -Xmx1G'"
+Environment="KAFKA_HEAP_OPTS='-Xmx384m -Xms384m'"
 Environment="CLUSTER_ID=$CLUSTER_ID"
 Environment="KAFKA_LOG4J_OPTS=-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"
 Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.conf"
