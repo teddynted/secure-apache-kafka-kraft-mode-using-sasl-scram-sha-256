@@ -38,10 +38,10 @@ resources:
     PrometheusSecurityGroup: ${file(./iac/ec2/security-group/prometheus-sg.yml)}
     KafkaBrokerSaslScram256Secrets: ${file(./iac/secrets-manager.yml)}
     KafkaEventSource: ${file(./iac/lambda/apache-kafka-lambda-event-source.yml)}
-    NodeOne9: ${file(./iac/ec2/instance/node-1.yml)}
-    NodeTwo9: ${file(./iac/ec2/instance/node-2.yml)}
-    NodeThree9: ${file(./iac/ec2/instance/node-3.yml)}
-    ApacheKafkaPrometheus9: ${file(./iac/ec2/instance/prometheus.yml)}
+    NodeOne10: ${file(./iac/ec2/instance/node-1.yml)}
+    NodeTwo10: ${file(./iac/ec2/instance/node-2.yml)}
+    NodeThree10: ${file(./iac/ec2/instance/node-3.yml)}
+    ApacheKafkaPrometheus10: ${file(./iac/ec2/instance/prometheus.yml)}
     ApacheKafkaSNSTopic: ${file(./iac/sns/sns-topic.yml)}
     ApacheKafkaSNSTopicSubscription: ${file(./iac/sns/sns-subscription.yml)}
     ApacheKafkaSNSTopicLambdaPermission: ${file(./iac/sns/sns-lambda-invoke-permission.yml)}

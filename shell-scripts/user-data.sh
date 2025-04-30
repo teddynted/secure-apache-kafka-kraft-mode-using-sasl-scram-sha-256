@@ -137,8 +137,8 @@ log.retention.hours=1
 log.segment.bytes=10485760
 EOF'
       
-#echo 'export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' >> /etc/environment
-echo 'export KAFKA_HEAP_OPTS="-Xmx384m -Xms384m"' >> /etc/environment # for t3.micro instance
+echo 'export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' >> /etc/environment
+#echo 'export KAFKA_HEAP_OPTS="-Xmx384m -Xms384m"' >> /etc/environment
 echo 'export KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.conf"' >> /etc/environment
 echo 'export KAFKA_JVM_PERFORMANCE_OPTS="-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"' >> /etc/environment
 # Debugging errors
@@ -155,8 +155,8 @@ Type=simple
 User=ec2-user
 Restart=on-failure
 SyslogIdentifier=kafka
-#Environment="KAFKA_HEAP_OPTS='-Xms1G -Xmx1G'"
-Environment="KAFKA_HEAP_OPTS='-Xmx384m -Xms384m'"
+Environment="KAFKA_HEAP_OPTS='-Xms1G -Xmx1G'"
+#Environment="KAFKA_HEAP_OPTS='-Xmx384m -Xms384m'"
 Environment="CLUSTER_ID=$CLUSTER_ID"
 Environment="KAFKA_LOG4J_OPTS=-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"
 Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.conf"
