@@ -133,8 +133,8 @@ jobs:
   
     - name: Connect to Kafka Node 3
       run: |
-        chmod +x ./shell-scripts/node-2/ec2.sh
-        ./shell-scripts/node-2/ec2.sh
+        chmod +x ./shell-scripts/node-3/ec2.sh
+        ./shell-scripts/node-3/ec2.sh
       env:
         SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
         SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
