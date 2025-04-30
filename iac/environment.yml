@@ -20,6 +20,7 @@ SNS_TOPIC_NAME: { "Fn::Select": [5, {"Fn::Split": [":", {"Ref": "ApacheKafkaSNST
 KAFKA_BOOTSTRAP_SERVER_TWO: ${env:KAFKA_BOOTSTRAP_SERVER_TWO}
 KAFKA_BOOTSTRAP_SERVER_THREE: ${env:KAFKA_BOOTSTRAP_SERVER_THREE}
 STAGE: ${env:STAGE}
+REGION: ${env:REGION}
 TABLE_NAME: { "Fn::Sub": ["${TableName}", { "TableName": { "Ref": "ConnectionsTable" } }] }
 REST_API_ENDPOINT_URI:
   {

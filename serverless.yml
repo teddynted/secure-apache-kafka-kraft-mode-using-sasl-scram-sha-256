@@ -14,13 +14,19 @@ resources:
   Parameters: ${file(./iac/parameters.yml)}
   Resources:
     KafkaClusterIdParameter:
+      DependsOn: GenerateClusterId
       Type: AWS::SSM::Parameter
       Properties:
         Name: /kafka/cluster-id
         Type: String
-        Value: ${env:CLUSTER_ID}
+        Value: { "Fn::GetAtt": ["GenerateClusterId", "Value"] }
         Description: Kafka KRaft Cluster ID
         Tier: Standard
+    GenerateClusterId:
+      DependsOn: GenerateClusterIdLambdaFunction
+      Type: Custom::GenerateUUID
+      Properties:
+        ServiceToken: { "Fn::GetAtt": ["GenerateClusterIdFunction", "Arn"] }
     ApacheKafkaVPC: ${file(./iac/ec2/vpc/kafka-vpc.yml)}
     ApacheKafkaPrivateSubnet1: ${file(./iac/ec2/vpc/kafka-private-subnet-1.yml)}
     ApacheKafkaPrivateSubnet2: ${file(./iac/ec2/vpc/kafka-private-subnet-2.yml)}
@@ -33,10 +39,10 @@ resources:
     PrometheusSecurityGroup: ${file(./iac/ec2/security-group/prometheus-sg.yml)}
     KafkaBrokerSaslScram256Secrets: ${file(./iac/secrets-manager.yml)}
     KafkaEventSource: ${file(./iac/lambda/apache-kafka-lambda-event-source.yml)}
-    NodeOne10: ${file(./iac/ec2/instance/node-1.yml)}
-    NodeTwo10: ${file(./iac/ec2/instance/node-2.yml)}
-    NodeThree10: ${file(./iac/ec2/instance/node-3.yml)}
-    ApacheKafkaPrometheus10: ${file(./iac/ec2/instance/prometheus.yml)}
+    NodeOne1: ${file(./iac/ec2/instance/node-1.yml)}
+    NodeTwo1: ${file(./iac/ec2/instance/node-2.yml)}
+    NodeThree1: ${file(./iac/ec2/instance/node-3.yml)}
+    ApacheKafkaPrometheus1: ${file(./iac/ec2/instance/prometheus.yml)}
     ApacheKafkaSNSTopic: ${file(./iac/sns/sns-topic.yml)}
     ApacheKafkaSNSTopicSubscription: ${file(./iac/sns/sns-subscription.yml)}
     ApacheKafkaSNSTopicLambdaPermission: ${file(./iac/sns/sns-lambda-invoke-permission.yml)}
@@ -57,6 +63,7 @@ resources:
     DisconnectInvokePermission: ${file(./iac/websocket/disconnect-invoke-permission.yml)}
     MessageInvokePermission: ${file(./iac/websocket/message-invoke-permission.yml)}
     ConnectionsTable: ${file(./iac/dynamo-db.yml)}
+    GenerateClusterIdLambdaRole: ${file(./iac/lambda/generate-cluster-id-lambda-role.yml)}
     KafkaInternetGateway:
       Type: AWS::EC2::InternetGateway
     KafkaAttachGateway:

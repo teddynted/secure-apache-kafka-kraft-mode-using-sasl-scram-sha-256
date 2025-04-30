@@ -1,6 +1,6 @@
 #!/bin/bash -u
 
-echo $1 $2 $3 $4 $5 $6 $7 $8 $9
+echo $1 $2 $3 $4 $5 $6 $7 $8 $9 $10
 sudo yum update -y
 sudo yum install -y java-11-amazon-corretto
 sudo yum install -y git
@@ -30,8 +30,8 @@ ls -l
 cd ../../../../
 ls -l
 #CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
-CLUSTER_ID=$(aws ssm get-parameter --name /kafka/cluster-id --query "Parameter.Value" --output text --region "eu-west-1")
-echo $CLUSTER_ID
+CLUSTER_ID=$(aws ssm get-parameter --name /kafka/cluster-id --query "Parameter.Value" --output text --region $10)
+echo "CLUSTER_ID: $CLUSTER_ID"
 sudo mkdir /opt/kafka/scripts
 sudo mkdir /opt/kafka/config/kraft/kraft-combined-logs
 sudo touch /opt/kafka/scripts/kafka-format.sh

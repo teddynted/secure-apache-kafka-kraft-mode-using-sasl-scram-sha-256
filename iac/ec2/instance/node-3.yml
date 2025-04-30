@@ -1,5 +1,6 @@
 Type: "AWS::EC2::Instance"
 Properties:
+  DependsOn: KafkaClusterIdParameter
   AvailabilityZone: { "Fn::Select": [0,{ "Fn::GetAZs": "" }] }
   InstanceType: { 'Ref': 'InstanceType' }
   ImageId: { 'Ref': 'LatestAmiId' }
@@ -27,7 +28,7 @@ Properties:
       fi
       
       chmod +x /tmp/user-data.sh
-      if ! /tmp/user-data.sh ${username} ${password} ${state} ${country} ${unit} ${city} ${nodeId} ${offsets_topic_replication_factor} ${default_replication_factor}; then
+      if ! /tmp/user-data.sh ${username} ${password} ${state} ${country} ${unit} ${city} ${nodeId} ${offsets_topic_replication_factor} ${default_replication_factor} ${region}; then
         echo "ERROR: Script execution failed"
         exit 1
       fi
@@ -40,3 +41,4 @@ Properties:
       nodeId: { "Fn::Sub": [ "${nodeId}", { "nodeId": 3 } ] }
       offsets_topic_replication_factor: { "Fn::Sub": [ "${offsets_topic_replication_factor}", { "offsets_topic_replication_factor": "${env:OFFSETS_TOPIC_REPLICATION_FACTOR}" } ] }
       default_replication_factor: { "Fn::Sub": [ "${default_replication_factor}", { "default_replication_factor": "${env:DEFAULT_REPLICATION_FACTOR}" } ] }
+      region: { "Fn::Sub": [ "${region}", { "region": "${env:REGION}" } ] }
