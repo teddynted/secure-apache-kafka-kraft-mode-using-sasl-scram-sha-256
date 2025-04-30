@@ -1,8 +1,10 @@
 package main
 
 import (
-	"context"
+	"bytes"
 	"encoding/json"
+	"fmt"
+	"io"
 	"log"
 	"net/http"
 
@@ -32,47 +34,53 @@ type CloudFormationResponse struct {
 	Data               map[string]string `json:"Data"`
 }
 
-func sendResponse(req CloudFormationRequest, status string, data map[string]string) {
-	resp := CloudFormationResponse{
-		Status:             status,
-		Reason:             "See logs in CloudWatch",
-		PhysicalResourceId: req.PhysicalResourceId,
-		StackId:            req.StackId,
-		RequestId:          req.RequestId,
-		LogicalResourceId:  req.LogicalResourceId,
-		Data:               data,
-	}
+func handler(event CloudFormationRequest) error {
+	log.Println("Received CloudFormation event:", event)
 
-	body, err := json.Marshal(resp)
-	if err != nil {
-		log.Println("Failed to marshal response:", err)
-		return
-	}
-
-	httpReq, err := http.NewRequest("PUT", req.ResponseURL, nil)
-	if err != nil {
-		log.Println("Failed to create HTTP request:", err)
-		return
-	}
-
-	httpReq.Body = http.NoBody
-	httpReq.Header.Set("Content-Type", "")
-	httpReq.ContentLength = int64(len(body))
-
-	client := &http.Client{}
-	_, err = client.Do(httpReq)
-	if err != nil {
-		log.Println("Failed to send response:", err)
-	}
-}
-
-func handler(ctx context.Context, req CloudFormationRequest) {
-	log.Println("Received event:", req.RequestType)
-
+	// Create your custom return value
 	uid := uuid.New().String()
 	log.Println("Generated UUID:", uid)
 
-	sendResponse(req, "SUCCESS", map[string]string{"Value": uid})
+	response := CloudFormationResponse{
+		Status:             "SUCCESS",
+		Reason:             "Custom resource creation successful",
+		PhysicalResourceId: "custom-resource-id-123",
+		StackId:            event.StackId,
+		RequestId:          event.RequestId,
+		LogicalResourceId:  event.LogicalResourceId,
+		Data: map[string]string{
+			"Value": uid,
+		},
+	}
+
+	responseBody, err := json.Marshal(response)
+	if err != nil {
+		return fmt.Errorf("failed to marshal response: %v", err)
+	}
+
+	req, err := http.NewRequest("PUT", event.ResponseURL, bytes.NewReader(responseBody))
+	if err != nil {
+		return fmt.Errorf("failed to create HTTP request: %v", err)
+	}
+	req.Header.Set("Content-Type", "")
+	req.ContentLength = int64(len(responseBody))
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return fmt.Errorf("failed to send response to CFN: %v", err)
+	}
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			// log or handle close error
+			fmt.Printf("error closing response body: %v\n", cerr)
+		}
+	}()
+
+	body, _ := io.ReadAll(resp.Body)
+	log.Printf("CFN response status: %s, body: %s", resp.Status, string(body))
+
+	return nil
 }
 
 func main() {
