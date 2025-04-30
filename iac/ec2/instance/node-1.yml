@@ -1,6 +1,6 @@
-Type: "AWS::EC2::Instance"
+Type: AWS::EC2::Instance
+DependsOn: KafkaClusterIdParameter
 Properties:
-  DependsOn: KafkaClusterIdParameter
   AvailabilityZone: { "Fn::Select": [0,{ "Fn::GetAZs": "" }] }
   InstanceType: { 'Ref': 'InstanceType' }
   ImageId: { 'Ref': 'LatestAmiId' }
