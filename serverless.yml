@@ -23,7 +23,6 @@ resources:
         Description: Kafka KRaft Cluster ID
         Tier: Standard
     GenerateClusterId:
-      #DependsOn: GenerateClusterIdLambdaFunction
       Type: Custom::GenerateUUID
       Properties:
         ServiceToken: { "Fn::GetAtt": ["GenerateClusterIdLambdaFunction", "Arn"] }
@@ -39,10 +38,10 @@ resources:
     PrometheusSecurityGroup: ${file(./iac/ec2/security-group/prometheus-sg.yml)}
     KafkaBrokerSaslScram256Secrets: ${file(./iac/secrets-manager.yml)}
     KafkaEventSource: ${file(./iac/lambda/apache-kafka-lambda-event-source.yml)}
-    NodeOne5: ${file(./iac/ec2/instance/node-1.yml)}
-    NodeTwo5: ${file(./iac/ec2/instance/node-2.yml)}
-    NodeThree5: ${file(./iac/ec2/instance/node-3.yml)}
-    ApacheKafkaPrometheus5: ${file(./iac/ec2/instance/prometheus.yml)}
+    NodeOne6: ${file(./iac/ec2/instance/node-1.yml)}
+    NodeTwo6: ${file(./iac/ec2/instance/node-2.yml)}
+    NodeThree6: ${file(./iac/ec2/instance/node-3.yml)}
+    ApacheKafkaPrometheus6: ${file(./iac/ec2/instance/prometheus.yml)}
     ApacheKafkaSNSTopic: ${file(./iac/sns/sns-topic.yml)}
     ApacheKafkaSNSTopicSubscription: ${file(./iac/sns/sns-subscription.yml)}
     ApacheKafkaSNSTopicLambdaPermission: ${file(./iac/sns/sns-lambda-invoke-permission.yml)}
