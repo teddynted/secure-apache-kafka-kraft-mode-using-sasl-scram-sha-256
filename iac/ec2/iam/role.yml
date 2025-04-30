@@ -14,5 +14,13 @@ Properties:
     - arn:aws:iam::aws:policy/AmazonInspector2ManagedCispolicy
     - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
   Path: /
-  Policies: { 'Ref': 'AWS::NoValue' }
+  Policies: 
+   - PolicyDocument:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Action:
+            - ssm:GetParameter
+            - ssm:GetParameters
+          Resource: { "Fn::Sub": "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/kafka/cluster-id" }
   RoleName: { 'Ref': 'AWS::NoValue' }

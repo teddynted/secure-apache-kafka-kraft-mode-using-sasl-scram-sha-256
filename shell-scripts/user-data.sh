@@ -29,7 +29,9 @@ sudo ./kafka-generate-ssl-automatic.sh
 ls -l
 cd ../../../../
 ls -l
-CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
+#CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
+CLUSTER_ID=$(aws ssm get-parameter --name /kafka/cluster-id --query "Parameter.Value" --output text --region "eu-west-1")
+echo $CLUSTER_ID
 sudo mkdir /opt/kafka/scripts
 sudo mkdir /opt/kafka/config/kraft/kraft-combined-logs
 sudo touch /opt/kafka/scripts/kafka-format.sh

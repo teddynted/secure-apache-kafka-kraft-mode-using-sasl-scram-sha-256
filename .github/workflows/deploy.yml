@@ -33,6 +33,7 @@ jobs:
       DEFAULT_REPLICATION_FACTOR: ${{ secrets.DEFAULT_REPLICATION_FACTOR }}
       STAGE: ${{ secrets.STAGE }}
       PROMETHEUS_VERSION: ${{ secrets.PROMETHEUS_VERSION }}
+      CLUSTER_ID: ${{ secrets.CLUSTER_ID }}
 
     defaults:
       run:
@@ -116,6 +117,7 @@ jobs:
         NODE_ONE_TOPIC: ${{ secrets.NODE_ONE_TOPIC }}
         OFFSETS_TOPIC_REPLICATION_FACTOR: ${{ env.OFFSETS_TOPIC_REPLICATION_FACTOR }}
         DEFAULT_REPLICATION_FACTOR: ${{ env.DEFAULT_REPLICATION_FACTOR }}
+        CLUSTER_ID: ${{ env.CLUSTER_ID }}
 
     - name: Connect to Kafka Node 2
       run: |
@@ -128,6 +130,7 @@ jobs:
         NODE_TWO_TOPIC: ${{ secrets.NODE_TWO_TOPIC }}
         OFFSETS_TOPIC_REPLICATION_FACTOR: ${{ env.OFFSETS_TOPIC_REPLICATION_FACTOR }}
         DEFAULT_REPLICATION_FACTOR: ${{ env.DEFAULT_REPLICATION_FACTOR }}
+        CLUSTER_ID: ${{ env.CLUSTER_ID }}
   
     - name: Connect to Kafka Node 3
       run: |
@@ -140,3 +143,4 @@ jobs:
         NODE_THREE_TOPIC: ${{ secrets.NODE_THREE_TOPIC }}
         OFFSETS_TOPIC_REPLICATION_FACTOR: ${{ env.OFFSETS_TOPIC_REPLICATION_FACTOR }}
         DEFAULT_REPLICATION_FACTOR: ${{ env.DEFAULT_REPLICATION_FACTOR }}
+        CLUSTER_ID: ${{ env.CLUSTER_ID }}

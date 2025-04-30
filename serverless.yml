@@ -13,6 +13,14 @@ functions: ${file(./iac/lambda/functions.yml)}
 resources:
   Parameters: ${file(./iac/parameters.yml)}
   Resources:
+    KafkaClusterIdParameter:
+      Type: AWS::SSM::Parameter
+      Properties:
+        Name: /kafka/cluster-id
+        Type: String
+        Value: ${env:CLUSTER_ID}
+        Description: Kafka KRaft Cluster ID
+        Tier: Standard
     ApacheKafkaVPC: ${file(./iac/ec2/vpc/kafka-vpc.yml)}
     ApacheKafkaPrivateSubnet1: ${file(./iac/ec2/vpc/kafka-private-subnet-1.yml)}
     ApacheKafkaPrivateSubnet2: ${file(./iac/ec2/vpc/kafka-private-subnet-2.yml)}
