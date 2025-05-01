@@ -15,6 +15,10 @@ Properties:
       CidrIp: "0.0.0.0/0"
     - IpProtocol: tcp # for inter broker communication
       FromPort: 9092
+      ToPort: 9093
+      CidrIp: "0.0.0.0/0"
+    - IpProtocol: tcp # for controller communication
+      FromPort: 9092
       ToPort: 9092
       CidrIp: "0.0.0.0/0"
     - IpProtocol: tcp # for controller communication
