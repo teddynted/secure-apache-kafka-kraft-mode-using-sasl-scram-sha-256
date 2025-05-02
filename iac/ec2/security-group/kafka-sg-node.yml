@@ -8,6 +8,14 @@ Properties:
       FromPort: 443
       ToPort: 443
       CidrIp: "0.0.0.0/0"
+    - IpProtocol: tcp # for controller communication
+      FromPort: 9092
+      ToPort: 9092
+      CidrIp: "0.0.0.0/0"
+    - IpProtocol: tcp # for controller communication
+      FromPort: 9093
+      ToPort: 9093
+      CidrIp: "0.0.0.0/0"
   SecurityGroupIngress:
     - IpProtocol: tcp # ssh into an instance
       FromPort: 22
