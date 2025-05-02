@@ -17,15 +17,15 @@ Properties:
     #   FromPort: 9092
     #   ToPort: 9093
     #   CidrIp: "0.0.0.0/0"
-    # - IpProtocol: tcp
-    #   FromPort: 9092
-    #   ToPort: 9092
-    #   CidrIp: "0.0.0.0/0"
-    # - IpProtocol: tcp
-    #   FromPort: 9093
-    #   ToPort: 9093
-    #   CidrIp: "0.0.0.0/0"
     - IpProtocol: tcp
-      FromPort: 9094  
-      ToPort: 9094
+      FromPort: 9092
+      ToPort: 9092
+      CidrIp: "0.0.0.0/0"
+    - IpProtocol: tcp
+      FromPort: 9093
+      ToPort: 9093
+      CidrIp: "0.0.0.0/0"
+    - IpProtocol: tcp
+      FromPort: 9092 
+      ToPort: 9093
       SourceSecurityGroupId: {"Ref": "KafkaNodeSecurityGroup"}
