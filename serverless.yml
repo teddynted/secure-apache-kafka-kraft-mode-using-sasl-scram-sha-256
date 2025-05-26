@@ -37,7 +37,7 @@ resources:
     KafkaNodeSecurityGroup: ${file(./iac/ec2/security-group/kafka-sg-node.yml)}
     PrometheusSecurityGroup: ${file(./iac/ec2/security-group/prometheus-sg.yml)}
     KafkaBrokerSaslScram256Secrets: ${file(./iac/secrets-manager.yml)}
-    KafkaEventSource: ${file(./iac/lambda/apache-kafka-lambda-event-source.yml)}
+    #KafkaEventSource: ${file(./iac/lambda/apache-kafka-lambda-event-source.yml)}
     # NodeOne14: ${file(./iac/ec2/instance/node-1.yml)}
     # NodeTwo14: ${file(./iac/ec2/instance/node-2.yml)}
     # NodeThree14: ${file(./iac/ec2/instance/node-3.yml)}
