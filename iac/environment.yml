@@ -15,21 +15,21 @@ NODE_THREE_TOPIC: ${env:NODE_THREE_TOPIC}
 PROMETHEUS_VERSION: ${env:PROMETHEUS_VERSION}
 OFFSETS_TOPIC_REPLICATION_FACTOR: ${env:OFFSETS_TOPIC_REPLICATION_FACTOR}
 DEFAULT_REPLICATION_FACTOR: ${env:DEFAULT_REPLICATION_FACTOR}
-SNS_ARN: { "Fn::Sub": ["${SnsArn}", { "SnsArn": { "Ref": "ApacheKafkaSNSTopic" } }] }
-SNS_TOPIC_NAME: { "Fn::Select": [5, {"Fn::Split": [":", {"Ref": "ApacheKafkaSNSTopic"}]} ] }
+# SNS_ARN: { "Fn::Sub": ["${SnsArn}", { "SnsArn": { "Ref": "ApacheKafkaSNSTopic" } }] }
+# SNS_TOPIC_NAME: { "Fn::Select": [5, {"Fn::Split": [":", {"Ref": "ApacheKafkaSNSTopic"}]} ] }
 KAFKA_BOOTSTRAP_SERVER_TWO: ${env:KAFKA_BOOTSTRAP_SERVER_TWO}
 KAFKA_BOOTSTRAP_SERVER_THREE: ${env:KAFKA_BOOTSTRAP_SERVER_THREE}
-TABLE_NAME: { "Fn::Sub": ["${TableName}", { "TableName": { "Ref": "ConnectionsTable" } }] }
-REST_API_ENDPOINT_URI:
-  {
-    "Fn::Sub":
-      [
-        "https://${RestApiId}.execute-api.${AWS::Region}.amazonaws.com/${env:STAGE}",
-        { "RestApiId": { "Ref": "WebSocketAPI" } },
-      ],
-  }
-VPC_ID: { "Fn::Sub": ["${VpcID}", { "VpcID": { "Ref": "ApacheKafkaVPC" } }] }
-KAFKA_NODE_SECURITY_GROUP_ID: { "Fn::Sub": ["${sg}", { "sg": { "Ref": "KafkaNodeSecurityGroup" } }] }
-PROMETHEUS_SECURITY_GROUP: { "Fn::Sub": ["${sg}", { "sg": { "Ref": "PrometheusSecurityGroup" } }] }
-APACHE_KAFKA_PRIVATE_SUBNET_1: { "Fn::Sub": ["${sg}", { "sg": { "Ref": "ApacheKafkaPrivateSubnet1" } }] }
-APACHE_KAFKA_PRIVATE_SUBNET_2: { "Fn::Sub": ["${sg}", { "sg": { "Ref": "ApacheKafkaPrivateSubnet2" } }] }
+# TABLE_NAME: { "Fn::Sub": ["${TableName}", { "TableName": { "Ref": "ConnectionsTable" } }] }
+# REST_API_ENDPOINT_URI:
+#   {
+#     "Fn::Sub":
+#       [
+#         "https://${RestApiId}.execute-api.${AWS::Region}.amazonaws.com/${env:STAGE}",
+#         { "RestApiId": { "Ref": "WebSocketAPI" } },
+#       ],
+#   }
+# VPC_ID: { "Fn::Sub": ["${VpcID}", { "VpcID": { "Ref": "ApacheKafkaVPC" } }] }
+# KAFKA_NODE_SECURITY_GROUP_ID: { "Fn::Sub": ["${sg}", { "sg": { "Ref": "KafkaNodeSecurityGroup" } }] }
+# PROMETHEUS_SECURITY_GROUP: { "Fn::Sub": ["${sg}", { "sg": { "Ref": "PrometheusSecurityGroup" } }] }
+# APACHE_KAFKA_PRIVATE_SUBNET_1: { "Fn::Sub": ["${sg}", { "sg": { "Ref": "ApacheKafkaPrivateSubnet1" } }] }
+# APACHE_KAFKA_PRIVATE_SUBNET_2: { "Fn::Sub": ["${sg}", { "sg": { "Ref": "ApacheKafkaPrivateSubnet2" } }] }
