@@ -39,5 +39,10 @@ Properties:
           - "iam:GetInstanceProfile"
           - "iam:SimulatePrincipalPolicy"
         Resource: "*"
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+          - s3:GetObject
+        Resource: arn:aws:s3:::kafka-certs-bucket/ssl/*
   Roles:
     - { "Ref": "Ec2IAMRole" } 

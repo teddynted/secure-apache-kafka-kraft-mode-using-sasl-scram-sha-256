@@ -14,6 +14,7 @@ sudo ln -s kafka_2.12-3.9.0 /opt/kafka
 sudo chown ec2-user:ec2-user /opt/kafka && sudo chmod u+s /opt/kafka
 ls -l 
 ls -l /opt/kafka/
+
 # Generate TLS Certificate and Stores
 sudo mkdir /opt/kafka/config/kafka-ssl
 git clone https://github.com/confluentinc/confluent-platform-security-tools.git  /opt/kafka/config/kafka-ssl
@@ -27,8 +28,12 @@ echo PASSWORD=$2 >> /etc/environment
 echo USERNAME=$1 >> /etc/environment
 sudo ./kafka-generate-ssl-automatic.sh
 ls -l
+#aws s3 cp ca-cert s3://kafka-certs-bucket/ssl/ca-cert --recursive
+#aws s3 cp broker-1.keystore.jks s3://kafka-certs-bucket/ssl/
+#aws s3 cp broker-1.truststore.jks s3://kafka-certs-bucket/ssl/
 cd ../../../../
 ls -l
+
 #CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
 echo "Region: $10"
 CLUSTER_ID=$(aws ssm get-parameter --name /kafka/cluster-id --query "Parameter.Value" --output text --region "eu-west-1")

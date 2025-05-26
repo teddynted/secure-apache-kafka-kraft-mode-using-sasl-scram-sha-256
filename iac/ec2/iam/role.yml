@@ -26,6 +26,7 @@ Properties:
           - Effect: Allow
             Action:
               - s3:GetObject
+              - s3:PutObject
             Resource: arn:aws:s3:::kafka-certs-bucket/ssl/*
       PolicyName:
         { "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "${self:provider.stage}-Ec2AccessPolicy"]] }
