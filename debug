@@ -1,0 +1,19 @@
+controller.quorum.voters=
+1@ip-10-0-3-240.eu-west-1.compute.internal:9093,
+2@ip-10-0-3-157.eu-west-1.compute.internal:9093,
+3@ip-10-0-3-183.eu-west-1.compute.internal:9093
+
+Node 1
+advertised.listeners=SASL_SSL://ip-10-0-3-240.eu-west-1.compute.internal:9092,CONTROLLER://ip-10-0-3-240.eu-west-1.compute.internal:9093,EXTERNAL://54.228.81.173:9094
+***
+CLUSTER_ID=1710304e-36fb-4165-8adc-913f9739a587
+
+Node 2
+advertised.listeners=SASL_SSL://ip-10-0-3-157.eu-west-1.compute.internal:9092,CONTROLLER://ip-10-0-3-157.eu-west-1.compute.internal:9093,EXTERNAL://54.76.47.103:9094
+***
+CLUSTER_ID=1710304e-36fb-4165-8adc-913f9739a587
+
+Node 3
+advertised.listeners=SASL_SSL://ip-10-0-3-183.eu-west-1.compute.internal:9092,CONTROLLER://ip-10-0-3-183.eu-west-1.compute.internal:9093,EXTERNAL://34.244.120.192:9094
+***
+CLUSTER_ID=1710304e-36fb-4165-8adc-913f9739a587

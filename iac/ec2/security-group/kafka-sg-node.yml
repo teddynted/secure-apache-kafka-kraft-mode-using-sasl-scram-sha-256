@@ -21,3 +21,7 @@ Properties:
       FromPort: 9093
       ToPort: 9093
       CidrIp: "0.0.0.0/0"
+    - IpProtocol: tcp
+      FromPort: 9094
+      ToPort: 9094
+      CidrIp: "0.0.0.0/0"
