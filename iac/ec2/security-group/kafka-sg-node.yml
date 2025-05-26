@@ -9,10 +9,10 @@ Properties:
       ToPort: 65535
       CidrIp: 0.0.0.0/0
   SecurityGroupIngress:
-    # - IpProtocol: tcp # ssh into an instance
-    #   FromPort: 22
-    #   ToPort: 22
-    #   CidrIp: "0.0.0.0/0"
+    - IpProtocol: tcp # ssh into an instance
+      FromPort: 22
+      ToPort: 22
+      CidrIp: "0.0.0.0/0"
     # - IpProtocol: tcp
     #   FromPort: 9092
     #   ToPort: 9093
