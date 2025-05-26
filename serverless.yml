@@ -13,19 +13,19 @@ functions: ${file(./iac/lambda/functions.yml)}
 resources:
   Parameters: ${file(./iac/parameters.yml)}
   Resources:
-    # KafkaClusterIdParameter:
-    #   DependsOn: GenerateClusterUUID
-    #   Type: AWS::SSM::Parameter
-    #   Properties:
-    #     Name: /kafka/cluster-id
-    #     Type: String
-    #     Value: { "Fn::GetAtt": ["GenerateClusterUUID", "Value"] }
-    #     Description: Kafka KRaft Cluster ID
-    #     Tier: Standard
-    # GenerateClusterUUID:
-    #   Type: Custom::GenerateUUID
-    #   Properties:
-    #     ServiceToken: { "Fn::GetAtt": ["GenerateClusterIdLambdaFunction", "Arn"] }
+    KafkaClusterIdParameter:
+      DependsOn: GenerateClusterId
+      Type: AWS::SSM::Parameter
+      Properties:
+        Name: /kafka/cluster-id
+        Type: String
+        Value: { "Fn::GetAtt": ["GenerateClusterId", "Value"] }
+        Description: Kafka KRaft Cluster ID
+        Tier: Standard
+    GenerateClusterId:
+      Type: Custom::GenerateUUID
+      Properties:
+        ServiceToken: { "Fn::GetAtt": ["GenerateClusterIdLambdaFunction", "Arn"] }
     ApacheKafkaVPC: ${file(./iac/ec2/vpc/kafka-vpc.yml)}
     ApacheKafkaPrivateSubnet1: ${file(./iac/ec2/vpc/kafka-private-subnet-1.yml)}
     ApacheKafkaPrivateSubnet2: ${file(./iac/ec2/vpc/kafka-private-subnet-2.yml)}
@@ -38,29 +38,29 @@ resources:
     PrometheusSecurityGroup: ${file(./iac/ec2/security-group/prometheus-sg.yml)}
     KafkaBrokerSaslScram256Secrets: ${file(./iac/secrets-manager.yml)}
     KafkaEventSource: ${file(./iac/lambda/apache-kafka-lambda-event-source.yml)}
-    NodeOne: ${file(./iac/ec2/instance/node-1.yml)}
-    NodeTwo: ${file(./iac/ec2/instance/node-2.yml)}
-    NodeThree: ${file(./iac/ec2/instance/node-3.yml)}
-    ApacheKafkaPrometheus: ${file(./iac/ec2/instance/prometheus.yml)}
+    NodeOne14: ${file(./iac/ec2/instance/node-1.yml)}
+    NodeTwo14: ${file(./iac/ec2/instance/node-2.yml)}
+    NodeThree14: ${file(./iac/ec2/instance/node-3.yml)}
+    ApacheKafkaPrometheus14: ${file(./iac/ec2/instance/prometheus.yml)}
     ApacheKafkaSNSTopic: ${file(./iac/sns/sns-topic.yml)}
     ApacheKafkaSNSTopicSubscription: ${file(./iac/sns/sns-subscription.yml)}
     ApacheKafkaSNSTopicLambdaPermission: ${file(./iac/sns/sns-lambda-invoke-permission.yml)}
     LambdaSnsReceiverRole: ${file(./iac/lambda/lambda-sns-receiver-role.yml)}
-    # WebSocketLambdaRole: ${file(./iac/websocket/iam-role.yml)}
+    WebSocketLambdaRole: ${file(./iac/websocket/iam-role.yml)}
     WebSocketAPI: ${file(./iac/websocket/wb-api.yml)}
-    # ConnectIntegration: ${file(./iac/websocket/connect-integration.yml)}
-    # DisconnectIntegration: ${file(./iac/websocket/disconnect-integration.yml)}
-    # MessageIntegration: ${file(./iac/websocket/message-integration.yml)}
-    # ConnectRoute: ${file(./iac/websocket/connect-route.yml)}
-    # DisconnectRoute: ${file(./iac/websocket/disconnect-route.yml)}
-    # MessageRoute: ${file(./iac/websocket/message-route.yml)}
-    # WebSocketDeployment: ${file(./iac/websocket/web-socket-deployment.yml)}
-    # WebSocketStage: ${file(./iac/websocket/web-socket-stage.yml)}
-    # ConnectInvokePermission: ${file(./iac/websocket/connect-invoke-permission.yml)}
-    # DisconnectInvokePermission: ${file(./iac/websocket/disconnect-invoke-permission.yml)}
-    # MessageInvokePermission: ${file(./iac/websocket/message-invoke-permission.yml)}
+    ConnectIntegration: ${file(./iac/websocket/connect-integration.yml)}
+    DisconnectIntegration: ${file(./iac/websocket/disconnect-integration.yml)}
+    MessageIntegration: ${file(./iac/websocket/message-integration.yml)}
+    ConnectRoute: ${file(./iac/websocket/connect-route.yml)}
+    DisconnectRoute: ${file(./iac/websocket/disconnect-route.yml)}
+    MessageRoute: ${file(./iac/websocket/message-route.yml)}
+    WebSocketDeployment: ${file(./iac/websocket/web-socket-deployment.yml)}
+    WebSocketStage: ${file(./iac/websocket/web-socket-stage.yml)}
+    ConnectInvokePermission: ${file(./iac/websocket/connect-invoke-permission.yml)}
+    DisconnectInvokePermission: ${file(./iac/websocket/disconnect-invoke-permission.yml)}
+    MessageInvokePermission: ${file(./iac/websocket/message-invoke-permission.yml)}
     ConnectionsTable: ${file(./iac/dynamo-db.yml)}
-    # GenerateClusterIdLambdaRole: ${file(./iac/lambda/generate-cluster-id-lambda-role.yml)}
+    GenerateClusterIdLambdaRole: ${file(./iac/lambda/generate-cluster-id-lambda-role.yml)}
     KafkaInternetGateway:
       Type: AWS::EC2::InternetGateway
     KafkaAttachGateway:
