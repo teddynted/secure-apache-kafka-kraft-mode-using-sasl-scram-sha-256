@@ -47,7 +47,7 @@ resources:
     ApacheKafkaSNSTopicLambdaPermission: ${file(./iac/sns/sns-lambda-invoke-permission.yml)}
     LambdaSnsReceiverRole: ${file(./iac/lambda/lambda-sns-receiver-role.yml)}
     # WebSocketLambdaRole: ${file(./iac/websocket/iam-role.yml)}
-    # WebSocketAPI: ${file(./iac/websocket/wb-api.yml)}
+    WebSocketAPI: ${file(./iac/websocket/wb-api.yml)}
     # ConnectIntegration: ${file(./iac/websocket/connect-integration.yml)}
     # DisconnectIntegration: ${file(./iac/websocket/disconnect-integration.yml)}
     # MessageIntegration: ${file(./iac/websocket/message-integration.yml)}
@@ -59,7 +59,7 @@ resources:
     # ConnectInvokePermission: ${file(./iac/websocket/connect-invoke-permission.yml)}
     # DisconnectInvokePermission: ${file(./iac/websocket/disconnect-invoke-permission.yml)}
     # MessageInvokePermission: ${file(./iac/websocket/message-invoke-permission.yml)}
-    # ConnectionsTable: ${file(./iac/dynamo-db.yml)}
+    ConnectionsTable: ${file(./iac/dynamo-db.yml)}
     # GenerateClusterIdLambdaRole: ${file(./iac/lambda/generate-cluster-id-lambda-role.yml)}
     KafkaInternetGateway:
       Type: AWS::EC2::InternetGateway
