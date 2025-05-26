@@ -14,7 +14,7 @@ resources:
   Parameters: ${file(./iac/parameters.yml)}
   Resources:
     KafkaClusterIdParameter:
-      DependsOn: GenerateClusterId
+      #DependsOn: GenerateClusterId
       Type: AWS::SSM::Parameter
       Properties:
         Name: /kafka/cluster-id
