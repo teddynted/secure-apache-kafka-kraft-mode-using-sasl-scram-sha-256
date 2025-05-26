@@ -42,9 +42,9 @@ resources:
     # NodeTwo14: ${file(./iac/ec2/instance/node-2.yml)}
     # NodeThree14: ${file(./iac/ec2/instance/node-3.yml)}
     # ApacheKafkaPrometheus14: ${file(./iac/ec2/instance/prometheus.yml)}
-    # ApacheKafkaSNSTopic: ${file(./iac/sns/sns-topic.yml)}
-    # ApacheKafkaSNSTopicSubscription: ${file(./iac/sns/sns-subscription.yml)}
-    # ApacheKafkaSNSTopicLambdaPermission: ${file(./iac/sns/sns-lambda-invoke-permission.yml)}
+    ApacheKafkaSNSTopic: ${file(./iac/sns/sns-topic.yml)}
+    ApacheKafkaSNSTopicSubscription: ${file(./iac/sns/sns-subscription.yml)}
+    ApacheKafkaSNSTopicLambdaPermission: ${file(./iac/sns/sns-lambda-invoke-permission.yml)}
     # LambdaSnsReceiverRole: ${file(./iac/lambda/lambda-sns-receiver-role.yml)}
     # WebSocketLambdaRole: ${file(./iac/websocket/iam-role.yml)}
     # WebSocketAPI: ${file(./iac/websocket/wb-api.yml)}
