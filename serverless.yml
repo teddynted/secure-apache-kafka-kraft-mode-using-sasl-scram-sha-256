@@ -14,15 +14,15 @@ resources:
   Parameters: ${file(./iac/parameters.yml)}
   Resources:
     KafkaClusterIdParameter:
-      #DependsOn: GenerateClusterId
+      DependsOn: GenerateClusterUUID
       Type: AWS::SSM::Parameter
       Properties:
         Name: /kafka/cluster-id
         Type: String
-        Value: { "Fn::GetAtt": ["GenerateClusterId", "Value"] }
+        Value: { "Fn::GetAtt": ["GenerateClusterUUID", "Value"] }
         Description: Kafka KRaft Cluster ID
         Tier: Standard
-    GenerateClusterId:
+    GenerateClusterUUID:
       Type: Custom::GenerateUUID
       Properties:
         ServiceToken: { "Fn::GetAtt": ["GenerateClusterIdLambdaFunction", "Arn"] }
