@@ -23,6 +23,10 @@ Properties:
               - ssm:GetParameter
               - ssm:GetParameters
             Resource: { "Fn::Sub": "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/kafka/cluster-id" }
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource: arn:aws:s3:::kafka-certs-bucket/ssl/*
       PolicyName:
         { "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "${self:provider.stage}-Ec2AccessPolicy"]] }
   RoleName: { 'Ref': 'AWS::NoValue' }
