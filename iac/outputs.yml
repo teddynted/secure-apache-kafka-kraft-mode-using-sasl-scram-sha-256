@@ -1,3 +1,7 @@
 WebSocketURL:
   Value: { "Fn::Sub": [ "wss://${WebSocketAPI}.execute-api.${AWS::Region}.amazonaws.com/${stageName}", { "stageName": "${env:STAGE}" }] }
   Description: WebSocket API endpoint URL
+KafkaCertBucketName:
+  Value: { "Ref": "KafkaCertBucket" }
+  Export:
+    Name: KafkaCertBucketName

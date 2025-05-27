@@ -27,7 +27,6 @@ Properties:
             Action:
               - s3:GetObject
               - s3:PutObject
-              - s3:PutBucketPolicy
             Resource: *
       PolicyName:
         { "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "${self:provider.stage}-Ec2AccessPolicy"]] }
