@@ -103,11 +103,6 @@ resources:
         BucketName: kafka-certs-bucket${self:provider.stage}
         VersioningConfiguration:
           Status: Enabled
-        PublicAccessBlockConfiguration:
-          BlockPublicAcls: true
-          BlockPublicPolicy: true
-          IgnorePublicAcls: true
-          RestrictPublicBuckets: true
     KafkaCertBucketIamRole:
       Type: AWS::S3::BucketPolicy
       Properties:
@@ -116,9 +111,8 @@ resources:
           Version: "2012-10-17"
           Statement:
             - Action: 
-                - s3:GetObject
-                - s3:PutObject
-                - s3:PutBucketPolicy
+                - "s3:GetObject"
+                - "s3:PutObject"
               Effect: "Allow"
               Principal: "*"
               Resource:
