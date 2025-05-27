@@ -119,7 +119,7 @@ resources:
                 - "Fn::Join":
                     - ""
                     - - "arn:aws:s3:::"
-                      - { "Ref": "KafkaCertBucket${self:provider.stage}" }
+                      - { "Ref": "KafkaCertBucket" }
                       - "/*"
 
   Outputs: ${file(./iac/outputs.yml)}
