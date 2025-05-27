@@ -43,6 +43,6 @@ Properties:
         Action:
           - s3:PutObject
           - s3:GetObject
-        Resource: arn:aws:s3:::kafka-certs-bucket/ssl/*
+        Resource: *
   Roles:
     - { "Ref": "Ec2IAMRole" } 
