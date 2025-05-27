@@ -43,6 +43,6 @@ Properties:
         Action:
           - s3:PutObject
           - s3:GetObject
-        Resource: *
+        Resource: "*"
   Roles:
     - { "Ref": "Ec2IAMRole" } 
