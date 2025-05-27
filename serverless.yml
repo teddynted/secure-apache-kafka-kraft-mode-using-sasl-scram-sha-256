@@ -100,7 +100,7 @@ resources:
     KafkaCertBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: kafka-certs-bucket
+        BucketName: kafka-certs-bucket${self:provider.stage}
         VersioningConfiguration:
           Status: Enabled
     KafkaCertBucketIamRole:
