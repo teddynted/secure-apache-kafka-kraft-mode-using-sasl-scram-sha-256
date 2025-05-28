@@ -101,7 +101,7 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: kafka-certs-bucket${self:provider.stage}
-        AccessControl: PublicRead
+        #AccessControl: PublicRead
         VersioningConfiguration:
           Status: Enabled
     KafkaCertBucketIamRole:
@@ -115,7 +115,8 @@ resources:
                 - "s3:GetObject"
                 - "s3:PutObject"
               Effect: "Allow"
-              Principal: "*" #"AWS": "arn:aws:iam::123456789012:role/KafkaNodeEC2Role"
+              Principal: #"*" 
+                AWS: "arn:aws:iam::${AWS::AccountId}:role/KafkaNodeEC2Role"
               Resource:
                 - "Fn::Join":
                     - ""
