@@ -33,4 +33,4 @@ KAFKA_NODE_SECURITY_GROUP_ID: { "Fn::Sub": ["${sg}", { "sg": { "Ref": "KafkaNode
 PROMETHEUS_SECURITY_GROUP: { "Fn::Sub": ["${sg}", { "sg": { "Ref": "PrometheusSecurityGroup" } }] }
 APACHE_KAFKA_PRIVATE_SUBNET_1: { "Fn::Sub": ["${sg}", { "sg": { "Ref": "ApacheKafkaPrivateSubnet1" } }] }
 APACHE_KAFKA_PRIVATE_SUBNET_2: { "Fn::Sub": ["${sg}", { "sg": { "Ref": "ApacheKafkaPrivateSubnet2" } }] }
-S3_BUCKET: { "Fn::ImportValue" : "KafkaCertBucketName" }
+S3_BUCKET: { "Ref" : "KafkaCertBucket" }
