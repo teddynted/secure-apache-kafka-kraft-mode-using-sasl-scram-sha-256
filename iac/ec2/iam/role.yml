@@ -27,7 +27,7 @@ Properties:
             Action:
               - s3:GetObject
               - s3:PutObject
-            Resource: '*'
+            Resource: !Sub "${KafkaCertBucket.Arn}/*"
       PolicyName:
         { "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "${self:provider.stage}-Ec2AccessPolicy"]] }
   RoleName: { 'Ref': 'AWS::NoValue' }

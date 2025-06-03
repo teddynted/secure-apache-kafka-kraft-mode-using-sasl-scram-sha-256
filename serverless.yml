@@ -101,27 +101,26 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: kafka-certs-bucket${self:provider.stage}
-        #AccessControl: PublicRead
-        VersioningConfiguration:
-          Status: Enabled
-    KafkaCertBucketIamRole:
-      Type: AWS::S3::BucketPolicy
-      Properties:
-        Bucket: { "Ref": "KafkaCertBucket" }
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Action: 
-                - "s3:GetObject"
-                - "s3:PutObject"
-              Effect: "Allow"
-              Principal: #"*" 
-                AWS: "arn:aws:iam::${AWS::AccountId}:role/KafkaNodeEC2Role"
-              Resource:
-                - "Fn::Join":
-                    - ""
-                    - - "arn:aws:s3:::"
-                      - { "Ref": "KafkaCertBucket" }
-                      - "/*"
+        # #AccessControl: PublicRead
+        # VersioningConfiguration:
+        #   Status: Enabled
+    # KafkaCertBucketIamRole:
+    #   Type: AWS::S3::BucketPolicy
+    #   Properties:
+    #     Bucket: { "Ref": "KafkaCertBucket" }
+    #     PolicyDocument:
+    #       Version: "2012-10-17"
+    #       Statement:
+    #         - Action: 
+    #             - "s3:GetObject"
+    #             - "s3:PutObject"
+    #           Effect: "Allow"
+    #           Principal: #"*" 
+    #           Resource:
+    #             - "Fn::Join":
+    #                 - ""
+    #                 - - "arn:aws:s3:::"
+    #                   - { "Ref": "KafkaCertBucket" }
+    #                   - "/*"
 
   Outputs: ${file(./iac/outputs.yml)}
