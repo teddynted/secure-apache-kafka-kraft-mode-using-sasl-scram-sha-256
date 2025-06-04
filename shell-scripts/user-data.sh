@@ -40,7 +40,7 @@ if [ $7 -eq 1 ]; then
   echo "parameter $7 EQUALS 1"
   yes | sudo ./kafka-generate-ssl.sh --working-dir $CA_DIR --dn "CN=Kafka-CA" --ca-dn "CN=Kafka-CA" --ca-password "$2" --password "$2" --keystore-password "$2" --truststore-password "$2" --output-dir "$CA_DIR/ca" --san "DNS:$NODE_NAME" --generate-ca --ca-validity 365
   aws s3 cp "$CA_DIR/ca/ca-cert" "s3://${S3_BUCKET_NAME}/kafka-ca/ca-cert" --recursive --region $REGION
-  aws s3 cp "$CA_DIR/ca/ca-key"  "s3://${S3_BUCKET_NAME}/kafka-ca/ca-key" --recursive --region $REGION
+  aws s3 cp "$CA_DIR/ca/ca-key" "s3://${S3_BUCKET_NAME}/kafka-ca/ca-key" --recursive --region $REGION
   until aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-ca/ca-cert"; do
     echo "Waiting for CA cert in S3..."
     sleep 5
