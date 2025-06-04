@@ -25,18 +25,13 @@ NODE_NAME=`hostname -f`
 
 echo PASSWORD=$2 >> /etc/environment
 PASSWORD=$2
-# echo COUNTRY="ZA" >> /etc/environment
-# COUNTRY="ZA"
-# echo STATE="Gauteng" >> /etc/environment
-# STATE="Gauteng"
-# echo LOCATION="Jozi" >> /etc/environment
-# LOCATION="Jozi"
-# echo ORGANIZATION_UNIT="Pixventive" >> /etc/environment
-# ORGANIZATION_UNIT="Pixventive"
-# echo COMMON_NAME=`hostname -f` >> /etc/environment
-# COMMON_NAME=`hostname -f`
-# echo EMAIL="teddynted@gmail.com" >> /etc/environment
-# EMAIL="teddynted@gmail.com"
+echo COUNTRY="ZA" >> /etc/environment
+COUNTRY="ZA"
+echo STATE="Gauteng" >> /etc/environment
+STATE="Gauteng"
+echo ORGANIZATION_UNIT="Pixventive" >> /etc/environment
+ORGANIZATION_UNIT="Pixventive"
+
 echo CITY=Johannesburg >> /etc/environment
 CITY=Johannesburg
 echo VALIDITY_DAYS=3650 >> /etc/environment
