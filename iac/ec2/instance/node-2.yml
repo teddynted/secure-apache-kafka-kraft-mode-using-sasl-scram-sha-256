@@ -1,5 +1,5 @@
 Type: AWS::EC2::Instance
-DependsOn: [KafkaClusterIdParameter, KafkaCertBucket, NodeOne1]
+DependsOn: [KafkaClusterIdParameter, KafkaCertBucket, NodeOne2]
 Properties:
   AvailabilityZone: { "Fn::Select": [0,{ "Fn::GetAZs": "" }] }
   InstanceType: { 'Ref': 'InstanceType' }
