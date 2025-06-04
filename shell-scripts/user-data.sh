@@ -42,7 +42,7 @@ if [ $7 -eq 1 ]; then
   echo "parameter $7 EQUALS 1"
   sudo mkdir /ca/ca-cert
   sudo mkdir /ca/ca-key
-  sudo expect <<EOF
+  expect <<EOF
   spawn ./kafka-generate-ssl.sh --working-dir $CA_DIR --dn "CN=Kafka-CA" --ca-dn "CN=Kafka-CA" --ca-password "$2" --password "$2" --keystore-password "$2" --truststore-password "$2" --output-dir "$CA_DIR/ca" --san "DNS:$NODE_NAME" --generate-ca --ca-validity 365
   expect "PEM pass phrase:" { send "$2\r" }
   expect "Verifying - Enter PEM pass phrase:" { send "$2\r" }
@@ -65,7 +65,7 @@ aws s3 cp "s3://${S3_BUCKET_NAME}/kafka-ca/ca-key" "$CA_DIR/ca-key" --recursive 
 sleep 5
 
 # --- Generate node cert ---
-sudo expect <<EOF
+expect <<EOF
 spawn --working-dir $CA_DIR --dn "CN=$NODE_NAME" --ca-dn "CN=Kafka-CA" --ca-password "$2" --password "$2" --keystore-password "$2" --truststore-password "$2" --output-dir "$CA_DIR/$NODE_NAME" --san "DNS:$NODE_NAME" --ca-cert "$CA_DIR/ca-cert" --ca-key "$CA_DIR/ca-key"
 expect "Enter PEM pass phrase:" { send "$2\r" }
 expect "Enter keystore password:" { send "$2\r" }
