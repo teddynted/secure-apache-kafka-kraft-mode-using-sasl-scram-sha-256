@@ -24,12 +24,6 @@ REGION=eu-west-1
 NODE_NAME=`hostname -f`
 VALIDITY_DAYS=3650
 
-# COUNTRY=
-# STATE=
-# ORGANIZATION_UNIT=
-# CITY=
-# PASSWORD=
-
 echo PASSWORD=$2 >> /etc/environment
 PASSWORD=$2
 echo COUNTRY="ZA" >> /etc/environment
@@ -89,7 +83,7 @@ if aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-certs/ca/" > /dev/null 2>&1; then
 else
   sudo mkdir /opt/kafka/config/kafka-ssl/ca
   sudo touch $CA_DIR/config-ca.yml
-  cd /opt/kafka/config/kafka-ssl/ca
+  #cd /opt/kafka/config/kafka-ssl/ca
   echo "Generating new CA"
   cat > "$CA_DIR/config-ca.yml" <<EOF
 ca:
@@ -99,7 +93,7 @@ ca:
   outputDir: "$CA_DIR/ca"
 EOF
   sudo /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh --config /opt/kafka/config/kafka-ssl/config-ca.yml
-  cd
+  sleep 5
   # Upload CA to S3
   aws s3 cp /opt/kafka/config/kafka-ssl/ca/ s3://${S3_BUCKET_NAME}/kafka-certs/ca/ --recursive --region $REGION --exclude "*ca-key"
   #aws s3 cp /opt/kafka/config/kafka-ssl/ca/ "s3://kafka-certs-bucket-develop/" --recursive --region eu-west-1 --exclude "*ca-key"
