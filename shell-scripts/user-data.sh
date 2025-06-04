@@ -31,7 +31,6 @@ cd /opt/kafka/config/kafka-ssl/confluent-platform-security-tools
 ls -l
 # echo COUNTRY=$4 >> /etc/environment
 # echo STATE=$3 >> /etc/environment
-# echo ORGANIZATION_UNIT=PX >> /etc/environment
 # echo CITY=Johannesburg >> /etc/environment
 # echo PASSWORD=$2 >> /etc/environment
 # echo USERNAME=$1 >> /etc/environment
