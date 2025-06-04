@@ -22,6 +22,13 @@ CA_DIR=/opt/kafka/config/kafka-ssl
 S3_BUCKET_NAME=kafka-certs-bucket-develop
 REGION=eu-west-1
 NODE_NAME=`hostname -f`
+VALIDITY_DAYS=3650
+
+# COUNTRY=
+# STATE=
+# ORGANIZATION_UNIT=
+# CITY=
+# PASSWORD=
 
 echo PASSWORD=$2 >> /etc/environment
 PASSWORD=$2
@@ -31,12 +38,8 @@ echo STATE="Gauteng" >> /etc/environment
 STATE="Gauteng"
 echo ORGANIZATION_UNIT="Pixventive" >> /etc/environment
 ORGANIZATION_UNIT="Pixventive"
-
 echo CITY=Johannesburg >> /etc/environment
 CITY=Johannesburg
-echo VALIDITY_DAYS=3650 >> /etc/environment
-VALIDITY_DAYS=3650
-echo USERNAME=$1 >> /etc/environment
 
 export PASSWORD=$2
 export ORGANIZATION_UNIT="Pixventive"
@@ -94,14 +97,18 @@ ca:
   validityDays: $VALIDITY_DAYS
   outputDir: "$CA_DIR/ca"
 EOF
-  sudo ./opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh --config "$CA_DIR/config-ca.yml"
+  sudo ./opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh --config /opt/kafka/config/kafka-ssl/config-ca.yml
   # Upload CA to S3
   aws s3 cp "$CA_DIR/ca/" "s3://${S3_BUCKET_NAME}/kafka-certs/ca/" --recursive --region $REGION
+  until aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-certs/ca"; do
+    echo "Waiting for CA cert in S3..."
+    sleep 5
+  done
 fi
 
 # === Generate certs for this node ===
 sudo touch $CA_DIR/config-node.yml
-sudo cat > "$CA_DIR/config-node.yml" <<EOF
+cat > "$CA_DIR/config-node.yml" <<EOF
 nodes:
   - commonName: "$NODE_NAME"
     password: "$PASSWORD"
@@ -113,10 +120,10 @@ ca:
   outputDir: "$CA_DIR/ca"
 EOF
 
-sudo ./opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh --config "$CA_DIR/config-node.yml"
+sudo ./opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh --config /opt/kafka/config/kafka-ssl/config-node.yml
 
 # === Upload node certs to S3 ===
-aws s3 cp "$CA_DIR/nodes/$NODE_NAME" "s3://${S3_BUCKET_NAME}/kafka-certs/nodes/$NODE_NAME/" --recursive --region $REGION
+aws s3 cp /opt/kafka/config/kafka-ssl/nodes/$NODE_NAME "s3://${S3_BUCKET_NAME}/kafka-certs/nodes/$NODE_NAME/" --recursive --region $REGION
 
 # if [ $7 -eq 1 ]; then
 # sudo cat > config.yml <<EOF
