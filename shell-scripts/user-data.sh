@@ -38,6 +38,7 @@ sudo mkdir $CA_DIR
 #sudo mkdir /opt/kafka/config/kafka-ssl
 sudo git clone https://github.com/confluentinc/confluent-platform-security-tools.git /opt/kafka/config/kafka-ssl
 sudo mkdir /opt/kafka/config/kafka-ssl/ca
+sudo mkdir /opt/kafka/config/kafka-ssl/nodes
 sudo mkdir /opt/kafka/config/kafka-ssl/nodes/$NODE_NAME
 # #sudo chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
 # # yes | sudo ./kafka-generate-ssl.sh --working-dir /opt/kafka/config/kafka-ssl/ --dn "CN=Kafka-CA" --ca-dn "CN=Kafka-CA" --ca-password "password" --password "password" --keystore-password "password" --truststore-password "password" --output-dir /opt/kafka/config/kafka-ssl/ca --san "DNS:teddy" --generate-ca --ca-validity 365
