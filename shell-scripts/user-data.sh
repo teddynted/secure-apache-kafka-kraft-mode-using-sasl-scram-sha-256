@@ -25,6 +25,7 @@ sudo mkdir /opt/kafka/config/kafka-ssl/ca
 #sudo mkdir /opt/kafka/config/kafka-ssl
 git clone https://github.com/confluentinc/confluent-platform-security-tools.git $CA_DIR
 #sudo chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
+# The user-provided path /opt/kafka/config/kafka-ssl/ca/ca-cert does not exist.
 cd $CA_DIR
 ls -l
 # echo COUNTRY=$4 >> /etc/environment
@@ -37,7 +38,7 @@ ls -l
 sudo chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl.sh
 if [ $7 -eq 1 ]; then
   echo "parameter $7 EQUALS 1"
-  yes | sudo ./kafka-generate-ssl.sh --working-dir "$CA_DIR/ca" --dn "CN=Kafka-CA" --ca-dn "CN=Kafka-CA" --ca-password "$2" --password "$2" --keystore-password "$2" --truststore-password "$2" --output-dir "$CA_DIR/ca" --san "DNS:$NODE_NAME" --generate-ca --ca-validity 365
+  yes | sudo ./kafka-generate-ssl.sh --working-dir $CA_DIR --dn "CN=Kafka-CA" --ca-dn "CN=Kafka-CA" --ca-password "$2" --password "$2" --keystore-password "$2" --truststore-password "$2" --output-dir "$CA_DIR/ca" --san "DNS:$NODE_NAME" --generate-ca --ca-validity 365
   aws s3 cp "$CA_DIR/ca/ca-cert" "s3://${S3_BUCKET_NAME}/kafka-ca/ca-cert" --recursive --region $REGION
   aws s3 cp "$CA_DIR/ca/ca-key"  "s3://${S3_BUCKET_NAME}/kafka-ca/ca-key" --recursive --region $REGION
   until aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-ca/ca-cert"; do
@@ -56,7 +57,7 @@ aws s3 cp "s3://${S3_BUCKET_NAME}/kafka-ca/ca-key" "$CA_DIR/ca-key" --recursive 
 sleep 5
 
 # --- Generate node cert ---
-yes | sudo ./kafka-generate-ssl.sh --working-dir "$CA_DIR" --dn "CN=$NODE_NAME" --ca-dn "CN=Kafka-CA" --ca-password "$2" --password "$2" --keystore-password "$2" --truststore-password "$2" --output-dir "$CA_DIR/$NODE_NAME" --san "DNS:$NODE_NAME" --ca-cert "$CA_DIR/ca-cert" --ca-key "$CA_DIR/ca-key"
+yes | sudo ./kafka-generate-ssl.sh --working-dir $CA_DIR --dn "CN=$NODE_NAME" --ca-dn "CN=Kafka-CA" --ca-password "$2" --password "$2" --keystore-password "$2" --truststore-password "$2" --output-dir "$CA_DIR/$NODE_NAME" --san "DNS:$NODE_NAME" --ca-cert "$CA_DIR/ca-cert" --ca-key "$CA_DIR/ca-key"
 
 ls -l
 cd ../../../../
