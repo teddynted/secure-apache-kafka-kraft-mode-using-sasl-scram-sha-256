@@ -25,18 +25,18 @@ NODE_NAME=`hostname -f`
 
 echo PASSWORD=$2 >> /etc/environment
 PASSWORD=$2
-echo COUNTRY="ZA" >> /etc/environment
-COUNTRY="ZA"
-echo STATE="Gauteng" >> /etc/environment
-STATE="Gauteng"
-echo LOCATION="Jozi" >> /etc/environment
-LOCATION="Jozi"
-echo ORGANIZATION_UNIT="Pixventive" >> /etc/environment
-ORGANIZATION_UNIT="Pixventive"
-echo COMMON_NAME=`hostname -f` >> /etc/environment
-COMMON_NAME=`hostname -f`
-echo EMAIL="teddynted@gmail.com" >> /etc/environment
-EMAIL="teddynted@gmail.com"
+# echo COUNTRY="ZA" >> /etc/environment
+# COUNTRY="ZA"
+# echo STATE="Gauteng" >> /etc/environment
+# STATE="Gauteng"
+# echo LOCATION="Jozi" >> /etc/environment
+# LOCATION="Jozi"
+# echo ORGANIZATION_UNIT="Pixventive" >> /etc/environment
+# ORGANIZATION_UNIT="Pixventive"
+# echo COMMON_NAME=`hostname -f` >> /etc/environment
+# COMMON_NAME=`hostname -f`
+# echo EMAIL="teddynted@gmail.com" >> /etc/environment
+# EMAIL="teddynted@gmail.com"
 echo CITY=Johannesburg >> /etc/environment
 CITY=Johannesburg
 echo VALIDITY_DAYS=3650 >> /etc/environment
@@ -52,10 +52,9 @@ export COUNTRY="ZA"
 
 sudo mkdir /opt/kafka/config/kafka-ssl
 sudo git clone https://github.com/confluentinc/confluent-platform-security-tools.git /opt/kafka/config/kafka-ssl
-sudo mkdir /opt/kafka/config/kafka-ssl/ca
 sudo mkdir /opt/kafka/config/kafka-ssl/nodes
 sudo mkdir /opt/kafka/config/kafka-ssl/nodes/$NODE_NAME
-# #sudo chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
+sudo chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
 # # yes | sudo ./kafka-generate-ssl.sh --working-dir /opt/kafka/config/kafka-ssl/ --dn "CN=Kafka-CA" --ca-dn "CN=Kafka-CA" --ca-password "password" --password "password" --keystore-password "password" --truststore-password "password" --output-dir /opt/kafka/config/kafka-ssl/ca --san "DNS:teddy" --generate-ca --ca-validity 365
 # # The user-provided path /opt/kafka/config/kafka-ssl/ca/ca-cert does not exist.
 # cd /opt/kafka/config/kafka-ssl/
@@ -90,6 +89,7 @@ if aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-certs/ca/" > /dev/null 2>&1; then
   echo "Reusing existing CA from S3"
   aws s3 cp "s3://${S3_BUCKET_NAME}/kafka-certs/ca/" "$CA_DIR/ca/" --recursive
 else
+  sudo mkdir /opt/kafka/config/kafka-ssl/ca
   sudo touch $CA_DIR/config-ca.yml
   echo "Generating new CA"
   cat > "$CA_DIR/config-ca.yml" <<EOF
@@ -118,10 +118,10 @@ ca:
   outputDir: "$CA_DIR/ca"
 EOF
 
-sudo /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh --config "$CA_DIR/config-node.yml"
+sudo ./opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh --config "$CA_DIR/config-node.yml"
 
 # === Upload node certs to S3 ===
-aws s3 cp "$CA_DIR/nodes/$NODE_HOSTNAME" "s3://${S3_BUCKET_NAME}/kafka-certs/nodes/$NODE_NAME/" --recursive --region $REGION
+aws s3 cp "$CA_DIR/nodes/$NODE_NAME" "s3://${S3_BUCKET_NAME}/kafka-certs/nodes/$NODE_NAME/" --recursive --region $REGION
 
 # if [ $7 -eq 1 ]; then
 # sudo cat > config.yml <<EOF
@@ -144,8 +144,8 @@ aws s3 cp "$CA_DIR/nodes/$NODE_HOSTNAME" "s3://${S3_BUCKET_NAME}/kafka-certs/nod
 # fi
 
 ls -l
-cd ../../../../
-ls -l
+# cd ../../../../
+# ls -l
 
 sleep 2
 
