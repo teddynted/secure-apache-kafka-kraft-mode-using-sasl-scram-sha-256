@@ -16,14 +16,13 @@ ls -l
 ls -l /opt/kafka/
 
 # Generate TLS Certificate and Stores
-export HOME=/root
-export CA_DIR=/opt/kafka/config/kafka-ssl
-export S3_BUCKET_NAME=kafka-certs-bucket-develop
-export REGION=eu-west-1
-export NODE_NAME=`hostname -f`
+CA_DIR=/opt/kafka/config/kafka-ssl
+S3_BUCKET_NAME=kafka-certs-bucket-develop
+REGION=eu-west-1
+NODE_NAME=`hostname -f`
 sudo mkdir $CA_DIR
 #sudo mkdir /opt/kafka/config/kafka-ssl
-git clone https://github.com/confluentinc/confluent-platform-security-tools.git  $CA_DIR
+git clone https://github.com/confluentinc/confluent-platform-security-tools.git $CA_DIR
 #sudo chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
 cd $CA_DIR
 # echo COUNTRY=$4 >> /etc/environment
@@ -33,29 +32,37 @@ cd $CA_DIR
 # echo PASSWORD=$2 >> /etc/environment
 # echo USERNAME=$1 >> /etc/environment
 # sudo ./kafka-generate-ssl-automatic.sh
-sudo chmod +x $CA_DIR/kafka-generate-ssl.sh
+sudo chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl.sh
 if [ $7 -eq 1 ]; then
   echo "parameter $7 EQUALS 1"
-  sudo ./kafka-generate-ssl.sh --ca --out-dir "$CA_DIR" --dn "CN=KafkaCA, OU=Kafka, O=Pixventive, L=Jozi, ST=$3, C=$4" --ca-validity 365
-  aws s3 cp "$CA_DIR" "s3://$S3_BUCKET_NAME/kafka-ca" --recursive --region $REGION
+  sudo mkdir "$CA_DIR/ca"
+  yes | sudo ./kafka-generate-ssl.sh --working-dir "$CA_DIR/ca" --dn "CN=Kafka-CA" --ca-dn "CN=Kafka-CA" --ca-password "$2" --password "$2" --keystore-password "$2" --truststore-password "$2" --output-dir "$CA_DIR/ca" --san "DNS:$NODE_NAME" --generate-ca --ca-validity 365
+  aws s3 cp "$CA_DIR/ca/ca-cert" "s3://${S3_BUCKET_NAME}/kafka-ca/ca-cert" --recursive --region $REGION
+  aws s3 cp "$CA_DIR/ca/ca-key"  "s3://${S3_BUCKET_NAME}/kafka-ca/ca-key" --recursive --region $REGION
+  until aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-ca/ca-cert"; do
+    echo "Waiting for CA cert in S3..."
+    sleep 5
+  done
 fi
 
-if [[ $7 -eq 2 || $7 -eq 3 ]]; then
-  # Download common CA
-  aws s3 cp s3://$S3_BUCKET_NAME/kafka-ca/ "$CA_DIR" --recursive
-  # Generate keystore and truststore
-  sudo ./kafka-generate-ssl.sh --keystore --truststore --dn "CN=$NODE_NAME, OU=Kafka, O=Pixventive, L=Jozi, ST=$3, C=$4" --ca-cert "$CA_DIR"/ca-cert --ca-key "$CA_DIR"/ca-key --key-password "$1" --store-password "$1" --output-dir "$CA_DIR/$NODE_NAME"
-  aws s3 cp "$CA_DIR/$NODE_NAME" s3://$S3_BUCKET_NAME/kafka-ca/nodes-$7/$NODE_NAME/ --recursive
-else
-  # Generate keystore and truststore
-  sudo ./kafka-generate-ssl.sh --keystore --truststore --dn "CN=$NODE_NAME, OU=Kafka, O=Pixventive, L=Jozi, ST=$3, C=$4" --ca-cert "$CA_DIR"/ca-cert --ca-key "$CA_DIR"/ca-key --key-password "$1" --store-password "$1" --output-dir "$CA_DIR"/$NODE_NAME
-  aws s3 cp "$CA_DIR/$NODE_NAME" s3://$S3_BUCKET_NAME/kafka-ca/nodes-$7/$NODE_NAME/ --recursive
-if
+sudo mkdir "$CA_DIR/ca-cert"
+sudo mkdir "$CA_DIR/ca-key"
+
+# --- Download shared CA cert & key ---
+aws s3 cp "s3://${S3_BUCKET_NAME}/kafka-ca/ca-cert" "$CA_DIR/ca-cert" --recursive $REGION
+aws s3 cp "s3://${S3_BUCKET_NAME}/kafka-ca/ca-key" "$CA_DIR/ca-key" --recursive $REGION
+
+sleep 5
+
+# --- Generate node cert ---
+yes | sudo ./kafka-generate-ssl.sh --working-dir "$CA_DIR" --dn "CN=$NODE_NAME" --ca-dn "CN=Kafka-CA" --ca-password "$2" --password "$2" --keystore-password "$2" --truststore-password "$2" --output-dir "$CA_DIR/$NODE_NAME" --san "DNS:$NODE_NAME" --ca-cert "$CA_DIR/ca-cert" --ca-key "$CA_DIR/ca-key"
+
 ls -l
 cd ../../../../
 ls -l
 
-#CLUSTER_ID=$(/opt/kafka/bin/kafka-storage.sh random-uuid)
+sleep 2
+
 echo "Region: $10"
 CLUSTER_ID=$(aws ssm get-parameter --name /kafka/cluster-id --query "Parameter.Value" --output text --region "eu-west-1")
 echo "CLUSTER_ID: $CLUSTER_ID"
