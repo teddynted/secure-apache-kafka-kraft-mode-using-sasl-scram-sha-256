@@ -18,22 +18,24 @@ ls -l
 ls -l /opt/kafka/
 
 # Generate TLS Certificate and Stores
-CA_DIR=/opt/kafka/config/kafka-ssl
-S3_BUCKET_NAME=kafka-certs-bucket-develop
-REGION=eu-west-1
-NODE_NAME=`hostname -f`
-PASSWORD=$2
-COUNTRY="ZA"
-STATE="Gauteng"
-LOCATION="Jozi"
-ORGANIZATION="Confluent"
-ORG_UNIT="Software Engineering"
-COMMON_NAME=`hostname -f`
-EMAIL="admin@example.com"
-COUNTRY=$4
-STATE=$3
-CITY=Johannesburg
-VALIDITY_DAYS=3650
+echo CA_DIR=/opt/kafka/config/kafka-ssl >> /etc/environment
+echo S3_BUCKET_NAME=kafka-certs-bucket-develop >> /etc/environment
+echo REGION=eu-west-1 >> /etc/environment
+echo NODE_NAME=`hostname -f` >> /etc/environment
+echo PASSWORD=$2 >> /etc/environment
+echo COUNTRY="ZA" >> /etc/environment
+echo STATE="Gauteng" >> /etc/environment
+echo LOCATION="Jozi" >> /etc/environment
+echo ORGANIZATION="Confluent" >> /etc/environment
+echo ORG_UNIT="Software Engineering" >> /etc/environment
+echo COMMON_NAME=`hostname -f` >> /etc/environment
+echo EMAIL="admin@example.com" >> /etc/environment
+echo COUNTRY=$4 >> /etc/environment
+echo STATE=$3 >> /etc/environment
+echo CITY=Johannesburg >> /etc/environment
+echo VALIDITY_DAYS=3650 >> /etc/environment
+echo USERNAME=$1 >> /etc/environment
+
 sudo mkdir $CA_DIR
 #sudo mkdir /opt/kafka/config/kafka-ssl
 sudo git clone https://github.com/confluentinc/confluent-platform-security-tools.git /opt/kafka/config/kafka-ssl
