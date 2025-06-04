@@ -21,7 +21,7 @@ ls -l /opt/kafka/
 CA_DIR=/opt/kafka/config/kafka-ssl
 S3_BUCKET_NAME=kafka-certs-bucket-develop
 REGION=eu-west-1
-NODE_NAME=$(`hostname -f`)
+NODE_NAME=`hostname -f`
 PASSWORD=$2
 COUNTRY="ZA"
 STATE="Gauteng"
