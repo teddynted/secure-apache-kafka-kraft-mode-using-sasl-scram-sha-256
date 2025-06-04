@@ -22,6 +22,7 @@ CA_DIR=/opt/kafka/config/kafka-ssl
 S3_BUCKET_NAME=kafka-certs-bucket-develop
 REGION=eu-west-1
 NODE_NAME=`hostname -f`
+
 echo PASSWORD=$2 >> /etc/environment
 PASSWORD=$2
 echo COUNTRY="ZA" >> /etc/environment
@@ -42,6 +43,7 @@ echo VALIDITY_DAYS=3650 >> /etc/environment
 VALIDITY_DAYS=3650
 echo USERNAME=$1 >> /etc/environment
 
+export PASSWORD=$2
 export ORGANIZATION_UNIT="Pixventive"
 export ORGANIZATION="IT"
 export LOCALITY="Johannesburg"
@@ -84,25 +86,62 @@ sudo mkdir /opt/kafka/config/kafka-ssl/nodes/$NODE_NAME
 
 echo "Node number $7"
 
-if [ $7 -eq 1 ]; then
-sudo cat > config.yml <<EOF
+if aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-certs/ca/" > /dev/null 2>&1; then
+  echo "Reusing existing CA from S3"
+  aws s3 cp "s3://${S3_BUCKET_NAME}/kafka-certs/ca/" "$CA_DIR/ca/" --recursive
+else
+  sudo touch $CA_DIR/config-ca.yml
+  echo "Generating new CA"
+  cat > "$CA_DIR/config-ca.yml" <<EOF
 ca:
   commonName: "KafkaClusterCA"
   password: "$PASSWORD"
   validityDays: $VALIDITY_DAYS
   outputDir: "$CA_DIR/ca"
+EOF
+  sudo ./opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh --config "$CA_DIR/config-ca.yml"
+  # Upload CA to S3
+  aws s3 cp "$CA_DIR/ca/" "s3://${S3_BUCKET_NAME}/kafka-certs/ca/" --recursive --region $REGION
+fi
+
+# === Generate certs for this node ===
+sudo touch $CA_DIR/config-node.yml
+sudo cat > "$CA_DIR/config-node.yml" <<EOF
 nodes:
   - commonName: "$NODE_NAME"
     password: "$PASSWORD"
     validityDays: $VALIDITY_DAYS
     outputDir: "$CA_DIR/nodes/$NODE_NAME"
+ca:
+  commonName: "KafkaClusterCA"
+  password: "$PASSWORD"
+  outputDir: "$CA_DIR/ca"
 EOF
-chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
-sudo ./opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh --config config.yml
-aws s3 cp $CA_DIR s3://${S3_BUCKET_NAME}/kafka-certs/ --recursive $REGION
-else
-echo "Subsequent steps"
-fi
+
+sudo /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh --config "$CA_DIR/config-node.yml"
+
+# === Upload node certs to S3 ===
+aws s3 cp "$CA_DIR/nodes/$NODE_HOSTNAME" "s3://${S3_BUCKET_NAME}/kafka-certs/nodes/$NODE_NAME/" --recursive --region $REGION
+
+# if [ $7 -eq 1 ]; then
+# sudo cat > config.yml <<EOF
+# ca:
+#   commonName: "KafkaClusterCA"
+#   password: "$PASSWORD"
+#   validityDays: $VALIDITY_DAYS
+#   outputDir: "$CA_DIR/ca"
+# nodes:
+#   - commonName: "$NODE_NAME"
+#     password: "$PASSWORD"
+#     validityDays: $VALIDITY_DAYS
+#     outputDir: "$CA_DIR/nodes/$NODE_NAME"
+# EOF
+# chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
+# sudo ./opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh --config config.yml
+# aws s3 cp $CA_DIR s3://${S3_BUCKET_NAME}/kafka-certs/ --recursive --region $REGION
+# else
+# echo "Subsequent steps"
+# fi
 
 ls -l
 cd ../../../../
@@ -111,7 +150,7 @@ ls -l
 sleep 2
 
 echo "Region: $10"
-CLUSTER_ID=$(aws ssm get-parameter --name /kafka/cluster-id --query "Parameter.Value" --output text --region "eu-west-1")
+CLUSTER_ID=$(aws ssm get-parameter --name /kafka/cluster-id --query "Parameter.Value" --output text --region $REGION)
 echo "CLUSTER_ID: $CLUSTER_ID"
 sudo mkdir /opt/kafka/scripts
 sudo mkdir /opt/kafka/config/kraft/kraft-combined-logs
