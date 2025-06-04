@@ -42,6 +42,12 @@ echo VALIDITY_DAYS=3650 >> /etc/environment
 VALIDITY_DAYS=3650
 echo USERNAME=$1 >> /etc/environment
 
+export ORGANIZATION_UNIT="Pixventive"
+export ORGANIZATION="IT"
+export LOCALITY="Johannesburg"
+export STATE="Gauteng"
+export COUNTRY="ZA"
+
 sudo mkdir /opt/kafka/config/kafka-ssl
 sudo git clone https://github.com/confluentinc/confluent-platform-security-tools.git /opt/kafka/config/kafka-ssl
 sudo mkdir /opt/kafka/config/kafka-ssl/ca
