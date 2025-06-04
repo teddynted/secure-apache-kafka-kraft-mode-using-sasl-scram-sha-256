@@ -1,5 +1,7 @@
 #!/bin/bash -u
 
+set -euxo pipefail
+
 echo $1 $2 $3 $4 $5 $6 $7 $8 $9 $10
 sudo yum update -y
 sudo yum install -y java-11-amazon-corretto
@@ -19,63 +21,74 @@ ls -l /opt/kafka/
 CA_DIR=/opt/kafka/config/kafka-ssl
 S3_BUCKET_NAME=kafka-certs-bucket-develop
 REGION=eu-west-1
-NODE_NAME=`hostname -f`
+NODE_NAME=$(`hostname -f`)
+PASSWORD=$2
+COUNTRY="ZA"
+STATE="Gauteng"
+LOCATION="Jozi"
+ORGANIZATION="Confluent"
+ORG_UNIT="Software Engineering"
+COMMON_NAME=$(`hostname -f`)
+EMAIL="admin@example.com"
+COUNTRY=$4
+STATE=$3
+CITY=Johannesburg
+VALIDITY_DAYS=3650
 sudo mkdir $CA_DIR
 #sudo mkdir /opt/kafka/config/kafka-ssl
 sudo git clone https://github.com/confluentinc/confluent-platform-security-tools.git /opt/kafka/config/kafka-ssl
 sudo mkdir /opt/kafka/config/kafka-ssl/ca
-#sudo chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
-# yes | sudo ./kafka-generate-ssl.sh --working-dir /opt/kafka/config/kafka-ssl/ --dn "CN=Kafka-CA" --ca-dn "CN=Kafka-CA" --ca-password "password" --password "password" --keystore-password "password" --truststore-password "password" --output-dir /opt/kafka/config/kafka-ssl/ca --san "DNS:teddy" --generate-ca --ca-validity 365
-# The user-provided path /opt/kafka/config/kafka-ssl/ca/ca-cert does not exist.
-cd /opt/kafka/config/kafka-ssl/
-ls -l
-# echo COUNTRY=$4 >> /etc/environment
-# echo STATE=$3 >> /etc/environment
-# echo CITY=Johannesburg >> /etc/environment
-PASSWORD=$2
-USERNAME=$1
-# sudo ./kafka-generate-ssl-automatic.sh
-sudo chmod +x kafka-generate-ssl.sh
+sudo mkdir /opt/kafka/config/kafka-ssl/nodes/$NODE_NAME
+# #sudo chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
+# # yes | sudo ./kafka-generate-ssl.sh --working-dir /opt/kafka/config/kafka-ssl/ --dn "CN=Kafka-CA" --ca-dn "CN=Kafka-CA" --ca-password "password" --password "password" --keystore-password "password" --truststore-password "password" --output-dir /opt/kafka/config/kafka-ssl/ca --san "DNS:teddy" --generate-ca --ca-validity 365
+# # The user-provided path /opt/kafka/config/kafka-ssl/ca/ca-cert does not exist.
+# cd /opt/kafka/config/kafka-ssl/
+# ls -l
+# # sudo ./kafka-generate-ssl-automatic.sh
+# sudo chmod +x kafka-generate-ssl.sh
+# if [ $7 -eq 1 ]; then
+#   echo "parameter $7 EQUALS 1"
+#   sudo mkdir /ca/ca-cert
+#   sudo mkdir /ca/ca-key
+#   ls -l
+#   yes | sudo ./kafka-generate-ssl.sh --working-dir $CA_DIR --dn "CN=Kafka-CA" --ca-dn "CN=Kafka-CA" --ca-password "$2" --password "$2" --keystore-password "$2" --truststore-password "$2" --output-dir "$CA_DIR/ca" --san "DNS:$NODE_NAME" --generate-ca --ca-validity 365
+#   sleep 5
+#   aws s3 cp "$CA_DIR/ca/ca-cert" "s3://${S3_BUCKET_NAME}/kafka-ca/ca-cert" --recursive --region $REGION
+#   aws s3 cp "$CA_DIR/ca/ca-key" "s3://${S3_BUCKET_NAME}/kafka-ca/ca-key" --recursive --region $REGION
+#   until aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-ca/ca-cert"; do
+#     echo "Waiting for CA cert in S3..."
+#     sleep 5
+#   done
+# fi
+# # --- Download shared CA cert & key ---
+# aws s3 cp "s3://${S3_BUCKET_NAME}/kafka-ca/ca-cert" "$CA_DIR/ca-cert" --recursive $REGION
+# aws s3 cp "s3://${S3_BUCKET_NAME}/kafka-ca/ca-key" "$CA_DIR/ca-key" --recursive $REGION
+# sleep 5
+# # --- Generate node cert ---
+# yes | sudo ./kafka-generate-ssl.sh --working-dir $CA_DIR --dn "CN=$NODE_NAME" --ca-dn "CN=Kafka-CA" --ca-password "$2" --password "$2" --keystore-password "$2" --truststore-password "$2" --output-dir "$CA_DIR/$NODE_NAME" --san "DNS:$NODE_NAME" --ca-cert "$CA_DIR/ca-cert" --ca-key "$CA_DIR/ca-key"
+# Generate config.yml
+
+echo "Node number $7"
 
 if [ $7 -eq 1 ]; then
-  # --- NON-INTERACTIVE: CREATE COMMON CA ---
-  echo "parameter $7 EQUALS 1"
-  sudo mkdir /ca/ca-cert
-  sudo mkdir /ca/ca-key
-  expect <<EOF
-  spawn ./kafka-generate-ssl.sh --working-dir $CA_DIR --dn "CN=Kafka-CA" --ca-dn "CN=Kafka-CA" --ca-password "$2" --password "$2" --keystore-password "$2" --truststore-password "$2" --output-dir "$CA_DIR/ca" --san "DNS:$NODE_NAME" --generate-ca --ca-validity 365
-  expect "PEM pass phrase:" { send "$2\r" }
-  expect "Verifying - Enter PEM pass phrase:" { send "$2\r" }
-  expect eof
+sudo cat > config.yml <<EOF
+ca:
+  commonName: "KafkaClusterCA"
+  password: "$PASSWORD"
+  validityDays: $VALIDITY_DAYS
+  outputDir: "$CA_DIR/ca"
+nodes:
+  - commonName: "$NODE_NAME"
+    password: "$PASSWORD"
+    validityDays: $VALIDITY_DAYS
+    outputDir: "$CA_DIR/nodes/$NODE_NAME"
 EOF
-  #yes | sudo ./kafka-generate-ssl.sh --working-dir $CA_DIR --dn "CN=Kafka-CA" --ca-dn "CN=Kafka-CA" --ca-password "$2" --password "$2" --keystore-password "$2" --truststore-password "$2" --output-dir "$CA_DIR/ca" --san "DNS:$NODE_NAME" --generate-ca --ca-validity 365
-  sleep 5
-  aws s3 cp "$CA_DIR/ca/ca-cert" "s3://${S3_BUCKET_NAME}/kafka-ca/ca-cert" --recursive --region $REGION
-  aws s3 cp "$CA_DIR/ca/ca-key" "s3://${S3_BUCKET_NAME}/kafka-ca/ca-key" --recursive --region $REGION
-  until aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-ca/ca-cert"; do
-    echo "Waiting for CA cert in S3..."
-    sleep 5
-  done
+chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
+sudo ./opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh --config config.yml
+aws s3 cp $CA_DIR s3://${S3_BUCKET_NAME}/kafka-certs/ --recursive $REGION
+else
+echo "Subsequent steps"
 fi
-
-# --- Download shared CA cert & key ---
-aws s3 cp "s3://${S3_BUCKET_NAME}/kafka-ca/ca-cert" "$CA_DIR/ca-cert" --recursive $REGION
-aws s3 cp "s3://${S3_BUCKET_NAME}/kafka-ca/ca-key" "$CA_DIR/ca-key" --recursive $REGION
-
-sleep 5
-
-# --- Generate node cert ---
-expect <<EOF
-spawn --working-dir $CA_DIR --dn "CN=$NODE_NAME" --ca-dn "CN=Kafka-CA" --ca-password "$2" --password "$2" --keystore-password "$2" --truststore-password "$2" --output-dir "$CA_DIR/$NODE_NAME" --san "DNS:$NODE_NAME" --ca-cert "$CA_DIR/ca-cert" --ca-key "$CA_DIR/ca-key"
-expect "Enter PEM pass phrase:" { send "$2\r" }
-expect "Enter keystore password:" { send "$2\r" }
-expect "Re-enter new password:" { send "$2\r" }
-expect "Enter truststore password:" { send "$2\r" }
-expect "Re-enter new password:" { send "$2\r" }
-expect eof
-EOF
-
-# yes | sudo ./kafka-generate-ssl.sh --working-dir $CA_DIR --dn "CN=$NODE_NAME" --ca-dn "CN=Kafka-CA" --ca-password "$2" --password "$2" --keystore-password "$2" --truststore-password "$2" --output-dir "$CA_DIR/$NODE_NAME" --san "DNS:$NODE_NAME" --ca-cert "$CA_DIR/ca-cert" --ca-key "$CA_DIR/ca-key"
 
 ls -l
 cd ../../../../
