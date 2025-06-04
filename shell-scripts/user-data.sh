@@ -23,10 +23,11 @@ NODE_NAME=`hostname -f`
 sudo mkdir $CA_DIR
 sudo mkdir /opt/kafka/config/kafka-ssl/ca
 #sudo mkdir /opt/kafka/config/kafka-ssl
-git clone https://github.com/confluentinc/confluent-platform-security-tools.git $CA_DIR
+git clone https://github.com/confluentinc/confluent-platform-security-tools.git /opt/kafka/config/kafka-ssl
 #sudo chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
+# yes | sudo ./kafka-generate-ssl.sh --working-dir /opt/kafka/config/kafka-ssl/ --dn "CN=Kafka-CA" --ca-dn "CN=Kafka-CA" --ca-password "password" --password "password" --keystore-password "password" --truststore-password "password" --output-dir /opt/kafka/config/kafka-ssl/ca --san "DNS:teddy" --generate-ca --ca-validity 365
 # The user-provided path /opt/kafka/config/kafka-ssl/ca/ca-cert does not exist.
-cd $CA_DIR
+cd /opt/kafka/config/kafka-ssl/confluent-platform-security-tools
 ls -l
 # echo COUNTRY=$4 >> /etc/environment
 # echo STATE=$3 >> /etc/environment
@@ -35,10 +36,11 @@ ls -l
 # echo PASSWORD=$2 >> /etc/environment
 # echo USERNAME=$1 >> /etc/environment
 # sudo ./kafka-generate-ssl-automatic.sh
-sudo chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl.sh
+sudo chmod +x kafka-generate-ssl.sh
 if [ $7 -eq 1 ]; then
   echo "parameter $7 EQUALS 1"
   yes | sudo ./kafka-generate-ssl.sh --working-dir $CA_DIR --dn "CN=Kafka-CA" --ca-dn "CN=Kafka-CA" --ca-password "$2" --password "$2" --keystore-password "$2" --truststore-password "$2" --output-dir "$CA_DIR/ca" --san "DNS:$NODE_NAME" --generate-ca --ca-validity 365
+  sleep 5
   aws s3 cp "$CA_DIR/ca/ca-cert" "s3://${S3_BUCKET_NAME}/kafka-ca/ca-cert" --recursive --region $REGION
   aws s3 cp "$CA_DIR/ca/ca-key" "s3://${S3_BUCKET_NAME}/kafka-ca/ca-key" --recursive --region $REGION
   until aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-ca/ca-cert"; do
@@ -60,7 +62,7 @@ sleep 5
 yes | sudo ./kafka-generate-ssl.sh --working-dir $CA_DIR --dn "CN=$NODE_NAME" --ca-dn "CN=Kafka-CA" --ca-password "$2" --password "$2" --keystore-password "$2" --truststore-password "$2" --output-dir "$CA_DIR/$NODE_NAME" --san "DNS:$NODE_NAME" --ca-cert "$CA_DIR/ca-cert" --ca-key "$CA_DIR/ca-key"
 
 ls -l
-cd ../../../../
+cd ../../../../../
 ls -l
 
 sleep 2
