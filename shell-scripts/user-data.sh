@@ -22,12 +22,12 @@ REGION=eu-west-1
 NODE_NAME=`hostname -f`
 sudo mkdir $CA_DIR
 #sudo mkdir /opt/kafka/config/kafka-ssl
-git clone https://github.com/confluentinc/confluent-platform-security-tools.git /opt/kafka/config/kafka-ssl
+sudo git clone https://github.com/confluentinc/confluent-platform-security-tools.git /opt/kafka/config/kafka-ssl
 sudo mkdir /opt/kafka/config/kafka-ssl/ca
 #sudo chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
 # yes | sudo ./kafka-generate-ssl.sh --working-dir /opt/kafka/config/kafka-ssl/ --dn "CN=Kafka-CA" --ca-dn "CN=Kafka-CA" --ca-password "password" --password "password" --keystore-password "password" --truststore-password "password" --output-dir /opt/kafka/config/kafka-ssl/ca --san "DNS:teddy" --generate-ca --ca-validity 365
 # The user-provided path /opt/kafka/config/kafka-ssl/ca/ca-cert does not exist.
-cd /opt/kafka/config/kafka-ssl/confluent-platform-security-tools
+cd /opt/kafka/config/kafka-ssl/
 ls -l
 # echo COUNTRY=$4 >> /etc/environment
 # echo STATE=$3 >> /etc/environment
@@ -61,7 +61,7 @@ sleep 5
 yes | sudo ./kafka-generate-ssl.sh --working-dir $CA_DIR --dn "CN=$NODE_NAME" --ca-dn "CN=Kafka-CA" --ca-password "$2" --password "$2" --keystore-password "$2" --truststore-password "$2" --output-dir "$CA_DIR/$NODE_NAME" --san "DNS:$NODE_NAME" --ca-cert "$CA_DIR/ca-cert" --ca-key "$CA_DIR/ca-key"
 
 ls -l
-cd ../../../../../
+cd ../../../../
 ls -l
 
 sleep 2
