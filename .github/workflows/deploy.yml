@@ -93,53 +93,53 @@ jobs:
       with:
         args: deploy --verbose
 
-    - name: Connect to Prometheus Instance
-      run: |
-        chmod +x ./shell-scripts/prothemeus/ec2.sh
-        ./shell-scripts/prothemeus/ec2.sh
-      env:
-        SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
-        SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
-        REGION: ${{ secrets.AWS_REGION }}
-        KAFKA_BOOTSTRAP_SERVER: ${{ secrets.KAFKA_BOOTSTRAP_SERVER }}
-        KAFKA_BOOTSTRAP_SERVER_TWO: ${{ env.KAFKA_BOOTSTRAP_SERVER_TWO }}
-        KAFKA_BOOTSTRAP_SERVER_THREE: ${{ env.KAFKA_BOOTSTRAP_SERVER_THREE }}
+    # - name: Connect to Prometheus Instance
+    #   run: |
+    #     chmod +x ./shell-scripts/prothemeus/ec2.sh
+    #     ./shell-scripts/prothemeus/ec2.sh
+    #   env:
+    #     SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
+    #     SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
+    #     REGION: ${{ secrets.AWS_REGION }}
+    #     KAFKA_BOOTSTRAP_SERVER: ${{ secrets.KAFKA_BOOTSTRAP_SERVER }}
+    #     KAFKA_BOOTSTRAP_SERVER_TWO: ${{ env.KAFKA_BOOTSTRAP_SERVER_TWO }}
+    #     KAFKA_BOOTSTRAP_SERVER_THREE: ${{ env.KAFKA_BOOTSTRAP_SERVER_THREE }}
     
-    - name: Connect to Kafka Node 1
-      run: |
-        chmod +x ./shell-scripts/node-1/ec2.sh
-        ./shell-scripts/node-1/ec2.sh
-      env:
-        SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
-        SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
-        REGION: ${{ secrets.AWS_REGION }}
-        NODE_ONE_TOPIC: ${{ secrets.NODE_ONE_TOPIC }}
-        OFFSETS_TOPIC_REPLICATION_FACTOR: ${{ env.OFFSETS_TOPIC_REPLICATION_FACTOR }}
-        DEFAULT_REPLICATION_FACTOR: ${{ env.DEFAULT_REPLICATION_FACTOR }}
-        CLUSTER_ID: ${{ env.CLUSTER_ID }}
+    # - name: Connect to Kafka Node 1
+    #   run: |
+    #     chmod +x ./shell-scripts/node-1/ec2.sh
+    #     ./shell-scripts/node-1/ec2.sh
+    #   env:
+    #     SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
+    #     SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
+    #     REGION: ${{ secrets.AWS_REGION }}
+    #     NODE_ONE_TOPIC: ${{ secrets.NODE_ONE_TOPIC }}
+    #     OFFSETS_TOPIC_REPLICATION_FACTOR: ${{ env.OFFSETS_TOPIC_REPLICATION_FACTOR }}
+    #     DEFAULT_REPLICATION_FACTOR: ${{ env.DEFAULT_REPLICATION_FACTOR }}
+    #     CLUSTER_ID: ${{ env.CLUSTER_ID }}
 
-    - name: Connect to Kafka Node 2
-      run: |
-        chmod +x ./shell-scripts/node-2/ec2.sh
-        ./shell-scripts/node-2/ec2.sh
-      env:
-        SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
-        SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
-        REGION: ${{ secrets.AWS_REGION }}
-        NODE_TWO_TOPIC: ${{ secrets.NODE_TWO_TOPIC }}
-        OFFSETS_TOPIC_REPLICATION_FACTOR: ${{ env.OFFSETS_TOPIC_REPLICATION_FACTOR }}
-        DEFAULT_REPLICATION_FACTOR: ${{ env.DEFAULT_REPLICATION_FACTOR }}
-        CLUSTER_ID: ${{ env.CLUSTER_ID }}
+    # - name: Connect to Kafka Node 2
+    #   run: |
+    #     chmod +x ./shell-scripts/node-2/ec2.sh
+    #     ./shell-scripts/node-2/ec2.sh
+    #   env:
+    #     SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
+    #     SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
+    #     REGION: ${{ secrets.AWS_REGION }}
+    #     NODE_TWO_TOPIC: ${{ secrets.NODE_TWO_TOPIC }}
+    #     OFFSETS_TOPIC_REPLICATION_FACTOR: ${{ env.OFFSETS_TOPIC_REPLICATION_FACTOR }}
+    #     DEFAULT_REPLICATION_FACTOR: ${{ env.DEFAULT_REPLICATION_FACTOR }}
+    #     CLUSTER_ID: ${{ env.CLUSTER_ID }}
   
-    - name: Connect to Kafka Node 3
-      run: |
-        chmod +x ./shell-scripts/node-3/ec2.sh
-        ./shell-scripts/node-3/ec2.sh
-      env:
-        SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
-        SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
-        REGION: ${{ secrets.AWS_REGION }}
-        NODE_THREE_TOPIC: ${{ secrets.NODE_THREE_TOPIC }}
-        OFFSETS_TOPIC_REPLICATION_FACTOR: ${{ env.OFFSETS_TOPIC_REPLICATION_FACTOR }}
-        DEFAULT_REPLICATION_FACTOR: ${{ env.DEFAULT_REPLICATION_FACTOR }}
-        CLUSTER_ID: ${{ env.CLUSTER_ID }}
+    # - name: Connect to Kafka Node 3
+    #   run: |
+    #     chmod +x ./shell-scripts/node-3/ec2.sh
+    #     ./shell-scripts/node-3/ec2.sh
+    #   env:
+    #     SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
+    #     SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
+    #     REGION: ${{ secrets.AWS_REGION }}
+    #     NODE_THREE_TOPIC: ${{ secrets.NODE_THREE_TOPIC }}
+    #     OFFSETS_TOPIC_REPLICATION_FACTOR: ${{ env.OFFSETS_TOPIC_REPLICATION_FACTOR }}
+    #     DEFAULT_REPLICATION_FACTOR: ${{ env.DEFAULT_REPLICATION_FACTOR }}
+    #     CLUSTER_ID: ${{ env.CLUSTER_ID }}

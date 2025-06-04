@@ -21,10 +21,12 @@ S3_BUCKET_NAME=kafka-certs-bucket-develop
 REGION=eu-west-1
 NODE_NAME=`hostname -f`
 sudo mkdir $CA_DIR
+sudo mkdir /opt/kafka/config/kafka-ssl/ca
 #sudo mkdir /opt/kafka/config/kafka-ssl
 git clone https://github.com/confluentinc/confluent-platform-security-tools.git $CA_DIR
 #sudo chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
 cd $CA_DIR
+ls -l
 # echo COUNTRY=$4 >> /etc/environment
 # echo STATE=$3 >> /etc/environment
 # echo ORGANIZATION_UNIT=PX >> /etc/environment
@@ -35,7 +37,6 @@ cd $CA_DIR
 sudo chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl.sh
 if [ $7 -eq 1 ]; then
   echo "parameter $7 EQUALS 1"
-  sudo mkdir "$CA_DIR/ca"
   yes | sudo ./kafka-generate-ssl.sh --working-dir "$CA_DIR/ca" --dn "CN=Kafka-CA" --ca-dn "CN=Kafka-CA" --ca-password "$2" --password "$2" --keystore-password "$2" --truststore-password "$2" --output-dir "$CA_DIR/ca" --san "DNS:$NODE_NAME" --generate-ca --ca-validity 365
   aws s3 cp "$CA_DIR/ca/ca-cert" "s3://${S3_BUCKET_NAME}/kafka-ca/ca-cert" --recursive --region $REGION
   aws s3 cp "$CA_DIR/ca/ca-key"  "s3://${S3_BUCKET_NAME}/kafka-ca/ca-key" --recursive --region $REGION
