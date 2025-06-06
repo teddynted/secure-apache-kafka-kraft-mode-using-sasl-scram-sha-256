@@ -54,6 +54,23 @@ if aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-ca/" > /dev/null 2>&1; then
   sudo chmod 644 "$$CA_DIR/ca/ca.key"
   CA_CRT="$CA_DIR/ca/ca.crt"
   CA_KEY="$CA_DIR/ca/ca.key"
+  # Check if file exists and is not empty
+  if [[ -s ${CA_CRT} ]]; then
+    echo "✅ File downloaded and contains content."
+  else
+    echo "❌ File is empty or failed to download."
+    exit 1
+  fi
+  if [[ -s ${CA_KEY} ]]; then
+    echo "✅ File downloaded and contains content."
+  else
+    echo "❌ File is empty or failed to download."
+    exit 1
+  fi
+  echo "Verifying CA...."
+  openssl verify -CAfile $CA_CRT
+  echo "Checking signature algorithm"
+  openssl x509 -in $CA_CRT -noout -text | grep "Signature Algorithm"
   sleep 3
 else
   # Generate a common Certificate Authority for muliple Apache Kafka Cluster Nodes
@@ -66,6 +83,10 @@ else
   aws s3 cp "$CA_DIR/ca/" s3://${S3_BUCKET_NAME}/kafka-ca/ --recursive --region $REGION
   CA_CRT="$CA_DIR/ca/ca.crt"
   CA_KEY="$CA_DIR/ca/ca.key"
+  echo "Verifying CA...."
+  openssl verify -CAfile $CA_CRT
+  echo "Checking signature algorithm"
+  openssl x509 -in $CA_CRT -noout -text | grep "Signature Algorithm"
   sleep 3
 fi
 
