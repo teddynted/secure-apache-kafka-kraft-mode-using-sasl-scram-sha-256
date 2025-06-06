@@ -38,9 +38,9 @@ resources:
     PrometheusSecurityGroup: ${file(./iac/ec2/security-group/prometheus-sg.yml)}
     KafkaBrokerSaslScram256Secrets: ${file(./iac/secrets-manager.yml)}
     KafkaEventSource: ${file(./iac/lambda/apache-kafka-lambda-event-source.yml)}
-    NodeOne14: ${file(./iac/ec2/instance/node-1.yml)}
-    NodeTwo14: ${file(./iac/ec2/instance/node-2.yml)}
-    NodeThree14: ${file(./iac/ec2/instance/node-3.yml)}
+    NodeOne1: ${file(./iac/ec2/instance/node-1.yml)}
+    NodeTwo1: ${file(./iac/ec2/instance/node-2.yml)}
+    NodeThree1: ${file(./iac/ec2/instance/node-3.yml)}
     ApacheKafkaPrometheus14: ${file(./iac/ec2/instance/prometheus.yml)}
     ApacheKafkaSNSTopic: ${file(./iac/sns/sns-topic.yml)}
     ApacheKafkaSNSTopicSubscription: ${file(./iac/sns/sns-subscription.yml)}
@@ -101,5 +101,28 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: kafka-certs-bucket-${self:provider.stage}
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+    KafkaCertBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: { "Ref": "KafkaCertBucket" }
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Sid: AllowEC2WithRoleAccess
+              Effect: Allow
+              Principal:
+                AWS: { "Fn::GetAtt": ["Ec2IAMRole", "Arn"] }
+              Action:
+                - s3:GetObject
+                - s3:PutObject
+                - s3:ListBucket
+              Resource:
+                - { "Fn::Sub": "${KafkaCertBucket.Arn}" }
+                - { "Fn::Sub": "${KafkaCertBucket.Arn}/*" }
 
   Outputs: ${file(./iac/outputs.yml)}

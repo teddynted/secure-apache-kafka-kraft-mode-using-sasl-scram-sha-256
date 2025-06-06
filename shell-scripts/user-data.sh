@@ -40,15 +40,19 @@ sudo mkdir "$CA_DIR/certs/node-$7"
 
 ls
 
+# Check if a Certificate Authority exists in an s3 bucket
 if aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-ca/" > /dev/null 2>&1; then
   echo "Reuse existing CA from S3"
+  # Download an existing ca from an S3 bucket
   sudo mkdir "$CA_DIR/ca"
   cd "$CA_DIR/ca"
-  aws s3 cp "s3://${S3_BUCKET_NAME}/kafka-ca/ca.crt" "$CA_DIR/ca/" --recursive $REGION
-  aws s3 cp "s3://${S3_BUCKET_NAME}/kafka-ca/ca.key" "$CA_DIR/ca/" --recursive $REGION
+  aws s3 cp "s3://${S3_BUCKET_NAME}/kafka-ca/ca.crt" "$CA_DIR/ca/" --recursive --region $REGION
+  aws s3 cp "s3://${S3_BUCKET_NAME}/kafka-ca/ca.key" "$CA_DIR/ca/" --recursive --region $REGION
   CA_CRT="$CA_DIR/ca/ca.crt"
   CA_KEY="$CA_DIR/ca/ca.key"
 else
+  # Generate a common Certificate Authority for muliple Apache Kafka Cluster Nodes
+  # And upload it to an S3 bucket
   echo "Generating a new common CA"
   sudo mkdir "$CA_DIR/ca"
   cd "$CA_DIR/ca"
@@ -92,7 +96,7 @@ sudo keytool -importkeystore -destkeystore $NODE.keystore.jks -srckeystore $NODE
 # Create truststore
 sudo keytool -import -trustcacerts -alias CARoot -file $CA_CRT -keystore truststore.jks -storepass $PASSWORD -noprompt
 
-aws s3 cp "$CA_DIR/certs/node-$7/" s3://${S3_BUCKET_NAME}/kafka-certs/node-$7/ --recursive --region $REGION
+aws s3 cp "$CA_DIR/kafka-certs/node-$7/" s3://${S3_BUCKET_NAME}/kafka-certs/node-$7/ --recursive --region $REGION
 
 cd $HOME_DIR
 ls
