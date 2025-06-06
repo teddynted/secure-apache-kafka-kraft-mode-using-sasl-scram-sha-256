@@ -35,8 +35,8 @@ CA_KEY=""
 HOME_DIR="../../../../../"
 
 sudo mkdir $CA_DIR
-sudo mkdir "$CA_DIR/certs"
-sudo mkdir "$CA_DIR/certs/node-$7"
+sudo mkdir "$CA_DIR/kafka-certs"
+sudo mkdir "$CA_DIR/kafka-certs/node-$7"
 
 ls
 
@@ -96,6 +96,7 @@ sudo keytool -importkeystore -destkeystore $NODE.keystore.jks -srckeystore $NODE
 # Create truststore
 sudo keytool -import -trustcacerts -alias CARoot -file $CA_CRT -keystore truststore.jks -storepass $PASSWORD -noprompt
 
+# Upload certs so to S3 bucket
 aws s3 cp "$CA_DIR/kafka-certs/node-$7/" s3://${S3_BUCKET_NAME}/kafka-certs/node-$7/ --recursive --region $REGION
 
 cd $HOME_DIR
