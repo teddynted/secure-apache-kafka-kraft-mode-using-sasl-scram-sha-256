@@ -30,10 +30,12 @@ echo COUNTRY="ZA" >> /etc/environment
 COUNTRY="ZA"
 echo STATE="Gauteng" >> /etc/environment
 STATE="Gauteng"
-echo ORGANIZATION_UNIT="Pixventive" >> /etc/environment
-ORGANIZATION_UNIT="Pixventive"
+echo ORGANIZATION_UNIT="IT" >> /etc/environment
+ORGANIZATION_UNIT="IT"
 echo CITY=Johannesburg >> /etc/environment
 CITY=Johannesburg
+echo ORGANIZATION="Pixventive" >> /etc/environment
+ORGANIZATION="Pixventive"
 
 export PASSWORD=$2
 export ORGANIZATION_UNIT="Pixventive"
@@ -85,65 +87,53 @@ else
   sudo touch $CA_DIR/config-ca.yml
   #cd /opt/kafka/config/kafka-ssl/ca
   echo "Generating new CA"
-  cat > "$CA_DIR/config-ca.yml" <<EOF
-ca:
-  commonName: "KafkaClusterCA"
-  password: "$PASSWORD"
-  validityDays: $VALIDITY_DAYS
-  outputDir: "$CA_DIR/ca"
-EOF
-  sudo /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh --config /opt/kafka/config/kafka-ssl/config-ca.yml
-  sleep 5
-  # Upload CA to S3
-  aws s3 cp /opt/kafka/config/kafka-ssl/ca/ s3://${S3_BUCKET_NAME}/kafka-certs/ca/ --recursive --region $REGION --exclude "*ca-key"
-  #aws s3 cp /opt/kafka/config/kafka-ssl/ca/ "s3://kafka-certs-bucket-develop/" --recursive --region eu-west-1 --exclude "*ca-key"
-  sleep 5
-fi
-
-# === Generate certs for this node ===
-cd /opt/kafka/config/kafka-ssl/nodes/$NODE_NAME
-sudo touch $CA_DIR/config-node.yml
-cat > "$CA_DIR/config-node.yml" <<EOF
-nodes:
-  - commonName: "$NODE_NAME"
-    password: "$PASSWORD"
-    validityDays: $VALIDITY_DAYS
-    outputDir: "$CA_DIR/nodes/$NODE_NAME"
-ca:
-  commonName: "KafkaClusterCA"
-  password: "$PASSWORD"
-  outputDir: "$CA_DIR/ca"
-EOF
-
-sudo /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh --config /opt/kafka/config/kafka-ssl/config-node.yml
-sleep 5
-cd
-# === Upload node certs to S3 ===
-aws s3 cp /opt/kafka/config/kafka-ssl/nodes/$NODE_NAME "s3://${S3_BUCKET_NAME}/kafka-certs/nodes/$NODE_NAME/" --recursive --region $REGION --exclude "*ca-key"
-
-# if [ $7 -eq 1 ]; then
-# sudo cat > config.yml <<EOF
+#   cat > "$CA_DIR/config-ca.yml" <<EOF
 # ca:
 #   commonName: "KafkaClusterCA"
 #   password: "$PASSWORD"
 #   validityDays: $VALIDITY_DAYS
 #   outputDir: "$CA_DIR/ca"
+# EOF
+cat > "$CA_DIR/config-ca.yml" <<EOF
+output_directory: "$CA_DIR/ca"
+ca:
+  generate_ca: true
+  password: $PASSWORD
+  distinguished_name:
+    common_name: "KafkaCA"
+    organization: $ORGANIZATION
+    organizational_unit: $ORGANIZATION_UNIT
+    locality: $CITY
+    state: $STATE
+    country: $COUNTRY
+EOF
+  sudo /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh --config /opt/kafka/config/kafka-ssl/config-ca.yml
+  sleep 5
+  # Upload CA to S3
+  #chmod 400 "${CA_DIR}/ca/ca-key"
+  aws s3 cp /opt/kafka/config/kafka-ssl/ca/ s3://${S3_BUCKET_NAME}/kafka-certs/ca/ --recursive --region $REGION
+  #aws s3 cp /opt/kafka/config/kafka-ssl/ca/ "s3://kafka-certs-bucket-develop/" --recursive --region eu-west-1 --exclude "*ca-key"
+  sleep 5
+fi
+
+# === Generate certs for this node ===
+# cd /opt/kafka/config/kafka-ssl/nodes/$NODE_NAME
+# sudo touch $CA_DIR/config-node.yml
+# cat > "$CA_DIR/config-node.yml" <<EOF
 # nodes:
 #   - commonName: "$NODE_NAME"
 #     password: "$PASSWORD"
 #     validityDays: $VALIDITY_DAYS
 #     outputDir: "$CA_DIR/nodes/$NODE_NAME"
+# ca:
+#   commonName: "KafkaClusterCA"
+#   password: "$PASSWORD"
+#   outputDir: "$CA_DIR/ca"
 # EOF
-# chmod +x /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh
-# sudo ./opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh --config config.yml
-# aws s3 cp $CA_DIR s3://${S3_BUCKET_NAME}/kafka-certs/ --recursive --region $REGION
-# else
-# echo "Subsequent steps"
-# fi
 
-ls -l
-# cd ../../../../
-# ls -l
+# sudo /opt/kafka/config/kafka-ssl/kafka-generate-ssl-automatic.sh --config /opt/kafka/config/kafka-ssl/config-node.yml
+# # === Upload node certs to S3 ===
+# aws s3 cp /opt/kafka/config/kafka-ssl/nodes/$NODE_NAME "s3://${S3_BUCKET_NAME}/kafka-certs/nodes/$NODE_NAME/" --recursive --region $REGION --exclude "*ca-key"
 
 sleep 2
 
