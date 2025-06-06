@@ -46,8 +46,8 @@ if aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-ca/" > /dev/null 2>&1; then
   # Download an existing ca from an S3 bucket
   sudo mkdir "$CA_DIR/ca"
   cd "$CA_DIR/ca"
-  aws s3 cp s3://${S3_BUCKET_NAME}/kafka-ca/ca.crt "$CA_DIR/ca/" --recursive --region $REGION
-  aws s3 cp s3://${S3_BUCKET_NAME}/kafka-ca/ca.key "$CA_DIR/ca/" --recursive --region $REGION
+  aws s3 cp s3://${S3_BUCKET_NAME}/kafka-ca/ca.crt ./ca.crt --recursive --region $REGION
+  aws s3 cp s3://${S3_BUCKET_NAME}/kafka-ca/ca.crt ./ca.kkey --recursive --region $REGION
   CA_CRT="$CA_DIR/ca/ca.crt"
   CA_KEY="$CA_DIR/ca/ca.key"
 else
@@ -171,10 +171,10 @@ sasl.mechanism.inter.broker.protocol=SCRAM-SHA-256
 ssl.protocol=TLS
 ssl.cipher.suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 ssl.enabled.protocols=TLSv1.2,TLSv1.1,TLSv1
-ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
+ssl.truststore.location=/opt/kafka/config/kafka-ssl/kafka-certs/node-'$7'/truststore.jks
 ssl.truststore.type=PKCS12
 ssl.truststore.password='$2'
-ssl.keystore.location=/opt/kafka/config/kafka-ssl/keystore/kafka.keystore.jks
+ssl.keystore.location=/opt/kafka/config/kafka-ssl/kafka-certs/node-'$7'/'$NODE'.keystore.jks
 ssl.keystore.type=PKCS12
 ssl.keystore.password='$2'
 ssl.key.password='$2'
