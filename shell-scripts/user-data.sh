@@ -69,7 +69,7 @@ ls
 echo "CA_CRT $CA_CRT"
 echo "CA_KEY $CA_KEY"
 
-cd "$CA_DIR/certs/node-$7"
+cd "$CA_DIR/kafka-certs/node-$7"
 
 # Generate private key
 sudo openssl genrsa -out $NODE.key 2048
