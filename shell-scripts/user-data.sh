@@ -32,21 +32,24 @@ CITY=Johannesburg
 ORGANIZATION="Pixventive"
 CA_CRT=""
 CA_KEY=""
+HOME_DIR="../../../../../"
 
-sudo mkdir /opt/kafka/config/kafka-ssl
-#sudo git clone https://github.com/confluentinc/confluent-platform-security-tools.git /opt/kafka/config/kafka-ssl
-sudo mkdir /opt/kafka/config/kafka-ssl/certs
-sudo mkdir /opt/kafka/config/kafka-ssl/certs/node-$7
+sudo mkdir $CA_DIR
+sudo mkdir "$CA_DIR/certs"
+sudo mkdir "$CA_DIR/certs/node-$7"
 
 ls
 
-if aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-certs/ca/" > /dev/null 2>&1; then
+if aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-ca/" > /dev/null 2>&1; then
   echo "Reuse existing CA from S3"
   sudo mkdir "$CA_DIR/ca"
   cd "$CA_DIR/ca"
   aws s3 cp "s3://${S3_BUCKET_NAME}/kafka-ca/ca.crt" "$CA_DIR/ca/" --recursive $REGION
   aws s3 cp "s3://${S3_BUCKET_NAME}/kafka-ca/ca.key" "$CA_DIR/ca/" --recursive $REGION
+  CA_CRT="$CA_DIR/ca/ca.crt"
+  CA_KEY="$CA_DIR/ca/ca.key"
 else
+  echo "Generating a new common CA"
   sudo mkdir "$CA_DIR/ca"
   cd "$CA_DIR/ca"
   sudo openssl genrsa -aes256 -passout pass:$PASSWORD -out ca.key 4096
@@ -54,37 +57,45 @@ else
   aws s3 cp "$CA_DIR/ca/" s3://${S3_BUCKET_NAME}/kafka-ca/ --recursive --region $REGION
   CA_CRT="$CA_DIR/ca/ca.crt"
   CA_KEY="$CA_DIR/ca/ca.key"
-  cd ../../../../
-  ls
 fi
 
-# cd "$CA_DIR/certs/node-$7"
+cd $HOME_DIR
+ls
 
-# # Generate private key
-# sudo openssl genrsa -out $NODE.key 2048
+echo "CA_CRT $CA_CRT"
+echo "CA_KEY $CA_KEY"
 
-# # Create CSR
-# sudo openssl req -new -key $NODE.key -out $NODE.csr -subj "/C=$COUNTRY/ST=$STATE/L=$CITY/O=$ORGANIZATION/OU=$ORGANIZATION_UNIT/CN=$NODE"
+cd "$CA_DIR/certs/node-$7"
 
-# sudo touch ext.cnf
-# # Create ext file for SAN
-# sudo cat > ext.cnf <<EOF
-# subjectAltName = DNS:$NODE
-# EOF
+# Generate private key
+sudo openssl genrsa -out $NODE.key 2048
 
-# # Sign certificate with CA
-# sudo openssl x509 -req -in $NODE.csr -CA /opt/kafka/ca/ca.crt -CAkey /opt/kafka/ca/ca.key -CAcreateserial -out $NODE.crt -days 365 -sha256 -extfile ext.cnf -passin pass:$PASSWORD
+# Create CSR
+sudo openssl req -new -key $NODE.key -out $NODE.csr -subj "/C=$COUNTRY/ST=$STATE/L=$CITY/O=$ORGANIZATION/OU=$ORGANIZATION_UNIT/CN=$NODE"
 
-# # Generate Truststore and Keystore with JKS
-# # Convert .crt and .key to PKCS12
-# sudo openssl pkcs12 -export -in $NODE.crt -inkey $NODE.key -certfile /opt/kafka/ca/ca.crt -out $NODE.p12 -name $NODE -password pass:$PASSWORD
+sudo touch ext.cnf
+# Create ext file for SAN
+sudo cat > ext.cnf <<EOF
+subjectAltName = DNS:$NODE
+EOF
 
-# # Import into Java Keystore
-# sudo keytool -importkeystore -destkeystore $NODE.keystore.jks -srckeystore $NODE.p12 -srcstoretype PKCS12 -alias $NODE -storepass $PASSWORD -srcstorepass $PASSWORD
+# Sign certificate with CA
+sudo openssl x509 -req -in $NODE.csr -CA $CA_CRT -CAkey $CA_KEY -CAcreateserial -out $NODE.crt -days 365 -sha256 -extfile ext.cnf -passin pass:$PASSWORD
 
-# # Create truststore
-# sudo keytool -import -trustcacerts -alias CARoot -file /opt/kafka/ca/ca.crt -keystore truststore.jks -storepass $PASSWORD -noprompt
+# Generate Truststore and Keystore with JKS
+# Convert .crt and .key to PKCS12
+sudo openssl pkcs12 -export -in $NODE.crt -inkey $NODE.key -certfile $CA_CRT -out $NODE.p12 -name $NODE -password pass:$PASSWORD
 
+# Import into Java Keystore
+sudo keytool -importkeystore -destkeystore $NODE.keystore.jks -srckeystore $NODE.p12 -srcstoretype PKCS12 -alias $NODE -storepass $PASSWORD -srcstorepass $PASSWORD
+
+# Create truststore
+sudo keytool -import -trustcacerts -alias CARoot -file $CA_CRT -keystore truststore.jks -storepass $PASSWORD -noprompt
+
+aws s3 cp "$CA_DIR/certs/node-$7/" s3://${S3_BUCKET_NAME}/kafka-certs/node-$7/ --recursive --region $REGION
+
+cd $HOME_DIR
+ls
 
 CLUSTER_ID=$(aws ssm get-parameter --name /kafka/cluster-id --query "Parameter.Value" --output text --region $REGION)
 echo "CLUSTER_ID: $CLUSTER_ID"
