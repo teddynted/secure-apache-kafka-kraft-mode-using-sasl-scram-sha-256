@@ -49,9 +49,9 @@ if aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-ca/" > /dev/null 2>&1; then
   cd "$CA_DIR/ca"
   aws s3 cp s3://kafka-certs-bucket-develop/kafka-ca/ca.crt ./ca.crt --recursive --region $REGION
   aws s3 cp s3://kafka-certs-bucket-develop/kafka-ca/ca.key ./ca.key --recursive --region $REGION
-  sudo chmod 700 "$$CA_DIR/ca"
-  sudo chmod 644 "$$CA_DIR/ca/ca.crt"
-  sudo chmod 644 "$$CA_DIR/ca/ca.key"
+  sudo chmod 700 "$CA_DIR/ca"
+  sudo chmod 644 "$CA_DIR/ca/ca.crt"
+  sudo chmod 644 "$CA_DIR/ca/ca.key"
   CA_CRT="$CA_DIR/ca/ca.crt"
   CA_KEY="$CA_DIR/ca/ca.key"
   # Check if file exists and is not empty
