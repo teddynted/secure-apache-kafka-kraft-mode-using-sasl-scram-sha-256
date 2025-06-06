@@ -46,8 +46,8 @@ if aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-ca/" > /dev/null 2>&1; then
   # Download an existing ca from an S3 bucket
   sudo mkdir "$CA_DIR/ca"
   cd "$CA_DIR/ca"
-  aws s3 cp s3://${S3_BUCKET_NAME}/kafka-ca/ca.crt ./ca.crt --recursive --region $REGION
-  aws s3 cp s3://${S3_BUCKET_NAME}/kafka-ca/ca.crt ./ca.kkey --recursive --region $REGION
+  aws s3 cp s3://kafka-certs-bucket-develop/kafka-ca/ca.crt ./ca.crt --recursive --region $REGION
+  aws s3 cp s3://kafka-certs-bucket-develop/kafka-ca/ca.key ./ca.key --recursive --region $REGION
   CA_CRT="$CA_DIR/ca/ca.crt"
   CA_KEY="$CA_DIR/ca/ca.key"
 else
