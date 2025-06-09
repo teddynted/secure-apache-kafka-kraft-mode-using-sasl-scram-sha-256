@@ -127,6 +127,9 @@ sudo keytool -import -trustcacerts -alias CARoot -file $CA_CRT -keystore trustst
 # Upload certs so to S3 bucket
 aws s3 cp "$CA_DIR/kafka-certs/node-$6/" s3://${S3_BUCKET_NAME}/kafka-certs/node-$6/ --recursive --region $REGION
 
+chmod 644 "$CA_DIR/kafka-certs/node-$6/truststore.jks"
+chown ec2-user:ec2-user "$CA_DIR/kafka-certs/node-$6/truststore.jks"
+
 cd $HOME_DIR
 ls
 

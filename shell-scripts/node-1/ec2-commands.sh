@@ -2,6 +2,7 @@
 
 CERT="/opt/kafka/config/kafka-ssl/kafka-certs/node-1"
 echo "CERT directory $CERT"
+echo "Pass: $1"
 KRAFT_ADVERTISED_LISTENERS=$(cat /opt/kafka/config/kraft/server.properties | grep -c "advertised.listeners=SASL_SSL://$4:9092")
 echo 'KRAFT_ADVERTISED_LISTENERS '$KRAFT_ADVERTISED_LISTENERS''
 if [[ $KRAFT_ADVERTISED_LISTENERS -eq 0 ]] 
