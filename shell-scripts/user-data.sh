@@ -2,10 +2,6 @@
 
 set -euxo pipefail
 
-AWS_REGION=${AWS::Region}
-
-echo "AWS_REGION $AWS_REGION"
-
 echo $1 $2 $3 $4 $5 $6 $7 $8 $9 $10
 sudo yum update -y
 sudo yum install -y java-11-amazon-corretto
