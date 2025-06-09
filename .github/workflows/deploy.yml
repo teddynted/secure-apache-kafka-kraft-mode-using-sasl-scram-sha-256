@@ -17,7 +17,6 @@ jobs:
       SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
       KEY_PAIR_BUCKET_NAME: ${{ secrets.KEY_PAIR_BUCKET_NAME }}
       KEY_PAIR_NAME: ${{ secrets.KEY_PAIR_NAME }}
-      STATE: ${{ secrets.STATE }}
       COUNTRY: ${{ secrets.COUNTRY }}
       ORGANIZATION_UNIT: ${{ secrets.ORGANIZATION_UNIT }}
       CITY: ${{ secrets.CITY }}
