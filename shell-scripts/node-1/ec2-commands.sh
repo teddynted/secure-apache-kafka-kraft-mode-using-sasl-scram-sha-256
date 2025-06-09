@@ -1,5 +1,6 @@
 #!/bin/bash
 
+CERT="/opt/kafka/config/kafka-ssl/kafka-certs/node-$11"
 KRAFT_ADVERTISED_LISTENERS=$(cat /opt/kafka/config/kraft/server.properties | grep -c "advertised.listeners=SASL_SSL://$4:9092")
 echo 'KRAFT_ADVERTISED_LISTENERS '$KRAFT_ADVERTISED_LISTENERS''
 if [[ $KRAFT_ADVERTISED_LISTENERS -eq 0 ]] 
@@ -19,7 +20,7 @@ sudo tee /opt/kafka/config/kraft/client.properties > /dev/null <<EOF
 bootstrap.servers=$4:9092
 security.protocol=SASL_SSL
 #ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
-ssl.truststore.location=/opt/kafka/config/kafka-ssl/kafka-certs/node-$11/truststore.jks
+ssl.truststore.location="$CERT/truststore.jks"
 ssl.truststore.password=$1
 sasl.mechanism=SCRAM-SHA-256
 sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=$2 password=$1;
@@ -28,7 +29,7 @@ sudo touch /opt/kafka/config/kraft/ssl-consumer.properties
 sudo tee /opt/kafka/config/kraft/ssl-consumer.properties > /dev/null <<EOF
 bootstrap.servers=$4:9092
 security.protocol=SASL_SSL
-ssl.truststore.location=/opt/kafka/config/kafka-ssl/kafka-certs/node-$11/truststore.jks
+ssl.truststore.location="$CERT/truststore.jks"
 #ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
 ssl.truststore.password=$1
 sasl.mechanism=SCRAM-SHA-256
