@@ -47,8 +47,8 @@ if aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-ca/" > /dev/null 2>&1; then
   # Download an existing ca from an S3 bucket
   sudo mkdir -p "$CA_DIR/ca"
   cd "$CA_DIR/ca"
-  aws s3 cp s3://kafka-certs-bucket-develop/kafka-ca/ca.crt $CA_DIR/ca/ --recursive --region $REGION
-  aws s3 cp s3://kafka-certs-bucket-develop/kafka-ca/ca.key $CA_DIR/ca/ --recursive --region $REGION
+  aws s3 cp s3://kafka-certs-bucket-develop/kafka-ca/ca.crt .
+  aws s3 cp s3://kafka-certs-bucket-develop/kafka-ca/ca.key .
   CA_CRT="$CA_DIR/ca/ca.crt"
   CA_KEY="$CA_DIR/ca/ca.key"
   # Fix permissions
