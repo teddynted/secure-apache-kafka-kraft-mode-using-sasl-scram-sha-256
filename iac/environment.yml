@@ -2,7 +2,7 @@ SASL_SCRAM_USERNAME: ${env:SASL_SCRAM_USERNAME}
 SASL_SCRAM_PASSWORD: ${env:SASL_SCRAM_PASSWORD}
 KEY_PAIR_BUCKET_NAME: ${env:KEY_PAIR_BUCKET_NAME}
 KEY_PAIR_NAME: ${env:KEY_PAIR_NAME}
-STATE: ${env:STATE}
+STAGE: ${env:STAGE}
 COUNTRY: ${env:COUNTRY}
 ORGANIZATION_UNIT: ${env:ORGANIZATION_UNIT}
 CITY: ${env:CITY}
@@ -34,4 +34,4 @@ PROMETHEUS_SECURITY_GROUP: { "Fn::Sub": ["${sg}", { "sg": { "Ref": "PrometheusSe
 APACHE_KAFKA_PRIVATE_SUBNET_1: { "Fn::Sub": ["${sg}", { "sg": { "Ref": "ApacheKafkaPrivateSubnet1" } }] }
 APACHE_KAFKA_PRIVATE_SUBNET_2: { "Fn::Sub": ["${sg}", { "sg": { "Ref": "ApacheKafkaPrivateSubnet2" } }] }
 S3_BUCKET: { "Ref" : "KafkaCertBucket" }
-REGION: { "Ref": "AWS::Region" }
+REGION: { "Fn::Sub": "${AWS::Region}" }
