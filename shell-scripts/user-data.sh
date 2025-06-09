@@ -52,9 +52,12 @@ if aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-ca/" > /dev/null 2>&1; then
   CA_CRT="$CA_DIR/ca/ca.crt"
   CA_KEY="$CA_DIR/ca/ca.key"
   # Fix permissions
-  chmod -R 600 $CA_CRT
-  chmod -R 644 $CA_KEY
-  chown ec2-user:ec2-user *
+  sudo chmod -R 600 $CA_CRT
+  sudo chmod -R 644 $CA_KEY
+  sudo chown ec2-user:ec2-user $CA_CRT
+  sudo chown ec2-user:ec2-user $CA_KEY
+  cat $CA_CRT
+  cat $CA_KEY
   ls
   # Check if file exists and is not empty
   if [[ -s ${CA_CRT} ]]; then
@@ -76,7 +79,7 @@ else
   # Generate a common Certificate Authority for muliple Apache Kafka Cluster Nodes
   # And upload it to an S3 bucket
   echo "Generating a new common CA"
-  sudo mkdir "$CA_DIR/ca"
+  sudo mkdir -p "$CA_DIR/ca"
   cd "$CA_DIR/ca"
   sudo openssl genrsa -aes256 -passout pass:$PASSWORD -out ca.key 4096
   sudo openssl req -x509 -new -nodes -key ca.key -sha256 -days $VALIDITY_DAYS -out ca.crt -passin pass:$PASSWORD -subj "/C=$COUNTRY/ST=$STATE/L=$CITY/O=$ORGANIZATION/OU=$ORGANIZATION_UNIT/CN=KafkaCA"
