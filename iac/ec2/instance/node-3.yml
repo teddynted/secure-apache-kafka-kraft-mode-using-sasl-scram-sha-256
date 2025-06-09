@@ -41,4 +41,4 @@ Properties:
       nodeId: { "Fn::Sub": [ "${nodeId}", { "nodeId": 3 } ] }
       offsets_topic_replication_factor: { "Fn::Sub": [ "${offsets_topic_replication_factor}", { "offsets_topic_replication_factor": "${env:OFFSETS_TOPIC_REPLICATION_FACTOR}" } ] }
       default_replication_factor: { "Fn::Sub": [ "${default_replication_factor}", { "default_replication_factor": "${env:DEFAULT_REPLICATION_FACTOR}" } ] }
-      aws_region: { "Fn::Sub": "${AWS::Region}" }
+      aws_region: {"Ref": "AWS::Region"}
