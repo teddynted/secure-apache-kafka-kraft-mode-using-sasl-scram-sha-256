@@ -65,8 +65,10 @@ if aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-ca/" > /dev/null 2>&1; then
     exit 1
   fi
   # Fix permissions
+  chmod -R 600 $CA_CRT
+  chmod -R 644 $CA_KEY
   chmod 600 ca.key
-  chmod 600 ca.crt
+  chmod 644 ca.crt
   chown ec2-user:ec2-user *
   echo "Checking signature algorithm"
   sudo openssl x509 -in ca.crt -noout -text | grep "Signature Algorithm"
@@ -83,7 +85,7 @@ else
   CA_CRT="$CA_DIR/ca/ca.crt"
   CA_KEY="$CA_DIR/ca/ca.key"
   echo "Checking signature algorithm"
-  sudo openssl x509 -in /opt/kafka/config/kafka-ssl/ca/ca.crt -noout -text
+  sudo openssl x509 -in ca.crt -noout -text
   sleep 3
 fi
 
