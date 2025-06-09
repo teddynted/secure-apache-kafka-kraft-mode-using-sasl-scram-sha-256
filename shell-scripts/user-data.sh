@@ -64,6 +64,7 @@ if aws s3 ls "s3://${S3_BUCKET_NAME}/kafka-ca/" > /dev/null 2>&1; then
     echo "❌ File is empty or failed to download."
     exit 1
   fi
+  ls
   # Fix permissions
   chmod -R 600 $CA_CRT
   chmod -R 644 $CA_KEY
@@ -77,15 +78,15 @@ else
   # Generate a common Certificate Authority for muliple Apache Kafka Cluster Nodes
   # And upload it to an S3 bucket
   echo "Generating a new common CA"
-  sudo mkdir -p "$CA_DIR/ca"
-  sudo cd "$CA_DIR/ca"
+  sudo mkdir "$CA_DIR/ca"
+  cd "$CA_DIR/ca"
   sudo openssl genrsa -aes256 -passout pass:$PASSWORD -out ca.key 4096
   sudo openssl req -x509 -new -nodes -key ca.key -sha256 -days $VALIDITY_DAYS -out ca.crt -passin pass:$PASSWORD -subj "/C=$COUNTRY/ST=$STATE/L=$CITY/O=$ORGANIZATION/OU=$ORGANIZATION_UNIT/CN=KafkaCA"
   aws s3 cp "$CA_DIR/ca/" s3://${S3_BUCKET_NAME}/kafka-ca/ --recursive --region $REGION
   CA_CRT="$CA_DIR/ca/ca.crt"
   CA_KEY="$CA_DIR/ca/ca.key"
   echo "Checking signature algorithm"
-  sudo openssl x509 -in ca.crt -noout -text
+  sudo openssl x509 -in /opt/kafka/config/kafka-ssl/ca/ca.crt -noout -text
   sleep 3
 fi
 
