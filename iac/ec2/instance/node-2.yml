@@ -34,11 +34,10 @@ Properties:
       fi
     - username: { "Fn::Sub": [ "${username}", { "username": "${env:SASL_SCRAM_USERNAME}" } ] }
       password: { "Fn::Sub": [ "${password}", { "password": "${env:SASL_SCRAM_PASSWORD}" } ] }
-      state: { "Fn::Sub": [ "${state}", { "state": "${env:STATE}" } ] }
       country: { "Fn::Sub": [ "${country}", { "country": "${env:COUNTRY}" } ] }
       unit: { "Fn::Sub": [ "${unit}", { "unit": "${env:ORGANIZATION_UNIT}" } ] }
       city: { "Fn::Sub": [ "${city}", { "city": "${env:CITY}" } ] }
       nodeId: { "Fn::Sub": [ "${nodeId}", { "nodeId": 2 } ] }
       offsets_topic_replication_factor: { "Fn::Sub": [ "${offsets_topic_replication_factor}", { "offsets_topic_replication_factor": "${env:OFFSETS_TOPIC_REPLICATION_FACTOR}" } ] }
       default_replication_factor: { "Fn::Sub": [ "${default_replication_factor}", { "default_replication_factor": "${env:DEFAULT_REPLICATION_FACTOR}" } ] }
-      aws_region: "eu-west-1"
+      aws_region: "${env:REGION}"

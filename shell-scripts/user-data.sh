@@ -2,7 +2,7 @@
 
 set -euxo pipefail
 
-echo $1 $2 $3 $4 $5 $6 $7 $8 $9 $10
+echo $1 $2 $3 $4 $5 $6 $7 $8 $9
 sudo yum update -y
 sudo yum install -y java-11-amazon-corretto
 sudo yum install -y git
@@ -16,7 +16,7 @@ sudo ln -s kafka_2.12-3.9.0 /opt/kafka
 sudo chown ec2-user:ec2-user /opt/kafka && sudo chmod u+s /opt/kafka
 ls -l 
 ls -l /opt/kafka/
-echo "Region: $10"
+echo "Region: $9"
 
 # Generate TLS Certificate and Stores
 CA_DIR=/opt/kafka/config/kafka-ssl
@@ -36,7 +36,7 @@ HOME_DIR="../../../../../"
 
 sudo mkdir $CA_DIR
 sudo mkdir "$CA_DIR/kafka-certs"
-sudo mkdir "$CA_DIR/kafka-certs/node-$7"
+sudo mkdir "$CA_DIR/kafka-certs/node-$6"
 
 ls
 
@@ -97,7 +97,7 @@ ls
 echo "CA_CRT $CA_CRT"
 echo "CA_KEY $CA_KEY"
 
-cd "$CA_DIR/kafka-certs/node-$7"
+cd "$CA_DIR/kafka-certs/node-$6"
 
 # Generate private key
 sudo openssl genrsa -out $NODE.key 2048
@@ -125,7 +125,7 @@ sudo keytool -importkeystore -destkeystore $NODE.keystore.jks -srckeystore $NODE
 sudo keytool -import -trustcacerts -alias CARoot -file $CA_CRT -keystore truststore.jks -storepass $PASSWORD -noprompt
 
 # Upload certs so to S3 bucket
-aws s3 cp "$CA_DIR/kafka-certs/node-$7/" s3://${S3_BUCKET_NAME}/kafka-certs/node-$7/ --recursive --region $REGION
+aws s3 cp "$CA_DIR/kafka-certs/node-$6/" s3://${S3_BUCKET_NAME}/kafka-certs/node-$6/ --recursive --region $REGION
 
 cd $HOME_DIR
 ls
@@ -186,7 +186,7 @@ EOF
 sudo mkdir -p /var/lib/kafka/logs
 sudo chmod -R 700 /var/lib/kafka
 sudo chown -R ec2-user:ec2-user /var/lib/kafka
-sudo sed -i s/node.id=1/node.id=$7/ /opt/kafka/config/kraft/server.properties
+sudo sed -i s/node.id=1/node.id=$6/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/num.partitions=1/num.partitions=8/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/log.dirs=\\/tmp\\/kraft-combined-logs/log.dirs=\\/opt\\/kafka\\/config\\/kraft\\/kraft-combined-logs/ /opt/kafka/config/kraft/server.properties
 
@@ -199,10 +199,10 @@ sasl.mechanism.inter.broker.protocol=SCRAM-SHA-256
 ssl.protocol=TLS
 ssl.cipher.suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 ssl.enabled.protocols=TLSv1.2,TLSv1.1,TLSv1
-ssl.truststore.location=/opt/kafka/config/kafka-ssl/kafka-certs/node-'$7'/truststore.jks
+ssl.truststore.location=/opt/kafka/config/kafka-ssl/kafka-certs/node-'$6'/truststore.jks
 ssl.truststore.type=PKCS12
 ssl.truststore.password='$2'
-ssl.keystore.location=/opt/kafka/config/kafka-ssl/kafka-certs/node-'$7'/'$NODE'.keystore.jks
+ssl.keystore.location=/opt/kafka/config/kafka-ssl/kafka-certs/node-'$6'/'$NODE'.keystore.jks
 ssl.keystore.type=PKCS12
 ssl.keystore.password='$2'
 ssl.key.password='$2'
