@@ -18,7 +18,8 @@ sudo touch /opt/kafka/config/kraft/client.properties
 sudo tee /opt/kafka/config/kraft/client.properties > /dev/null <<EOF
 bootstrap.servers=$4:9092
 security.protocol=SASL_SSL
-ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
+#ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
+ssl.truststore.location=/opt/kafka/config/kafka-ssl/kafka-certs/node-'$11'/truststore.jks
 ssl.truststore.password=$1
 sasl.mechanism=SCRAM-SHA-256
 sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=$2 password=$1;
@@ -27,7 +28,8 @@ sudo touch /opt/kafka/config/kraft/ssl-consumer.properties
 sudo tee /opt/kafka/config/kraft/ssl-consumer.properties > /dev/null <<EOF
 bootstrap.servers=$4:9092
 security.protocol=SASL_SSL
-ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
+ssl.truststore.location=/opt/kafka/config/kafka-ssl/kafka-certs/node-'$11'/truststore.jks
+#ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
 ssl.truststore.password=$1
 sasl.mechanism=SCRAM-SHA-256
 sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=$2 password=$1;
@@ -45,8 +47,8 @@ sudo systemctl daemon-reload
 sudo systemctl enable kafka
 sudo systemctl start kafka
 sudo systemctl status kafka
-# sudo sleep 10
-# sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PRIVATE_DNS_NAME:9092 --replication-factor 3 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/client.properties
+sudo sleep 10
+sudo /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server $PRIVATE_DNS_NAME:9092 --replication-factor 3 --partitions 3 --topic testtopic --if-not-exists --command-config /opt/kafka/config/kraft/client.properties
 # sudo sleep 10
 # sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server $PRIVATE_DNS_NAME:9092 --list --command-config /opt/kafka/config/kraft/client.properties
 # sudo sleep 10
