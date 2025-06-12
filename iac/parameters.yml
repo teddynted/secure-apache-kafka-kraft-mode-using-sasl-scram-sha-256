@@ -8,7 +8,7 @@ LatestAmiId:
 InstanceType:
   Description: Apache Kafka EC2 instance type
   Type: String
-  Default: t3.medium
+  Default: t2.micro #t3.medium
   AllowedValues:
     - t2.nano
     - t2.micro
