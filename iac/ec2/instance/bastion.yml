@@ -18,3 +18,16 @@ Properties:
       #!/bin/bash
       yum update -y
       yum install -y aws-cli pssh
+      # Get 
+      OUTPUT_FILE="/tmp/kafka_hosts.txt"
+      private_ips=$(aws ec2 describe-instances \
+      --region eu-west-1 \
+      --filters "Name=tag:Name,Values=*Apache*,*Kafka*" \
+      --query "Reservations[*].Instances[*].[PrivateIpAddress]" \ 
+      --output text)
+      echo $private_ips
+      
+      for ip in $private_ips; do
+        echo "$ip" >> $OUTPUT_FILE
+      done
+      pssh -h $OUTPUT_FILE -i "sudo systemctl start kafka"
