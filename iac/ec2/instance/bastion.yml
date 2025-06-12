@@ -3,9 +3,6 @@ DependsOn: [NodeOne1, NodeTwo1, NodeThree1]
 Properties:
   InstanceType: t2.micro
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
-  # SubnetId: { "Ref": "KafkaPublicSubnet" }
-  # SecurityGroupIds:
-  #   - { "Ref": "BastionSecurityGroup" }
   ImageId: { "Ref": "LatestAmiId" }
   NetworkInterfaces: 
     - AssociatePublicIpAddress: "true"
