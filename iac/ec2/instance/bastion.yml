@@ -3,11 +3,16 @@ DependsOn: [NodeOne1, NodeTwo1, NodeThree1]
 Properties:
   InstanceType: t2.micro
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
-  SubnetId: { "Ref": "KafkaPublicSubnet" }
-  SecurityGroupIds:
-    - { "Ref": "BastionSecurityGroup" }
+  # SubnetId: { "Ref": "KafkaPublicSubnet" }
+  # SecurityGroupIds:
+  #   - { "Ref": "BastionSecurityGroup" }
   ImageId: { "Ref": "LatestAmiId" }
-  AssociatePublicIpAddress: true
+  NetworkInterfaces: 
+    - AssociatePublicIpAddress: "true"
+      DeviceIndex: "0"
+      GroupSet: 
+        - {"Ref": "BastionSecurityGroup"}
+      SubnetId: {"Ref": "KafkaPublicSubnet"}
   Tags:
     - Key: Name
       Value: JumpServer
