@@ -6,7 +6,7 @@ Properties:
   SubnetId: { "Ref": "KafkaPublicSubnet" }
   SecurityGroupIds:
     - { "Ref": "BastionSecurityGroup" }
-  ImageId: ImageId: { "Ref": "LatestAmiId" }
+  ImageId: { "Ref": "LatestAmiId" }
   AssociatePublicIpAddress: true
   Tags:
     - Key: Name
