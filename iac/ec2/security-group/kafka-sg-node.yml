@@ -3,27 +3,27 @@ Properties:
   GroupDescription: "Kafka Security Group"
   GroupName: ${self:provider.stage}-apache-kafka-security-group-node
   VpcId: { 'Ref': 'ApacheKafkaVPC' }
-  SecurityGroupEgress: 
-    - IpProtocol: -1
-      FromPort: 0
-      ToPort: 65535
-      CidrIp: 0.0.0.0/0
-  SecurityGroupIngress:
-    # SSH into an instance
-    - IpProtocol: tcp 
-      FromPort: 22
-      ToPort: 22
-      CidrIp: "0.0.0.0/0"
-    # Allow intra-cluster communication between brokers and controllers
-    - IpProtocol: tcp
-      FromPort: 9092
-      ToPort: 9094
-      SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }
-    - IpProtocol: tcp
-      FromPort: 9094
-      ToPort: 9094
-      CidrIp: "0.0.0.0/0"
-    - IpProtocol: tcp
-      FromPort: 9092
-      ToPort: 9092
-      CidrIp: "0.0.0.0/0"
+  # SecurityGroupEgress: 
+  #   - IpProtocol: -1
+  #     FromPort: 0
+  #     ToPort: 65535
+  #     CidrIp: 0.0.0.0/0
+  # SecurityGroupIngress:
+  #   # SSH into an instance
+  #   - IpProtocol: tcp 
+  #     FromPort: 22
+  #     ToPort: 22
+  #     CidrIp: "0.0.0.0/0"
+  #   # Allow intra-cluster communication between brokers and controllers
+  #   - IpProtocol: tcp
+  #     FromPort: 9092
+  #     ToPort: 9094
+  #     SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }
+  #   - IpProtocol: tcp
+  #     FromPort: 9094
+  #     ToPort: 9094
+  #     CidrIp: "0.0.0.0/0"
+  #   - IpProtocol: tcp
+  #     FromPort: 9092
+  #     ToPort: 9092
+  #     CidrIp: "0.0.0.0/0"

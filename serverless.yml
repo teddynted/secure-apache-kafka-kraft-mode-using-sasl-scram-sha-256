@@ -35,6 +35,30 @@ resources:
     Ec2InstanceLambdaIamRole: ${file(./iac/ec2/iam/lambda-role.yml)}
     KafkaConsumerLambdaRole: ${file(./iac/lambda/kafka-consumer-lambda-role.yml)}
     KafkaNodeSecurityGroup: ${file(./iac/ec2/security-group/kafka-sg-node.yml)}
+    KafkaIngressSelfRule:
+      Type: AWS::EC2::SecurityGroupIngress
+      Properties:
+        GroupId: { "Ref": "KafkaNodeSecurityGroup" }
+        IpProtocol: tcp
+        FromPort: 9092
+        ToPort: 9094
+        SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }
+    KafkaIngressSSH:
+      Type: AWS::EC2::SecurityGroupIngress
+      Properties:
+        GroupId: { "Ref": "KafkaNodeSecurityGroup" }
+        IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+    KafkaIngressClients:
+      Type: AWS::EC2::SecurityGroupIngress
+      Properties:
+        GroupId: { "Ref": "KafkaNodeSecurityGroup" }
+        IpProtocol: tcp
+        FromPort: 9092
+        ToPort: 9092
+        CidrIp: 0.0.0.0/0
     PrometheusSecurityGroup: ${file(./iac/ec2/security-group/prometheus-sg.yml)}
     KafkaBrokerSaslScram256Secrets: ${file(./iac/secrets-manager.yml)}
     KafkaEventSource: ${file(./iac/lambda/apache-kafka-lambda-event-source.yml)}
