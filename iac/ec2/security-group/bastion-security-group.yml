@@ -1,0 +1,12 @@
+Type: AWS::EC2::SecurityGroup
+Properties:
+  GroupDescription: Bastion SG
+  VpcId: { 'Ref': 'ApacheKafkaVPC' }
+  SecurityGroupIngress:
+    - IpProtocol: tcp
+      FromPort: 22
+      ToPort: 22
+      CidrIp: 0.0.0.0/32
+  Tags:
+    - Key: Name
+      Value: BastionSG

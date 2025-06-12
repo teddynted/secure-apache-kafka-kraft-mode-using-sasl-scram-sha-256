@@ -1,7 +1,7 @@
 Type: "AWS::EC2::Instance"
 Properties:
   AvailabilityZone: { "Fn::Select": [0,{ "Fn::GetAZs": "" }] }
-  InstanceType: { 'Ref': 'InstanceType' }
+  InstanceType: "t2.micro"
   ImageId: { 'Ref': 'LatestAmiId' }
   IamInstanceProfile: { 'Ref': 'Ec2IAMProfile' }
   NetworkInterfaces: 

@@ -43,6 +43,14 @@ resources:
         FromPort: 9092
         ToPort: 9094
         SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }
+    BastionIngressRule:
+      Type: AWS::EC2::SecurityGroupIngress
+      Properties:
+        GroupId: { "Ref": "KafkaNodeSecurityGroup" }
+        IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        SourceSecurityGroupId: { "Ref": "BastionSecurityGroup" }
     KafkaIngressSSH:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
@@ -121,32 +129,8 @@ resources:
       Properties:
         SubnetId: { "Ref": "KafkaPublicSubnet" }
         RouteTableId: { "Ref": "KafkaRouteTable" }
-    KafkaCertBucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: kafka-certs-bucket-${self:provider.stage}
-        PublicAccessBlockConfiguration:
-          BlockPublicAcls: true
-          BlockPublicPolicy: true
-          IgnorePublicAcls: true
-          RestrictPublicBuckets: true
-    KafkaCertBucketPolicy:
-      Type: AWS::S3::BucketPolicy
-      Properties:
-        Bucket: { "Ref": "KafkaCertBucket" }
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Sid: AllowEC2WithRoleAccess
-              Effect: Allow
-              Principal:
-                AWS: { "Fn::GetAtt": ["Ec2IAMRole", "Arn"] }
-              Action:
-                - s3:GetObject
-                - s3:PutObject
-                - s3:ListBucket
-              Resource:
-                - { "Fn::Sub": "${KafkaCertBucket.Arn}" }
-                - { "Fn::Sub": "${KafkaCertBucket.Arn}/*" }
-
+    KafkaCertBucket: ${file(./iac/s3/certs-bucket.yml)}
+    KafkaCertBucketPolicy: ${file(./iac/s3/certs-bucket-policy.yml)}
+    BastionHost: ${file(./iac/ec2/instance/bastion.yml)}
+    BastionSecurityGroup: ${file(./iac/ec2/security-group/bastion-security-group.yml)}
   Outputs: ${file(./iac/outputs.yml)}

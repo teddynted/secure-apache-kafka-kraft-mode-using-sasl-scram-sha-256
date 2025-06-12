@@ -1,0 +1,17 @@
+Type: AWS::S3::BucketPolicy
+Properties:
+  Bucket: { "Ref": "KafkaCertBucket" }
+  PolicyDocument:
+    Version: "2012-10-17"
+    Statement:
+      - Sid: AllowEC2WithRoleAccess
+        Effect: Allow
+        Principal:
+          AWS: { "Fn::GetAtt": ["Ec2IAMRole", "Arn"] }
+        Action:
+          - s3:GetObject
+          - s3:PutObject
+          - s3:ListBucket
+        Resource:
+          - { "Fn::Sub": "${KafkaCertBucket.Arn}" }
+          - { "Fn::Sub": "${KafkaCertBucket.Arn}/*" }
