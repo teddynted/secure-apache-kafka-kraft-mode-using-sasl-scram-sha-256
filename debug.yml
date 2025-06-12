@@ -1,0 +1,47 @@
+Passw0rd123
+
+::: node.id=2 :::
+
+controller.quorum.voters=
+1@ip-10-0-3-35.eu-west-1.compute.internal:9093,
+2@ip-10-0-3-165.eu-west-1.compute.internal:9093,
+3@ip-10-0-3-150.eu-west-1.compute.internal:9093
+
+advertised.listeners=
+SASL_SSL://ip-10-0-3-165.eu-west-1.compute.internal:9092,
+CONTROLLER://ip-10-0-3-165.eu-west-1.compute.internal:9093,
+EXTERNAL://34.244.240.244:9094
+
+ssl.keystore.location=/opt/kafka/config/kafka-ssl/kafka-certs/node-2/ip-10-0-3-165.eu-west-1.compute.internal.keystore.jks
+
+::: node.id=3 :::
+
+controller.quorum.voters=
+1@ip-10-0-3-35.eu-west-1.compute.internal:9093,
+2@ip-10-0-3-165.eu-west-1.compute.internal:9093,
+3@ip-10-0-3-150.eu-west-1.compute.internal:9093
+
+advertised.listeners=
+SASL_SSL://ip-10-0-3-150.eu-west-1.compute.internal:9092,
+CONTROLLER://ip-10-0-3-150.eu-west-1.compute.internal:9093,
+EXTERNAL://34.245.64.215:9094
+
+ssl.keystore.location=/opt/kafka/config/kafka-ssl/kafka-certs/node-3/ip-10-0-3-150.eu-west-1.compute.internal.keystore.jks
+
+::: node.id=1 :::
+
+controller.quorum.voters=
+1@ip-10-0-3-35.eu-west-1.compute.internal:9093,
+2@ip-10-0-3-165.eu-west-1.compute.internal:9093,
+3@ip-10-0-3-150.eu-west-1.compute.internal:9093
+
+advertised.listeners=
+SASL_SSL://ip-10-0-3-35.eu-west-1.compute.internal:9092,
+CONTROLLER://ip-10-0-3-35.eu-west-1.compute.internal:9093,
+EXTERNAL://54.171.18.215:9094
+
+ssl.keystore.location=/opt/kafka/config/kafka-ssl/kafka-certs/node-1/ip-10-0-3-35.eu-west-1.compute.internal.keystore.jks
+
+telnet ip-10-0-3-35.eu-west-1.compute.internal 9093
+telnet ip-10-0-3-165.eu-west-1.compute.internal 9093
+telnet ip-10-0-3-150.eu-west-1.compute.internal 9093
