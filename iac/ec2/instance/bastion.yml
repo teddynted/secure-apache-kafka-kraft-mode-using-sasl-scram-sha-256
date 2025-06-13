@@ -21,6 +21,11 @@ Properties:
       sudo dnf install -y python3-pip
       sudo pip3 install --user pssh
 
+      sudo echo 'export PATH=$PATH:~/.local/bin' >> ~/.bashrc
+      sudo source ~/.bashrc
+
+      pssh --version
+
       OUTPUT_FILE="/tmp/kafka_hosts.txt"
 
       private_ips=$(aws ec2 describe-instances \
