@@ -38,6 +38,7 @@ resources:
     KafkaIngressSelfRule:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
+        GroupName: "Kafka Ingress Self Rule"
         GroupId: { "Ref": "KafkaNodeSecurityGroup" }
         IpProtocol: tcp
         FromPort: 9092
@@ -46,6 +47,7 @@ resources:
     BastionIngressRule:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
+        GroupName: "Bastion Ingress Rule"
         GroupId: { "Ref": "KafkaNodeSecurityGroup" }
         IpProtocol: tcp
         FromPort: 22
@@ -54,6 +56,7 @@ resources:
     KafkaIngressSSH:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
+        GroupName: "Kafka Ingress SSH"
         GroupId: { "Ref": "KafkaNodeSecurityGroup" }
         IpProtocol: tcp
         FromPort: 22
@@ -62,6 +65,7 @@ resources:
     KafkaIngressClients:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
+        GroupName: "Kafka Node Security Group"
         GroupId: { "Ref": "KafkaNodeSecurityGroup" }
         IpProtocol: tcp
         FromPort: 9092
