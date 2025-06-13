@@ -1,0 +1,35 @@
+KAFKA_BOOTSTRAP_SERVER_TWO: {
+    "Fn::Sub":
+      [
+        "${ServerPublicIp}:9094",
+        { "ServerPublicIp": { "Fn::GetAtt": ["NodeTwo2", "PublicIp"] } },
+      ],
+  }
+KAFKA_BOOTSTRAP_SERVER_THREE: {
+    "Fn::Sub":
+      [
+        "${ServerPublicIp}:9094",
+        { "ServerPublicIp": { "Fn::GetAtt": ["NodeThree2", "PublicIp"] } },
+      ],
+  }
+KAFKA_BOOTSTRAP_SERVER: {
+    "Fn::Sub":
+      [
+        "${ServerPublicIp}:9094",
+        { "ServerPublicIp": { "Fn::GetAtt": ["NodeOne2", "PublicIp"] } },
+      ],
+  }
+
+
+  Type: AWS::SecretsManager::Secret
+Properties:
+  Name: KafkaBrokerSaslScram256
+  Description: "Kafka Broker Sasl Scram Sha-256"
+  GenerateSecretString:
+    SecretStringTemplate: { "Fn::Sub": ['{"username":"${username}"', { "username": "${env:SASL_SCRAM_USERNAME}" }] }
+    GenerateStringKey: password
+    PasswordLength: 16
+    ExcludePunctuation: true
+  Tags:
+    - Key: KafkaBrokerSaslScram256
+      Value: KafkaBrokerSaslScram256

@@ -4,7 +4,7 @@ set -euxo pipefail
 
 echo $1 $2 $3 $4 $5 $6 $7 $8 $9
 sudo yum update -y
-sudo yum install -y java-11-amazon-corretto
+sudo yum install -y java-11-amazon-corretto aws-cli jq
 sudo yum install -y git
 sudo yum -y install telnet
 export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto
@@ -33,6 +33,10 @@ ORGANIZATION="Pixventive"
 CA_CRT=""
 CA_KEY=""
 HOME_DIR="../../../../../"
+
+SECRET_JSON=$(aws secretsmanager get-secret-value --secret-id "KafkaBrokerSaslScram256" --region "$REGION" --query SecretString --output text)
+echo "SECRET_JSON $SECRET_JSON"
+#PASSWORD=$(echo "$SECRET_JSON" | jq -r .password)
 
 sudo mkdir $CA_DIR
 sudo mkdir "$CA_DIR/kafka-certs"
@@ -142,7 +146,7 @@ sudo cat <<EOF > /opt/kafka/scripts/kafka-format.sh
 #!/bin/bash
 set -euo pipefail
 echo "Formatting Kafka KRaft storage with CLUSTER_ID=$CLUSTER_ID"
-sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=$1,password=$2] --ignore-formatted
+sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=$1,password=$PASSWORD] --ignore-formatted
 EOF
       
 sudo chmod +x /opt/kafka/scripts/kafka-format.sh
@@ -150,12 +154,12 @@ sudo chmod +x /opt/kafka/scripts/kafka-format.sh
 sudo touch /opt/kafka/config/kraft/jaas.conf
 sudo cat <<EOF > /opt/kafka/config/kraft/jaas.conf
 KafkaServer {
-    org.apache.kafka.common.security.scram.ScramLoginModule required username=$1 password=$2 user_admin=$2 user_broker1=$2;
+    org.apache.kafka.common.security.scram.ScramLoginModule required username=$1 password=$PASSWORD user_admin=$PASSWORD user_broker1=$PASSWORD;
 };
 KafkaController {
   org.apache.kafka.common.security.scram.ScramLoginModule required
   username="controller"
-  password=$2;
+  password=$PASSWORD;
 };
 EOF
 
@@ -209,11 +213,11 @@ ssl.cipher.suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES
 ssl.enabled.protocols=TLSv1.2,TLSv1.1,TLSv1
 ssl.truststore.location=/opt/kafka/config/kafka-ssl/kafka-certs/node-'$6'/truststore.jks
 ssl.truststore.type=PKCS12
-ssl.truststore.password='$2'
+ssl.truststore.password='$PASSWORD'
 ssl.keystore.location=/opt/kafka/config/kafka-ssl/kafka-certs/node-'$6'/'$NODE'.keystore.jks
 ssl.keystore.type=PKCS12
-ssl.keystore.password='$2'
-ssl.key.password='$2'
+ssl.keystore.password='$PASSWORD'
+ssl.key.password='$PASSWORD'
 ssl.endpoint.identification.algorithm=
 group.initial.rebalance.delay.ms=3000
 group.min.session.timeout.ms=6000
