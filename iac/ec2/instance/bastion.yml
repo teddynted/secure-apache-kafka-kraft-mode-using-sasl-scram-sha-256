@@ -40,7 +40,6 @@ Properties:
         echo "$ip" >> $OUTPUT_FILE
       done
       
-      aws s3 cp $OUTPUT_FILE s3://kafka-certs-bucket-develop/kafka-hosts/ --recursive --region $REGION
       pssh -h $OUTPUT_FILE -i "sudo systemctl start kafka"
       pssh -h $OUTPUT_FILE -i "sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list --command-config /opt/kafka/config/kraft/client.properties"
       pssh -h $OUTPUT_FILE -i "/opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server localhost:9092 describe --status"

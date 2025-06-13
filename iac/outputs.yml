@@ -5,3 +5,18 @@ KafkaCertBucketName:
   Value: { "Ref": "KafkaCertBucket" }
   Export:
     Name: KafkaCertBucketName
+NodeOnePublicIP:
+  Description: Public IP of the EC2 instance
+  Value: { "Fn::GetAtt": ["NodeOne2", "PublicIp"] }
+  Export:
+    Name: ec2NodeOnePublicIP
+NodeTwoPublicIP:
+  Description: Public IP of the EC2 instance
+  Value: { "Fn::GetAtt": ["NodeTwo2", "PublicIp"] }
+  Export:
+    Name: ec2NodeTwoPublicIP
+NodeThreePublicIP:
+  Description: Public IP of the EC2 instance
+  Value: { "Fn::GetAtt": ["NodeThree2", "PublicIp"] }
+  Export:
+    Name: ec2NodeThreePublicIP
