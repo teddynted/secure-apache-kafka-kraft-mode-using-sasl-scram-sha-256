@@ -30,6 +30,10 @@ Properties:
               - s3:PutObject
               - s3:ListBucket
             Resource: { "Fn::Sub": "${KafkaCertBucket.Arn}/*" }
+          - Effect: Allow
+            Action: 
+              - "ec2:DescribeAvailabilityZones"
+            Resource: "*"
       PolicyName:
         { "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "${self:provider.stage}-Ec2AccessPolicy"]] }
   RoleName: { 'Ref': 'AWS::NoValue' }

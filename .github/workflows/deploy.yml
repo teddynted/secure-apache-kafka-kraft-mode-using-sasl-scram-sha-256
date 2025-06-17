@@ -13,8 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AWS_REGION: ${{ secrets.AWS_REGION }}
-      SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
-      SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
       KEY_PAIR_BUCKET_NAME: ${{ secrets.KEY_PAIR_BUCKET_NAME }}
       KEY_PAIR_NAME: ${{ secrets.KEY_PAIR_NAME }}
       COUNTRY: ${{ secrets.COUNTRY }}
@@ -109,9 +107,6 @@ jobs:
         chmod +x ./shell-scripts/node-1/ec2.sh
         ./shell-scripts/node-1/ec2.sh
       env:
-        SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
-        SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
-        REGION: ${{ secrets.AWS_REGION }}
         NODE_ONE_TOPIC: ${{ secrets.NODE_ONE_TOPIC }}
         OFFSETS_TOPIC_REPLICATION_FACTOR: ${{ env.OFFSETS_TOPIC_REPLICATION_FACTOR }}
         DEFAULT_REPLICATION_FACTOR: ${{ env.DEFAULT_REPLICATION_FACTOR }}
@@ -123,9 +118,6 @@ jobs:
         chmod +x ./shell-scripts/node-2/ec2.sh
         ./shell-scripts/node-2/ec2.sh
       env:
-        SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
-        SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
-        REGION: ${{ secrets.AWS_REGION }}
         NODE_TWO_TOPIC: ${{ secrets.NODE_TWO_TOPIC }}
         OFFSETS_TOPIC_REPLICATION_FACTOR: ${{ env.OFFSETS_TOPIC_REPLICATION_FACTOR }}
         DEFAULT_REPLICATION_FACTOR: ${{ env.DEFAULT_REPLICATION_FACTOR }}
@@ -137,9 +129,6 @@ jobs:
         chmod +x ./shell-scripts/node-3/ec2.sh
         ./shell-scripts/node-3/ec2.sh
       env:
-        SASL_SCRAM_PASSWORD: ${{ secrets.SASL_SCRAM_PASSWORD }}
-        SASL_SCRAM_USERNAME: ${{ secrets.SASL_SCRAM_USERNAME }}
-        REGION: ${{ secrets.AWS_REGION }}
         NODE_THREE_TOPIC: ${{ secrets.NODE_THREE_TOPIC }}
         OFFSETS_TOPIC_REPLICATION_FACTOR: ${{ env.OFFSETS_TOPIC_REPLICATION_FACTOR }}
         DEFAULT_REPLICATION_FACTOR: ${{ env.DEFAULT_REPLICATION_FACTOR }}
