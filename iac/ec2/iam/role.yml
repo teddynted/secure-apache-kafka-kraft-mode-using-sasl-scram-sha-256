@@ -22,6 +22,7 @@ Properties:
             Action:
               - ssm:GetParameter
               - ssm:GetParameters
+              - ssm:SendCommand
             Resource: { "Fn::Sub": "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/kafka/cluster-id" }
           - Effect: Allow
             Action:
@@ -29,10 +30,6 @@ Properties:
               - s3:PutObject
               - s3:ListBucket
             Resource: { "Fn::Sub": "${KafkaCertBucket.Arn}/*" }
-          - Effect: Allow
-            Action:
-              - ssm:SendCommand
-            Resource: "*"
       PolicyName:
         { "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "${self:provider.stage}-Ec2AccessPolicy"]] }
   RoleName: { 'Ref': 'AWS::NoValue' }

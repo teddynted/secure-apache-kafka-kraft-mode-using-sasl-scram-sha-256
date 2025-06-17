@@ -1,5 +1,5 @@
 Type: AWS::EC2::Instance
-DependsOn: [NodeOne1, NodeTwo1, NodeThree1]
+DependsOn: [NodeOne2, NodeTwo2, NodeThree2]
 Properties:
   InstanceType: t2.micro
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
@@ -24,5 +24,9 @@ Properties:
       systemctl enable amazon-ssm-agent
       systemctl start amazon-ssm-agent
 
-      aws ssm send-command --instance-ids $(aws ec2 describe-instances --filters "Name=tag:Name,Values=*Apache*,*Kafka*" --query "Reservations[].Instances[].PrivateDnsName" --output text) --document-name "AWS-RunShellScript" \
+      aws ssm send-command \
+        --instance-ids $(aws ec2 describe-instances \
+        --filters "Name=tag:Name,Values=*Apache*,*Kafka*" "Name=instance-state-name,Values=running" \
+        --query "Reservations[].Instances[].InstanceId" --output text) \
+        --document-name "AWS-RunShellScript" \
         --parameters 'commands=["sudo systemctl start kafka", "sudo systemctl status kafka", "sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list --command-config /opt/kafka/config/kraft/client.properties", "sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server localhost:9092 describe --status"]'
