@@ -74,9 +74,9 @@ resources:
     PrometheusSecurityGroup: ${file(./iac/ec2/security-group/prometheus-sg.yml)}
     KafkaBrokerSaslScram256Secrets: ${file(./iac/secrets-manager.yml)}
     KafkaEventSource: ${file(./iac/lambda/apache-kafka-lambda-event-source.yml)}
-    NodeOne4: ${file(./iac/ec2/instance/node-1.yml)}
-    NodeTwo4: ${file(./iac/ec2/instance/node-2.yml)}
-    NodeThree4: ${file(./iac/ec2/instance/node-3.yml)}
+    NodeOne5: ${file(./iac/ec2/instance/node-1.yml)}
+    NodeTwo5: ${file(./iac/ec2/instance/node-2.yml)}
+    NodeThree5: ${file(./iac/ec2/instance/node-3.yml)}
     ApacheKafkaPrometheus14: ${file(./iac/ec2/instance/prometheus.yml)}
     ApacheKafkaSNSTopic: ${file(./iac/sns/sns-topic.yml)}
     ApacheKafkaSNSTopicSubscription: ${file(./iac/sns/sns-subscription.yml)}
@@ -135,7 +135,7 @@ resources:
         RouteTableId: { "Ref": "KafkaRouteTable" }
     KafkaCertBucket: ${file(./iac/s3/certs-bucket.yml)}
     KafkaCertBucketPolicy: ${file(./iac/s3/certs-bucket-policy.yml)}
-    BastionHost4: ${file(./iac/ec2/instance/bastion.yml)}
+    BastionHost5: ${file(./iac/ec2/instance/bastion.yml)}
     BastionSecurityGroup: ${file(./iac/ec2/security-group/bastion-security-group.yml)}
     # IAM Role for the Bastion Host
     BastionInstanceRole:

@@ -1,5 +1,5 @@
 Type: AWS::EC2::Instance
-DependsOn: [NodeOne4, NodeTwo4, NodeThree4]
+DependsOn: [NodeOne5, NodeTwo5, NodeThree5]
 Properties:
   InstanceType: t2.micro
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
