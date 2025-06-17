@@ -18,18 +18,22 @@ Properties:
       #!/bin/bash
       sudo yum update -y
       sudo yum install -y aws-cli
-      sudo dnf install -y python3.11
-      python3.11 --version
-      pip3 install --user pssh
 
-      sudo echo 'export PATH=$PATH:~/.local/bin' >> ~/.bashrc
-      source ~/.bashrc
+      sudo dnf install -y python3 python3-pip
+
+      # Install pssh
+      pip3 install --user pssh
+      
+      # Add local bin to PATH for ec2-user
+      sudo echo 'export PATH=$HOME/.local/bin:$PATH' >> /home/ec2-user/.bashrc
+      sudo chown ec2-user:ec2-user /home/ec2-user/.bashrc
+
 
       pssh --version
 
       OUTPUT_FILE="/tmp/kafka_hosts.txt"
 
-      private_ips=$(aws ec2 describe-instances --region eu-west-1 --filters "Name=tag:Name,Values=*Apache*,*Kafka*" --query "Reservations[*].Instances[*].[PrivateDnsName]" --output text)
+      private_ips=$(aws ec2 describe-instances --region "eu-west-1" --filters "Name=tag:Name,Values=*Apache*,*Kafka*" --query "Reservations[*].Instances[*].[PrivateDnsName]" --output text)
       
       echo $private_ips
       
