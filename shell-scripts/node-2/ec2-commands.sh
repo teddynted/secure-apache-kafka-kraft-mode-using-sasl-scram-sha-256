@@ -12,7 +12,6 @@ PUBLIC_IP_ADDRESS_NODE=$2
 PRIVATE_DNS_NAME_NODE_1=$3
 PRIVATE_DNS_NAME_NODE_3=$4
 SECRET_JSON=$(aws secretsmanager get-secret-value --secret-id "KafkaBrokerSaslScram256" --region $REGION --query SecretString --output text)
-echo "SECRET_JSON $SECRET_JSON"
 PASSWORD=$(echo "$SECRET_JSON" | jq -r .password)
 USERNAME=$(echo "$SECRET_JSON" | jq -r .username)
 sudo sed -i s/offsets.topic.replication.factor=1/offsets.topic.replication.factor=3/ /opt/kafka/config/kraft/server.properties
