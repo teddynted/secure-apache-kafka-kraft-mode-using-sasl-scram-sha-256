@@ -15,14 +15,13 @@ sudo ln -s kafka_2.12-3.9.0 /opt/kafka
 sudo chown ec2-user:ec2-user /opt/kafka && sudo chmod u+s /opt/kafka
 ls -l 
 ls -l /opt/kafka/
-echo "Region: $9"
 
 # Generate TLS Certificate and Stores
 CA_DIR=/opt/kafka/config/kafka-ssl
 S3_BUCKET_NAME=kafka-certs-bucket-develop
-REGION=eu-west-1
+REGION=$(aws ec2 describe-availability-zones --output text --query 'AvailabilityZones[0].[RegionName]')
 NODE=`hostname -f`
-NODE_ID=$6
+NODE_ID=$1
 VALIDITY_DAYS=3650
 COUNTRY="ZA"
 STATE="Gauteng"

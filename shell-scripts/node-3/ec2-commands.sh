@@ -3,6 +3,7 @@
 NODE_ID=$8
 CERT="/opt/kafka/config/kafka-ssl/kafka-certs/node-$NODE_ID"
 PRIVATE_DNS_NAME_NODE = $1
+REGION=$(aws ec2 describe-availability-zones --output text --query 'AvailabilityZones[0].[RegionName]')
 echo "CERT directory $CERT"
 KRAFT_ADVERTISED_LISTENERS=$(cat /opt/kafka/config/kraft/server.properties | grep -c "advertised.listeners=SASL_SSL://$PRIVATE_DNS_NAME_NODE:9092")
 echo 'KRAFT_ADVERTISED_LISTENERS '$KRAFT_ADVERTISED_LISTENERS''
@@ -11,7 +12,7 @@ then
 PUBLIC_IP_ADDRESS_NODE = $2
 PRIVATE_DNS_NAME_NODE_1 = $3
 PRIVATE_DNS_NAME_NODE_2 = $4
-SECRET_JSON=$(aws secretsmanager get-secret-value --secret-id "KafkaBrokerSaslScram256" --region "eu-west-1" --query SecretString --output text)
+SECRET_JSON=$(aws secretsmanager get-secret-value --secret-id "KafkaBrokerSaslScram256" --region $REGION --query SecretString --output text)
 echo "SECRET_JSON $SECRET_JSON"
 PASSWORD=$(echo "$SECRET_JSON" | jq -r .password)
 USERNAME=$(echo "$SECRET_JSON" | jq -r .username)

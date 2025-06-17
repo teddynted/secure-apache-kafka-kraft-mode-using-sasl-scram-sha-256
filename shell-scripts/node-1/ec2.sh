@@ -7,10 +7,6 @@ private_dns_name=$(aws ec2 describe-instances --query "Reservations[*].Instances
 public_ip_address=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress" --filters "Name=tag:Name,Values='Apache Kafka Kraft Instance 1'" "Name=instance-state-name,Values=running" --output text)
 private_dns_name_node_2=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PrivateDnsName" --filters "Name=tag:Name,Values='Apache Kafka Kraft Instance 2'" "Name=instance-state-name,Values=running" --output text)
 private_dns_name_node_3=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PrivateDnsName" --filters "Name=tag:Name,Values='Apache Kafka Kraft Instance 3'" "Name=instance-state-name,Values=running" --output text)
-echo "private_dns_name: '$private_dns_name'"
-echo "public_ip_address: '$public_ip_address'"
-echo "private_dns_name_node_2: '$private_dns_name_node_2'"
-echo "private_dns_name_node_3: '$private_dns_name_node_3'"
 
 # Generate RSA key pair
 tmpfile=$(mktemp /tmp/ssh.XXXXXX)
@@ -19,7 +15,6 @@ public_key=${tmpfile}.pub
 private_key=$tmpfile
 password=$SASL_SCRAM_PASSWORD
 username=$SASL_SCRAM_USERNAME
-region=$REGION
 
 # Register public key
 aws ec2-instance-connect send-ssh-public-key \
