@@ -192,6 +192,8 @@ log4j.logger.kafka.server.KafkaApis=DEBUG
 log4j.logger.kafka.network=DEBUG
 log4j.logger.org.apache.kafka.common.network.SaslChannelBuilder=DEBUG
 log4j.logger.org.apache.kafka.common.security.scram=DEBUG
+log4j.logger.org.apache.kafka=DEBUG
+log4j.logger.org.apache.kafka.common=DEBUG
 EOF
 
 sudo mkdir -p /var/lib/kafka/logs

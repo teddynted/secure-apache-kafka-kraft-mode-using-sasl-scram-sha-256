@@ -24,9 +24,22 @@ Properties:
       systemctl enable amazon-ssm-agent
       systemctl start amazon-ssm-agent
 
-      aws ssm send-command \
+      command_id=$(aws ssm send-command \
         --instance-ids $(aws ec2 describe-instances \
         --filters "Name=tag:Name,Values=*Apache*,*Kafka*" "Name=instance-state-name,Values=running" \
         --query "Reservations[].Instances[].InstanceId" --output text) \
         --document-name "AWS-RunShellScript" \
-        --parameters 'commands=["sudo systemctl start kafka", "sudo systemctl status kafka", "sudo /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list --command-config /opt/kafka/config/kraft/client.properties", "sudo /opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-server localhost:9092 describe --status"]'
+        --parameters 'commands=["sudo /opt/kafka/scripts/kafka-format.sh", "sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties"]')
+      
+      # Get output from all instances
+      for instance_id in $(aws ssm list-command-invocations \
+          --command-id $command_id \
+          --query "CommandInvocations[].InstanceId" \
+          --output text)
+      do
+          echo "Instance: $instance_id"
+          aws ssm get-command-invocation \
+              --command-id $command_id \
+              --instance-id $instance_id \
+              --query "[Status, StandardOutputContent]"
+      done
