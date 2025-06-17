@@ -32,9 +32,7 @@ Properties:
           - Effect: Allow
             Action:
               - ssm:SendCommand
-            Resource:
-              - arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:instance/*
-              - arn:aws:ssm:*::document/AWS-RunShellScript
+            Resource: "*"
       PolicyName:
         { "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "${self:provider.stage}-Ec2AccessPolicy"]] }
   RoleName: { 'Ref': 'AWS::NoValue' }
