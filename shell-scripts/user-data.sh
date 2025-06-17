@@ -2,7 +2,6 @@
 
 set -euxo pipefail
 
-echo $1 $2 $3 $4 $5 $6 $7 $8 $9
 sudo yum update -y
 sudo yum install -y java-11-amazon-corretto aws-cli jq
 sudo yum install -y git
@@ -23,8 +22,8 @@ CA_DIR=/opt/kafka/config/kafka-ssl
 S3_BUCKET_NAME=kafka-certs-bucket-develop
 REGION=eu-west-1
 NODE=`hostname -f`
+NODE_ID=$6
 VALIDITY_DAYS=3650
-PASSWORD=$2
 COUNTRY="ZA"
 STATE="Gauteng"
 ORGANIZATION_UNIT="IT"
@@ -36,11 +35,12 @@ HOME_DIR="../../../../../"
 
 SECRET_JSON=$(aws secretsmanager get-secret-value --secret-id "KafkaBrokerSaslScram256" --region "$REGION" --query SecretString --output text)
 echo "SECRET_JSON $SECRET_JSON"
-#PASSWORD=$(echo "$SECRET_JSON" | jq -r .password)
+PASSWORD=$(echo "$SECRET_JSON" | jq -r .password)
+USERNAME=$(echo "$SECRET_JSON" | jq -r .username)
 
 sudo mkdir $CA_DIR
 sudo mkdir "$CA_DIR/kafka-certs"
-sudo mkdir "$CA_DIR/kafka-certs/node-$6"
+sudo mkdir "$CA_DIR/kafka-certs/node-$NODE_ID"
 
 ls
 
@@ -101,7 +101,7 @@ ls
 echo "CA_CRT $CA_CRT"
 echo "CA_KEY $CA_KEY"
 
-cd "$CA_DIR/kafka-certs/node-$6"
+cd "$CA_DIR/kafka-certs/node-$NODE_ID"
 
 # Generate private key
 sudo openssl genrsa -out $NODE.key 2048
@@ -129,10 +129,10 @@ sudo keytool -importkeystore -destkeystore $NODE.keystore.jks -srckeystore $NODE
 sudo keytool -import -trustcacerts -alias CARoot -file $CA_CRT -keystore truststore.jks -storepass $PASSWORD -noprompt
 
 # Upload certs so to S3 bucket
-aws s3 cp "$CA_DIR/kafka-certs/node-$6/" s3://${S3_BUCKET_NAME}/kafka-certs/node-$6/ --recursive --region $REGION
+aws s3 cp "$CA_DIR/kafka-certs/node-$NODE_ID/" s3://${S3_BUCKET_NAME}/kafka-certs/node-$NODE_ID/ --recursive --region $REGION
 
-chmod 644 "$CA_DIR/kafka-certs/node-$6/truststore.jks"
-chown ec2-user:ec2-user "$CA_DIR/kafka-certs/node-$6/truststore.jks"
+chmod 644 "$CA_DIR/kafka-certs/node-$NODE_ID/truststore.jks"
+chown ec2-user:ec2-user "$CA_DIR/kafka-certs/node-$NODE_ID/truststore.jks"
 
 cd $HOME_DIR
 ls
@@ -146,7 +146,7 @@ sudo cat <<EOF > /opt/kafka/scripts/kafka-format.sh
 #!/bin/bash
 set -euo pipefail
 echo "Formatting Kafka KRaft storage with CLUSTER_ID=$CLUSTER_ID"
-sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=$1,password=$PASSWORD] --ignore-formatted
+sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=$USERNAME,password=$PASSWORD] --ignore-formatted
 EOF
       
 sudo chmod +x /opt/kafka/scripts/kafka-format.sh
@@ -154,7 +154,7 @@ sudo chmod +x /opt/kafka/scripts/kafka-format.sh
 sudo touch /opt/kafka/config/kraft/jaas.conf
 sudo cat <<EOF > /opt/kafka/config/kraft/jaas.conf
 KafkaServer {
-    org.apache.kafka.common.security.scram.ScramLoginModule required username=$1 password=$PASSWORD user_admin=$PASSWORD user_broker1=$PASSWORD;
+    org.apache.kafka.common.security.scram.ScramLoginModule required username=$USERNAME password=$PASSWORD user_admin=$PASSWORD user_broker1=$PASSWORD;
 };
 KafkaController {
   org.apache.kafka.common.security.scram.ScramLoginModule required
@@ -198,7 +198,7 @@ EOF
 sudo mkdir -p /var/lib/kafka/logs
 sudo chmod -R 700 /var/lib/kafka
 sudo chown -R ec2-user:ec2-user /var/lib/kafka
-sudo sed -i s/node.id=1/node.id=$6/ /opt/kafka/config/kraft/server.properties
+sudo sed -i s/node.id=1/node.id=$NODE_ID/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/num.partitions=1/num.partitions=8/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/log.dirs=\\/tmp\\/kraft-combined-logs/log.dirs=\\/opt\\/kafka\\/config\\/kraft\\/kraft-combined-logs/ /opt/kafka/config/kraft/server.properties
 
@@ -211,10 +211,10 @@ sasl.mechanism.inter.broker.protocol=SCRAM-SHA-256
 ssl.protocol=TLS
 ssl.cipher.suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 ssl.enabled.protocols=TLSv1.2,TLSv1.1,TLSv1
-ssl.truststore.location=/opt/kafka/config/kafka-ssl/kafka-certs/node-'$6'/truststore.jks
+ssl.truststore.location=/opt/kafka/config/kafka-ssl/kafka-certs/node-'$NODE_ID'/truststore.jks
 ssl.truststore.type=PKCS12
 ssl.truststore.password='$PASSWORD'
-ssl.keystore.location=/opt/kafka/config/kafka-ssl/kafka-certs/node-'$6'/'$NODE'.keystore.jks
+ssl.keystore.location=/opt/kafka/config/kafka-ssl/kafka-certs/node-'$NODE_ID'/'$NODE'.keystore.jks
 ssl.keystore.type=PKCS12
 ssl.keystore.password='$PASSWORD'
 ssl.key.password='$PASSWORD'
