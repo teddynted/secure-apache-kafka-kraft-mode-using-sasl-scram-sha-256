@@ -135,7 +135,7 @@ resources:
         RouteTableId: { "Ref": "KafkaRouteTable" }
     KafkaCertBucket: ${file(./iac/s3/certs-bucket.yml)}
     KafkaCertBucketPolicy: ${file(./iac/s3/certs-bucket-policy.yml)}
-    BastionHost2: ${file(./iac/ec2/instance/bastion.yml)}
+    BastionHost3: ${file(./iac/ec2/instance/bastion.yml)}
     BastionSecurityGroup: ${file(./iac/ec2/security-group/bastion-security-group.yml)}
     # IAM Role for the Bastion Host
     BastionInstanceRole:
@@ -159,7 +159,20 @@ resources:
                 - Effect: Allow
                   Action:
                     - ec2:DescribeInstances
+                    - ssm:DescribeInstanceInformation
+                    - ssm:SendCommand
                   Resource: "*"
+                - Effect: Allow
+                  Action:
+                    - ssm:ListCommandInvocations
+                    - ssm:GetCommandInvocation
+                  Resource: "*"
+                - Effect: Allow
+                  Action:
+                    - ssm:SendCommand
+                  Resource:
+                    - arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:instance/*
+                    - arn:aws:ssm:*::document/AWS-RunShellScript
     # Instance Profile required for EC2 to use the role
     BastionInstanceProfile:
       Type: AWS::IAM::InstanceProfile
