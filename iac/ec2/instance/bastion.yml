@@ -1,5 +1,5 @@
 Type: AWS::EC2::Instance
-DependsOn: [NodeOne5, NodeTwo5, NodeThree5]
+DependsOn: [NodeOne6, NodeTwo6, NodeThree6]
 Properties:
   InstanceType: t2.micro
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
@@ -34,8 +34,5 @@ Properties:
           "sudo chown ec2-user /opt/kafka/scripts/kafka-format.sh",
           "sudo /opt/kafka/scripts/kafka-format.sh", 
           "sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties"
-          ]') \
-        --output-s3-bucket-name "kafka-certs-bucket-develop" \
-        --output-s3-key-prefix "kafka-debugs"
-      echo $command_id
+          ]' --output-s3-bucket-name "kafka-certs-bucket-develop" --output-s3-key-prefix "kafka-debugs")
       aws ssm list-command-invocations --command-id $command_id --details

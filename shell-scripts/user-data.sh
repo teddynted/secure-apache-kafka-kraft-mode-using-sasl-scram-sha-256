@@ -194,6 +194,8 @@ log4j.logger.org.apache.kafka.common.network.SaslChannelBuilder=DEBUG
 log4j.logger.org.apache.kafka.common.security.scram=DEBUG
 log4j.logger.org.apache.kafka=DEBUG
 log4j.logger.org.apache.kafka.common=DEBUG
+log4j.logger.org.apache.kafka.raft=DEBUG
+log4j.logger.org.apache.kafka.network=DEBUG
 EOF
 
 sudo mkdir -p /var/lib/kafka/logs
@@ -206,7 +208,7 @@ sudo sed -i s/log.dirs=\\/tmp\\/kraft-combined-logs/log.dirs=\\/opt\\/kafka\\/co
 sudo sh -c 'cat << EOF >> /opt/kafka/config/kraft/server.properties
 sasl.enabled.mechanisms=SCRAM-SHA-256
 sasl.mechanism.controller.protocol=SCRAM-SHA-256
-# security.inter.broker.protocol=SASL_SSL 
+security.inter.broker.protocol=SASL_SSL 
 sasl.mechanism.inter.broker.protocol=SCRAM-SHA-256
 # ssl.client.auth=required
 ssl.protocol=TLS
@@ -244,6 +246,11 @@ num.replica.alter.log.dirs.threads=4
 connections.max.idle.ms=600000
 socket.connection.setup.timeout.ms=30000
 socket.connection.setup.timeout.max.ms=30000
+# Increase connection timeout
+request.timeout.ms=30000
+# Increase raft timeouts
+raft.election.timeout.ms=2000
+raft.fetch.timeout.ms=2000
 log.retention.hours=1
 log.segment.bytes=10485760
 EOF'
