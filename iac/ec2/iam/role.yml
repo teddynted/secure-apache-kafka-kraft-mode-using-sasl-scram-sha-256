@@ -34,6 +34,13 @@ Properties:
             Action: 
               - "ec2:DescribeAvailabilityZones"
             Resource: "*"
+          - Effect: "Allow"
+            Action:
+              - "secretsmanager:GetRandomPassword"
+              - "secretsmanager:PutSecretValue"
+              - "secretsmanager:GetSecretValue"
+              - "secretsmanager:CreateSecret"
+            Resource: { "Ref": "KafkaBrokerSaslScram256Secrets" }
       PolicyName:
         { "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "${self:provider.stage}-Ec2AccessPolicy"]] }
   RoleName: { 'Ref': 'AWS::NoValue' }
