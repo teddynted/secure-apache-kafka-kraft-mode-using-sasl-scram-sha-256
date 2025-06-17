@@ -13,6 +13,7 @@ Properties:
     - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
     - arn:aws:iam::aws:policy/AmazonInspector2ManagedCispolicy
     - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
+    - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
   Path: /
   Policies: 
     - PolicyDocument:
@@ -29,6 +30,12 @@ Properties:
               - s3:PutObject
               - s3:ListBucket
             Resource: { "Fn::Sub": "${KafkaCertBucket.Arn}/*" }
+          - Effect: Allow
+            Action:
+              - ssm:SendCommand
+            Resource:
+              - arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:instance/*
+              - arn:aws:ssm:*::document/AWS-RunShellScript
       PolicyName:
         { "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "${self:provider.stage}-Ec2AccessPolicy"]] }
   RoleName: { 'Ref': 'AWS::NoValue' }
