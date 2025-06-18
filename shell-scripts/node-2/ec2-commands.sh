@@ -27,7 +27,7 @@ sudo echo 'Create client properties'
 sudo touch /opt/kafka/config/kraft/client.properties
 sudo tee /opt/kafka/config/kraft/client.properties > /dev/null <<EOF
 bootstrap.servers=$PRIVATE_DNS_NAME_NODE:9092
-#security.protocol=SASL_SSL
+security.protocol=SASL_SSL
 #ssl.truststore.location=/opt/kafka/config/kafka-ssl/truststore/kafka.truststore.jks
 ssl.truststore.location=$CERT/truststore.jks
 ssl.truststore.password=$PASSWORD

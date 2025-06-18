@@ -21,7 +21,7 @@ Properties:
       
       # Update and install Prometheus
       sudo yum update -y
-      sudo yum install -y wget
+      sudo yum install -y wget jq
 
       sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
       sudo chmod +x /usr/local/bin/yq

@@ -204,11 +204,11 @@ sudo chown -R ec2-user:ec2-user /var/lib/kafka
 sudo sed -i s/node.id=1/node.id=$NODE_ID/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/num.partitions=1/num.partitions=8/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/log.dirs=\\/tmp\\/kraft-combined-logs/log.dirs=\\/opt\\/kafka\\/config\\/kraft\\/kraft-combined-logs/ /opt/kafka/config/kraft/server.properties
-
+sudo sed -i s/inter.broker.listener.name=PLAINTEXT/inter.broker.listener.name=SASL_SSL/ /opt/kafka/config/kraft/server.properties
 sudo sh -c 'cat << EOF >> /opt/kafka/config/kraft/server.properties
 sasl.enabled.mechanisms=SCRAM-SHA-256
 sasl.mechanism.controller.protocol=SCRAM-SHA-256
-security.inter.broker.protocol=SASL_SSL 
+#security.inter.broker.protocol=SASL_SSL 
 sasl.mechanism.inter.broker.protocol=SCRAM-SHA-256
 # ssl.client.auth=required
 ssl.protocol=TLS

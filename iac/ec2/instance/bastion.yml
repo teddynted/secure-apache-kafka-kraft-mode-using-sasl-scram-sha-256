@@ -1,5 +1,5 @@
 Type: AWS::EC2::Instance
-DependsOn: [NodeOne7, NodeTwo7, NodeThree7]
+DependsOn: [NodeOne8, NodeTwo8, NodeThree8]
 Properties:
   InstanceType: t2.micro
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
@@ -18,21 +18,22 @@ Properties:
     Fn::Base64: !Sub |
       #!/bin/bash
       sudo yum update -y
-      sudo yum install -y aws-cli
+      sudo yum install -y aws-cli jq
 
       sudo yum install -y amazon-ssm-agent
       systemctl enable amazon-ssm-agent
       systemctl start amazon-ssm-agent
 
-      COMMAND_ID=$(aws ssm send-command \
+      COMMAND=$(aws ssm send-command \
         --instance-ids $(aws ec2 describe-instances \
         --filters "Name=tag:Name,Values=*Apache*,*Kafka*" "Name=instance-state-name,Values=running" \
         --query "Reservations[].Instances[].InstanceId" --output text) \
         --document-name "AWS-RunShellScript" \
         --parameters 'commands=[
-          "sudo chown ec2-user /opt/kafka/scripts/kafka-format.sh",
           "sudo /opt/kafka/scripts/kafka-format.sh", 
           "sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties"
           ]' --output-s3-bucket-name "kafka-certs-bucket-develop" --output-s3-key-prefix "kafka-debugs")
+      COMMAND_ID=$(echo "$COMMAND" | jq -r .Command.CommandId)
       echo "COMMAND_ID: $COMMAND_ID"
-      aws ssm list-command-invocations --command-id "$COMMAND_ID" --details
+      aws ssm list-command-invocations --command-id $COMMAND_ID --details
+
