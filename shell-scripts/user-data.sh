@@ -127,6 +127,9 @@ sudo keytool -importkeystore -destkeystore $NODE.keystore.jks -srckeystore $NODE
 # Create truststore
 sudo keytool -import -trustcacerts -alias CARoot -file $CA_CRT -keystore truststore.jks -storepass $PASSWORD -noprompt
 
+# Delete existing files from previous uploads
+aws s3 rm s3://${S3_BUCKET_NAME}/kafka-certs/node-$NODE_ID --recursive
+
 # Upload certs so to S3 bucket
 aws s3 cp "$CA_DIR/kafka-certs/node-$NODE_ID/" s3://${S3_BUCKET_NAME}/kafka-certs/node-$NODE_ID/ --recursive --region $REGION
 
