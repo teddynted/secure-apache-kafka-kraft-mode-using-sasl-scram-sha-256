@@ -32,15 +32,28 @@ Properties:
             Resource: { "Fn::Sub": "${KafkaCertBucket.Arn}/*" }
           - Effect: Allow
             Action: 
-              - "ec2:DescribeAvailabilityZones"
+              - ec2:DescribeAvailabilityZones
+              - ec2:DescribeInstances
+              - ec2:DescribeNetworkInterfaces
             Resource: "*"
           - Effect: "Allow"
             Action:
-              - "secretsmanager:GetRandomPassword"
-              - "secretsmanager:PutSecretValue"
-              - "secretsmanager:GetSecretValue"
-              - "secretsmanager:CreateSecret"
+              - secretsmanager:GetRandomPassword
+              - secretsmanager:PutSecretValue
+              - secretsmanager:GetSecretValue
+              - secretsmanager:CreateSecret
             Resource: { "Ref": "KafkaBrokerSaslScram256Secrets" }
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+              - logs:DescribeLogStreams
+            Resource: "*"
+          - Effect: Allow
+            Action:
+              - cloudwatch:PutMetricData
+            Resource: "*"
       PolicyName:
         { "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "${self:provider.stage}-Ec2AccessPolicy"]] }
   RoleName: { 'Ref': 'AWS::NoValue' }

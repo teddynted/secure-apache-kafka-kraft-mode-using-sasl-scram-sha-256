@@ -153,12 +153,7 @@ sudo chmod +x /opt/kafka/scripts/kafka-format.sh
 sudo touch /opt/kafka/config/kraft/jaas.conf
 sudo cat <<EOF > /opt/kafka/config/kraft/jaas.conf
 KafkaServer {
-    org.apache.kafka.common.security.scram.ScramLoginModule required username=$USERNAME password=$PASSWORD user_admin=$PASSWORD user_broker1=$PASSWORD;
-};
-KafkaController {
-  org.apache.kafka.common.security.scram.ScramLoginModule required
-  username=$USERNAME
-  password=$PASSWORD;
+    org.apache.kafka.common.security.scram.ScramLoginModule required username=$USERNAME password=$PASSWORD;
 };
 EOF
 
