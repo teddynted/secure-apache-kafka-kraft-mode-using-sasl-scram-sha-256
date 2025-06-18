@@ -23,5 +23,7 @@ aws ec2-instance-connect send-ssh-public-key \
   --ssh-public-key file://$public_key \
   --availability-zone $availability_zone > /dev/null
 
+VOTERS="controller.quorum.voters=1@$private_dns_name:9094,2@$private_dns_name_node_2:9094,3@$private_dns_name_node_3:9094"
+
 # SSH into ec2 instance with private key
-ssh -i $private_key -o "StrictHostKeyChecking no" ec2-user@$public_dns_name "bash -s" < ./shell-scripts/node-1/ec2-commands.sh $private_dns_name $public_ip_address $private_dns_name_node_2 $private_dns_name_node_3 $NODE_ONE_TOPIC $OFFSETS_TOPIC_REPLICATION_FACTOR $DEFAULT_REPLICATION_FACTOR $NODE_ID
+ssh -i $private_key -o "StrictHostKeyChecking no" ec2-user@$public_dns_name "bash -s" < ./shell-scripts/kafka-service.sh $private_dns_name $public_ip_address $NODE_ID $VOTERS

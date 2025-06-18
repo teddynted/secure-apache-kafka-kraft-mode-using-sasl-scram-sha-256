@@ -139,64 +139,6 @@ chown ec2-user:ec2-user "$CA_DIR/kafka-certs/node-$NODE_ID/truststore.jks"
 cd $HOME_DIR
 ls
 
-CLUSTER_ID=$(aws ssm get-parameter --name /kafka/cluster-id --query "Parameter.Value" --output text --region $REGION)
-echo "CLUSTER_ID: $CLUSTER_ID"
-sudo mkdir /opt/kafka/scripts
-sudo mkdir /opt/kafka/config/kraft/kraft-combined-logs
-sudo touch /opt/kafka/scripts/kafka-format.sh
-sudo cat <<EOF > /opt/kafka/scripts/kafka-format.sh
-#!/bin/bash
-set -euo pipefail
-echo "Formatting Kafka KRaft storage with CLUSTER_ID=$CLUSTER_ID"
-sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=$USERNAME,password=$PASSWORD] --ignore-formatted
-EOF
-      
-sudo chmod +x /opt/kafka/scripts/kafka-format.sh
-
-sudo touch /opt/kafka/config/kraft/jaas.conf
-sudo cat <<EOF > /opt/kafka/config/kraft/jaas.conf
-KafkaServer {
-    org.apache.kafka.common.security.scram.ScramLoginModule required username=$USERNAME password=$PASSWORD;
-};
-EOF
-
-sudo touch /opt/kafka/config/kraft/log4j.properties
-sudo cat <<EOF > /opt/kafka/config/kraft/log4j.properties
-log4j.rootLogger=INFO, stdout, kafkaAppender
-log4j.appender.stdout=org.apache.log4j.ConsoleAppender
-log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
-log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n
-log4j.appender.kafkaAppender=org.apache.log4j.RollingFileAppender
-log4j.appender.kafkaAppender.File=/var/log/kafka/server.log
-log4j.appender.kafkaAppender.MaxFileSize=100MB
-log4j.appender.kafkaAppender.MaxBackupIndex=10
-log4j.appender.kafkaAppender.layout=org.apache.log4j.PatternLayout
-log4j.appender.kafkaAppender.layout.ConversionPattern=[%d] %p %m (%c)%n
-log4j.logger.org.apache.kafka.metadata=DEBUG
-log4j.logger.org.apache.kafka.raft=DEBUG
-log4j.logger.org.apache.kafka.controller=DEBUG
-log4j.logger.org.apache.kafka.quorum=DEBUG
-log4j.logger.org.apache.kafka.common.network.SslTransportLayer=DEBUG
-log4j.logger.org.apache.kafka.common.security.ssl.SslFactory=DEBUG
-log4j.logger.org.apache.kafka.clients=DEBUG
-log4j.logger.org.apache.kafka.common.network.Selector=DEBUG
-log4j.logger.kafka.log.Log=DEBUG
-log4j.logger.kafka.raft.RaftClient=TRACE
-log4j.logger.org.apache.kafka.clients.consumer.internals=DEBUG
-log4j.logger.org.apache.kafka.clients.consumer.internals.ConsumerCoordinator=DEBUG
-log4j.logger.kafka=DEBUG
-log4j.logger.kafka.authorizer.logger=DEBUG
-log4j.logger.kafka.server.KafkaApis=DEBUG
-log4j.logger.kafka.network=DEBUG
-log4j.logger.org.apache.kafka.common.network.SaslChannelBuilder=DEBUG
-log4j.logger.org.apache.kafka.common.security.scram=DEBUG
-log4j.logger.org.apache.kafka=DEBUG
-log4j.logger.org.apache.kafka.common=DEBUG
-log4j.logger.org.apache.kafka.raft=DEBUG
-log4j.logger.org.apache.kafka.network=DEBUG
-log4j.logger.kafka.server.Authentication=DEBUG
-EOF
-
 sudo mkdir -p /var/lib/kafka/logs
 sudo chmod -R 700 /var/lib/kafka
 sudo chown -R ec2-user:ec2-user /var/lib/kafka
@@ -254,39 +196,39 @@ log.retention.hours=1
 log.segment.bytes=10485760
 EOF'
 
-# t2.medium
-echo 'export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' >> /etc/environment
-# t2.micro
-#echo 'export KAFKA_HEAP_OPTS="-Xmx512M -Xms256M"' >> /etc/environment
-echo 'export KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.conf"' >> /etc/environment
-echo 'export KAFKA_JVM_PERFORMANCE_OPTS="-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"' >> /etc/environment
-# Debugging errors
-echo 'KAFKA_LOG4J_OPTS="-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"' >> /etc/environment
-# Create Kafka service
-sudo cat <<EOF > /etc/systemd/system/kafka.service
-[Unit]
-Description=Kafka Service
-After=network-online.target
-Requires=network-online.target
+# # t2.medium
+# echo 'export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' >> /etc/environment
+# # t2.micro
+# #echo 'export KAFKA_HEAP_OPTS="-Xmx512M -Xms256M"' >> /etc/environment
+# echo 'export KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.conf"' >> /etc/environment
+# echo 'export KAFKA_JVM_PERFORMANCE_OPTS="-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"' >> /etc/environment
+# # Debugging errors
+# echo 'KAFKA_LOG4J_OPTS="-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"' >> /etc/environment
+# # Create Kafka service
+# sudo cat <<EOF > /etc/systemd/system/kafka.service
+# [Unit]
+# Description=Kafka Service
+# After=network-online.target
+# Requires=network-online.target
  
-[Service]
-Type=simple
-User=ec2-user
-Restart=on-failure
-SyslogIdentifier=kafka
-#Environment="KAFKA_HEAP_OPTS='-Xms1G -Xmx1G'"
-Environment="KAFKA_HEAP_OPTS='-Xmx384m -Xms384m'"
-#Environment="CLUSTER_ID=$CLUSTER_ID"
-Environment="KAFKA_LOG4J_OPTS=-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"
-Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.conf"
-Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
-#ExecStartPre=sudo /opt/kafka/scripts/kafka-format.sh
-ExecStart=sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties
-ExecStop=sudo /opt/kafka/bin/kafka-server-stop.sh /opt/kafka/config/kraft/server.properties
+# [Service]
+# Type=simple
+# User=ec2-user
+# Restart=on-failure
+# SyslogIdentifier=kafka
+# #Environment="KAFKA_HEAP_OPTS='-Xms1G -Xmx1G'"
+# Environment="KAFKA_HEAP_OPTS='-Xmx384m -Xms384m'"
+# #Environment="CLUSTER_ID=$CLUSTER_ID"
+# Environment="KAFKA_LOG4J_OPTS=-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"
+# Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.conf"
+# Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
+# #ExecStartPre=sudo /opt/kafka/scripts/kafka-format.sh
+# ExecStart=sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties
+# ExecStop=sudo /opt/kafka/bin/kafka-server-stop.sh /opt/kafka/config/kraft/server.properties
  
-[Install]
-WantedBy=multi-user.target
-EOF
+# [Install]
+# WantedBy=multi-user.target
+# EOF
 
 sudo sed -i 's/#ClientAliveInterval 0/ClientAliveInterval 300/' /etc/ssh/sshd_config
 sudo sed -i 's/#ClientAliveCountMax 3/ClientAliveCountMax 3/' /etc/ssh/sshd_config
