@@ -4,7 +4,7 @@ set -euxo pipefail
 
 sudo yum update -y
 sudo yum install -y java-11-amazon-corretto aws-cli jq
-sudo yum install -y git
+sudo yum install -y git chrony
 sudo yum -y install telnet
 export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto
 export PATH=$PATH:$JAVA_HOME/bin
@@ -233,7 +233,7 @@ max.poll.interval.ms=300000
 authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
 #authorizer.class.name=kafka.security.authorizer.AclAuthorizer
 allow.everyone.if.no.acl.found=true
-super.users=User:admin;User:controller;User:broker;User:producer;User:consumer
+super.users=User:admin
 delete.topic.enable=true
 default.replication.factor=3
 min.insync.replicas=2
@@ -276,11 +276,11 @@ Restart=on-failure
 SyslogIdentifier=kafka
 #Environment="KAFKA_HEAP_OPTS='-Xms1G -Xmx1G'"
 Environment="KAFKA_HEAP_OPTS='-Xmx384m -Xms384m'"
-Environment="CLUSTER_ID=$CLUSTER_ID"
+#Environment="CLUSTER_ID=$CLUSTER_ID"
 Environment="KAFKA_LOG4J_OPTS=-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"
 Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.conf"
 Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
-ExecStartPre=sudo /opt/kafka/scripts/kafka-format.sh
+#ExecStartPre=sudo /opt/kafka/scripts/kafka-format.sh
 ExecStart=sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties
 ExecStop=sudo /opt/kafka/bin/kafka-server-stop.sh /opt/kafka/config/kraft/server.properties
  

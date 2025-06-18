@@ -1,5 +1,5 @@
 Type: AWS::EC2::Instance
-DependsOn: [NodeOne2, NodeTwo2, NodeThree2]
+DependsOn: [NodeOne3, NodeTwo3, NodeThree3]
 Properties:
   InstanceType: t2.micro
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
@@ -34,6 +34,7 @@ Properties:
         --document-name "AWS-RunShellScript" \
         --parameters 'commands=[
           "sudo systemctl daemon-reload",
+          "sudo /opt/kafka/scripts/kafka-format.sh",
           "sudo systemctl enable kafka",
           "sudo systemctl start kafka",
           "sudo systemctl status kafka"
