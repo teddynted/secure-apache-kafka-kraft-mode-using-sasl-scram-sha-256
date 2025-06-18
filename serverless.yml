@@ -64,7 +64,6 @@ resources:
         FromPort: 9092
         ToPort: 9092
         SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }
-        CidrIp: { "Ref": "TrustedCidr" }
     BastionIngressRule:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
