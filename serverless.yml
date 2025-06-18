@@ -35,36 +35,36 @@ resources:
     Ec2InstanceLambdaIamRole: ${file(./iac/ec2/iam/lambda-role.yml)}
     KafkaConsumerLambdaRole: ${file(./iac/lambda/kafka-consumer-lambda-role.yml)}
     KafkaNodeSecurityGroup: ${file(./iac/ec2/security-group/kafka-sg-node.yml)}
-    # INTER-BROKER COMMUNICATION (SASL_SSL)
-    BrokerToBrokerIngress:
+    # KRaft Controller API (Node-to-Node)
+    ControllerIngress:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
         GroupId: { "Ref": "KafkaNodeSecurityGroup" }
         IpProtocol: tcp
-        FromPort: 9092
-        ToPort: 9092
-        SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }
-        Description: Allow SASL_SSL traffic between brokers
-    # KRaft CONTROLLER COMMUNICATION
-    ControllerToControllerIngress:
+        FromPort: 9094
+        ToPort: 9094
+        SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }  # Allow self
+        Description: KRaft controller communication
+    # Inter-broker SASL_SSL (Node-to-Node)
+    BrokerIngress:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
         GroupId: { "Ref": "KafkaNodeSecurityGroup" }
         IpProtocol: tcp
         FromPort: 9093
         ToPort: 9093
-        SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }
-        Description: Allow KRaft controller API traffic
-    # CLIENT ACCESS FROM VPC
-    VpcClientAccess:
+        SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }  # Allow self
+        Description: SASL_SSL encrypted broker communication
+    # Optional: Plaintext Client Access
+    ClientPlaintextIngress:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
         GroupId: { "Ref": "KafkaNodeSecurityGroup" }
         IpProtocol: tcp
         FromPort: 9092
         ToPort: 9092
-        CidrIp: {"Ref": "VpcCidr"}
-        Description: Allow client access from VPC
+        CidrIp: { "Ref": "VpcCidr" }  # Restrict to VPC
+        Description: Plaintext client access (if enabled)
     # SSH ACCESS
     SshAccess:
       Type: AWS::EC2::SecurityGroupIngress
