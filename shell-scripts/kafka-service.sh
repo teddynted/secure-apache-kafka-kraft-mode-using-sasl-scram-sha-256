@@ -61,7 +61,7 @@ echo "CLUSTER_ID: $CLUSTER_ID"
 sudo mkdir /opt/kafka/scripts
 sudo mkdir /opt/kafka/config/kraft/kraft-combined-logs
 sudo touch /opt/kafka/scripts/kafka-format.sh
-sudo cat <<EOF > /opt/kafka/scripts/kafka-format.sh
+sudo tee /opt/kafka/scripts/kafka-format.sh > /dev/null <<EOF
 #!/bin/bash
 set -euo pipefail
 echo "Formatting Kafka KRaft storage with CLUSTER_ID=$CLUSTER_ID"
@@ -71,14 +71,14 @@ EOF
 sudo chmod +x /opt/kafka/scripts/kafka-format.sh
 
 sudo touch /opt/kafka/config/kraft/jaas.conf
-sudo cat <<EOF > /opt/kafka/config/kraft/jaas.conf
+sudo tee /opt/kafka/config/kraft/jaas.conf > /dev/null <<EOF
 KafkaServer {
     org.apache.kafka.common.security.scram.ScramLoginModule required username=$USERNAME password=$PASSWORD;
 };
 EOF
 
-sudo touch /opt/kafka/config/kraft/log4j.properties
-sudo cat <<EOF > /opt/kafka/config/kraft/log4j.properties
+sudo touch /opt/kafka/config/kraft/log4j.properties 
+sudo tee /opt/kafka/config/kraft/log4j.properties > /dev/null <<EOF
 log4j.rootLogger=INFO, stdout, kafkaAppender
 log4j.appender.stdout=org.apache.log4j.ConsoleAppender
 log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
@@ -115,13 +115,8 @@ log4j.logger.kafka.server.Authentication=DEBUG
 log4j.logger.kafka.raft=TRACE
 EOF
 
-echo 'export KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' >> /etc/environment
-echo 'export KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.conf"' >> /etc/environment
-echo 'export KAFKA_JVM_PERFORMANCE_OPTS="-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"' >> /etc/environment
-# Debugging errors
-echo 'KAFKA_LOG4J_OPTS="-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"' >> /etc/environment
 # Create Kafka service
-sudo cat <<EOF > /etc/systemd/system/kafka.service
+sudo tee /etc/systemd/system/kafka.service > /dev/null <<EOF
 [Unit]
 Description=Kafka Service
 After=network-online.target
