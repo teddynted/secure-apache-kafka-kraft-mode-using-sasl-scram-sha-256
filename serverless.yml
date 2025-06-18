@@ -41,9 +41,30 @@ resources:
         GroupName: "Kafka Ingress Self Rule"
         GroupId: { "Ref": "KafkaNodeSecurityGroup" }
         IpProtocol: tcp
-        FromPort: 9092
+        FromPort: 9094
         ToPort: 9094
+        #SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }
+        CidrIp: { "Ref": "TrustedCidr" }
+    KafkaIngressSelfRuleController:
+      Type: AWS::EC2::SecurityGroupIngress
+      Properties:
+        GroupName: "Allow Kafka controller communication (TCP 9093)"
+        GroupId: { "Ref": "KafkaNodeSecurityGroup" }
+        IpProtocol: tcp
+        FromPort: 9093
+        ToPort: 9093
         SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }
+        CidrIp: { "Ref": "TrustedCidr" }
+    KafkaIngressSelfRuleBroker:
+      Type: AWS::EC2::SecurityGroupIngress
+      Properties:
+        GroupName: "Allow Kafka broker communication (TCP 9092)"
+        GroupId: { "Ref": "KafkaNodeSecurityGroup" }
+        IpProtocol: tcp
+        FromPort: 9092
+        ToPort: 9092
+        SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }
+        CidrIp: { "Ref": "TrustedCidr" }
     BastionIngressRule:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
@@ -53,6 +74,7 @@ resources:
         FromPort: 22
         ToPort: 22
         SourceSecurityGroupId: { "Ref": "BastionSecurityGroup" }
+        CidrIp: { "Ref": "TrustedCidr" }
     KafkaIngressSSH:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
@@ -61,22 +83,13 @@ resources:
         IpProtocol: tcp
         FromPort: 22
         ToPort: 22
-        CidrIp: 0.0.0.0/0
-    KafkaIngressClients:
-      Type: AWS::EC2::SecurityGroupIngress
-      Properties:
-        GroupName: "Kafka Node Security Group"
-        GroupId: { "Ref": "KafkaNodeSecurityGroup" }
-        IpProtocol: tcp
-        FromPort: 9092
-        ToPort: 9092
-        CidrIp: 0.0.0.0/0
+        CidrIp: { "Ref": "TrustedCidr" }
     PrometheusSecurityGroup: ${file(./iac/ec2/security-group/prometheus-sg.yml)}
     KafkaBrokerSaslScram256Secrets: ${file(./iac/secrets-manager.yml)}
     KafkaEventSource: ${file(./iac/lambda/apache-kafka-lambda-event-source.yml)}
-    NodeOne8: ${file(./iac/ec2/instance/node-1.yml)}
-    NodeTwo8: ${file(./iac/ec2/instance/node-2.yml)}
-    NodeThree8: ${file(./iac/ec2/instance/node-3.yml)}
+    NodeOne1: ${file(./iac/ec2/instance/node-1.yml)}
+    NodeTwo1: ${file(./iac/ec2/instance/node-2.yml)}
+    NodeThree1: ${file(./iac/ec2/instance/node-3.yml)}
     ApacheKafkaPrometheus14: ${file(./iac/ec2/instance/prometheus.yml)}
     ApacheKafkaSNSTopic: ${file(./iac/sns/sns-topic.yml)}
     ApacheKafkaSNSTopicSubscription: ${file(./iac/sns/sns-subscription.yml)}
@@ -135,7 +148,7 @@ resources:
         RouteTableId: { "Ref": "KafkaRouteTable" }
     KafkaCertBucket: ${file(./iac/s3/certs-bucket.yml)}
     KafkaCertBucketPolicy: ${file(./iac/s3/certs-bucket-policy.yml)}
-    BastionHost7: ${file(./iac/ec2/instance/bastion.yml)}
+    BastionHost1: ${file(./iac/ec2/instance/bastion.yml)}
     BastionSecurityGroup: ${file(./iac/ec2/security-group/bastion-security-group.yml)}
     # IAM Role for the Bastion Host
     BastionInstanceRole:

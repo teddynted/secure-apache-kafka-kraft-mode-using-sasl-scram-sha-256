@@ -17,3 +17,7 @@ InstanceType:
     - t2.medium
     - t3.medium
     - t3.micro
+TrustedCidr:
+  Type: String
+  Default: 0.0.0.0/0
+  Description: Trusted CIDR for client access (restrict in production)

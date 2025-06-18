@@ -157,7 +157,7 @@ KafkaServer {
 };
 KafkaController {
   org.apache.kafka.common.security.scram.ScramLoginModule required
-  username="controller"
+  username=$USERNAME
   password=$PASSWORD;
 };
 EOF
@@ -196,6 +196,7 @@ log4j.logger.org.apache.kafka=DEBUG
 log4j.logger.org.apache.kafka.common=DEBUG
 log4j.logger.org.apache.kafka.raft=DEBUG
 log4j.logger.org.apache.kafka.network=DEBUG
+log4j.logger.kafka.server.Authentication=DEBUG
 EOF
 
 sudo mkdir -p /var/lib/kafka/logs
