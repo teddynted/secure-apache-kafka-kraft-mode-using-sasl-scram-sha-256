@@ -1,5 +1,5 @@
 Type: AWS::EC2::Instance
-DependsOn: [NodeOne1, NodeTwo1, NodeThree1]
+DependsOn: [NodeOne2, NodeTwo2, NodeThree2]
 Properties:
   InstanceType: t2.micro
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
@@ -33,7 +33,6 @@ Properties:
       COMMAND=$(aws ssm send-command --instance-ids $(aws ec2 describe-instances --filters "Name=tag:Name,Values=*Apache*,*Kafka*" "Name=instance-state-name,Values=running" --query "Reservations[].Instances[].InstanceId" --output text) \
         --document-name "AWS-RunShellScript" \
         --parameters 'commands=[
-          "sudo systemctl stop kafka",
           "sudo systemctl daemon-reload",
           "sudo systemctl enable kafka",
           "sudo systemctl start kafka",
