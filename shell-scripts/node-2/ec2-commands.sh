@@ -20,7 +20,7 @@ sudo sed -i s/socket.receive.buffer.bytes=102400/socket.receive.buffer.bytes=104
 sudo sed -i s/socket.send.buffer.bytes=102400/socket.send.buffer.bytes=1048576/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/controller.quorum.voters=1@localhost:9093/controller.quorum.voters=1@$PRIVATE_DNS_NAME_NODE_1:9093,2@$PRIVATE_DNS_NAME_NODE:9093,3@$PRIVATE_DNS_NAME_NODE_3:9093/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/listeners=PLAINTEXT:\\/\\/:9092,CONTROLLER:\\/\\/:9093/listeners=SASL_SSL:\\/\\/:9092,CONTROLLER:\\/\\/:9093,EXTERNAL:\\/\\/:9094/ /opt/kafka/config/kraft/server.properties
-sudo sed -i s/inter.broker.listener.name=PLAINTEXT/inter.broker.listener.name=SASL_SSL/ /opt/kafka/config/kraft/server.properties
+#sudo sed -i s/inter.broker.listener.name=PLAINTEXT/inter.broker.listener.name=SASL_SSL/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/advertised.listeners=PLAINTEXT:\\/\\/localhost:9092,CONTROLLER:\\/\\/localhost:9093/advertised.listeners=SASL_SSL:\\/\\/$PRIVATE_DNS_NAME_NODE:9092,CONTROLLER:\\/\\/$PRIVATE_DNS_NAME_NODE:9093,EXTERNAL:\\/\\/$PUBLIC_IP_ADDRESS_NODE:9094/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL/listener.security.protocol.map=CONTROLLER:SASL_SSL,EXTERNAL:SASL_SSL,SASL_SSL:SASL_SSL/ /opt/kafka/config/kraft/server.properties
 sudo echo 'Create client properties'
