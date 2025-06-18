@@ -21,3 +21,7 @@ TrustedCidr:
   Type: String
   Default: 0.0.0.0/0
   Description: Trusted CIDR for client access (restrict in production)
+SshAccessCidr:
+  Type: String
+  Default: 123.45.67.89/32  # Replace with your IP
+  Description: Allowed SSH access CIDR
