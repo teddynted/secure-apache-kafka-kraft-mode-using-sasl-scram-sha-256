@@ -39,27 +39,27 @@ resources:
     BrokerToBrokerIngress:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
-        GroupId: { "Ref": "KafkaSecurityGroup" }
+        GroupId: { "Ref": "KafkaNodeSecurityGroup" }
         IpProtocol: tcp
         FromPort: 9092
         ToPort: 9092
-        SourceSecurityGroupId: { "Ref": "KafkaSecurityGroup" }
+        SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }
         Description: Allow SASL_SSL traffic between brokers
     # KRaft CONTROLLER COMMUNICATION
     ControllerToControllerIngress:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
-        GroupId: { "Ref": "KafkaSecurityGroup" }
+        GroupId: { "Ref": "KafkaNodeSecurityGroup" }
         IpProtocol: tcp
         FromPort: 9093
         ToPort: 9093
-        SourceSecurityGroupId: { "Ref": "KafkaSecurityGroup" }
+        SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }
         Description: Allow KRaft controller API traffic
     # CLIENT ACCESS FROM VPC
     VpcClientAccess:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
-        GroupId: { "Ref": "KafkaSecurityGroup" }
+        GroupId: { "Ref": "KafkaNodeSecurityGroup" }
         IpProtocol: tcp
         FromPort: 9092
         ToPort: 9092
@@ -69,7 +69,7 @@ resources:
     SshAccess:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
-        GroupId: { "Ref": "KafkaSecurityGroup" }
+        GroupId: { "Ref": "KafkaNodeSecurityGroup" }
         IpProtocol: tcp
         FromPort: 22
         ToPort: 22
@@ -78,7 +78,7 @@ resources:
     BastionIngressRule:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
-        GroupName: "Bastion Ingress Rule"
+        Description: Bastion Ingress Rule
         GroupId: { "Fn::GetAtt": ["KafkaNodeSecurityGroup", "GroupId"] }
         IpProtocol: tcp
         FromPort: 22
