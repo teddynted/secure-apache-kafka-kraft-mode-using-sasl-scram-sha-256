@@ -27,8 +27,8 @@ Properties:
       COMMAND=$(aws ssm send-command --instance-ids $(aws ec2 describe-instances --filters "Name=tag:Name,Values=*Apache*,*Kafka*" "Name=instance-state-name,Values=running" --query "Reservations[].Instances[].InstanceId" --output text) \
         --document-name "AWS-RunShellScript" \
         --parameters 'commands=[
-          "sudo systemctl status kafka",
-          "sudo systemctl start kafka"
+          "sudo systemctl start kafka",
+          "sudo systemctl status kafka"
           ]' \
         --output-s3-bucket-name "kafka-certs-bucket-develop" \
         --output-s3-key-prefix "kafka-debugs")
