@@ -6,7 +6,7 @@ Properties:
     - IpProtocol: tcp
       FromPort: 22
       ToPort: 22
-      CidrIp: { "Ref": "TrustedCidr" }
+      CidrIp: 0.0.0.0/0
   Tags:
     - Key: Name
       Value: BastionSG

@@ -43,8 +43,7 @@ resources:
         IpProtocol: tcp
         FromPort: 9094
         ToPort: 9094
-        #SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }
-        CidrIp: { "Ref": "TrustedCidr" }
+        CidrIp: { "Ref": "TrustedCidr"}
     KafkaIngressSelfRuleController:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
@@ -54,7 +53,6 @@ resources:
         FromPort: 9093
         ToPort: 9093
         SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }
-        CidrIp: { "Ref": "TrustedCidr" }
     KafkaIngressSelfRuleBroker:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
@@ -73,7 +71,6 @@ resources:
         FromPort: 22
         ToPort: 22
         SourceSecurityGroupId: { "Ref": "BastionSecurityGroup" }
-        CidrIp: { "Ref": "TrustedCidr" }
     KafkaIngressSSH:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
@@ -82,7 +79,7 @@ resources:
         IpProtocol: tcp
         FromPort: 22
         ToPort: 22
-        CidrIp: { "Ref": "TrustedCidr" }
+        CidrIp: { "Ref": "TrustedCidr"}
     PrometheusSecurityGroup: ${file(./iac/ec2/security-group/prometheus-sg.yml)}
     KafkaBrokerSaslScram256Secrets: ${file(./iac/secrets-manager.yml)}
     KafkaEventSource: ${file(./iac/lambda/apache-kafka-lambda-event-source.yml)}
