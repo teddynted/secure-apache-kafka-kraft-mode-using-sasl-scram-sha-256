@@ -35,38 +35,38 @@ resources:
     Ec2InstanceLambdaIamRole: ${file(./iac/ec2/iam/lambda-role.yml)}
     KafkaConsumerLambdaRole: ${file(./iac/lambda/kafka-consumer-lambda-role.yml)}
     KafkaNodeSecurityGroup: ${file(./iac/ec2/security-group/kafka-sg-node.yml)}
-    # KRaft Controller API (Node-to-Node)
-    ControllerIngress:
-      Type: AWS::EC2::SecurityGroupIngress
-      Properties:
-        GroupId: { "Ref": "KafkaNodeSecurityGroup" }
-        IpProtocol: tcp
-        FromPort: 9094
-        ToPort: 9094
-        SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }  # Allow self
-        Description: KRaft controller communication
-    # Inter-broker SASL_SSL (Node-to-Node)
-    BrokerIngress:
-      Type: AWS::EC2::SecurityGroupIngress
-      Properties:
-        GroupId: { "Ref": "KafkaNodeSecurityGroup" }
-        IpProtocol: tcp
-        FromPort: 9093
-        ToPort: 9093
-        SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }  # Allow self
-        Description: SASL_SSL encrypted broker communication
-    # Optional: Plaintext Client Access
-    ClientPlaintextIngress:
+    # Broker Security Group
+    KafkaBrokerInboundRules:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
         GroupId: { "Ref": "KafkaNodeSecurityGroup" }
         IpProtocol: tcp
         FromPort: 9092
         ToPort: 9092
-        CidrIp: { "Ref": "VpcCidr" }  # Restrict to VPC
-        Description: Plaintext client access (if enabled)
-    # SSH ACCESS
-    SshAccess:
+        SourceSecurityGroupId: { "Ref": "KafkaClientSecurityGroup" }
+        Description: Allow Kafka client traffic
+  
+    KafkaBrokerControllerInbound:
+      Type: AWS::EC2::SecurityGroupIngress
+      Properties:
+        GroupId: { "Ref": "KafkaNodeSecurityGroup" }
+        IpProtocol: tcp
+        FromPort: 9094
+        ToPort: 9094
+        SourceSecurityGroupId: { "Ref": "KafkaControllerSecurityGroup" }
+        Description: Allow controller-to-broker traffic
+  
+    KafkaBrokerInterBrokerInbound:
+      Type: AWS::EC2::SecurityGroupIngress
+      Properties:
+        GroupId: { "Ref": "KafkaNodeSecurityGroup" }
+        IpProtocol: tcp
+        FromPort: 9093
+        ToPort: 9093
+        SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }
+        Description: Allow inter-broker communication
+  
+    KafkaBrokerSSHInbound:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
         GroupId: { "Ref": "KafkaNodeSecurityGroup" }
@@ -74,22 +74,144 @@ resources:
         FromPort: 22
         ToPort: 22
         CidrIp: { "Ref": "AllowedSshCidr" }
-        Description: SSH access for administration
+        Description: Allow SSH access from management IPs
+
     BastionIngressRule:
       Type: AWS::EC2::SecurityGroupIngress
       Properties:
         Description: Bastion Ingress Rule
-        GroupId: { "Fn::GetAtt": ["KafkaNodeSecurityGroup", "GroupId"] }
+        GroupId: { "Ref": "KafkaNodeSecurityGroup" }
         IpProtocol: tcp
         FromPort: 22
         ToPort: 22
-        SourceSecurityGroupId: { "Fn::GetAtt": ["BastionSecurityGroup", "GroupId"] }
+        SourceSecurityGroupId: { "Ref": "BastionSecurityGroup" }
+
+    # Controller Security Group
+    KafkaControllerSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Security group for Kafka controllers in KRaft mode
+        VpcId: { "Ref": "ApacheKafkaVPC" }
+        Tags:
+          - Key: Name
+            Value: Kafka-Controller-SG
+  
+    KafkaControllerInbound:
+      Type: AWS::EC2::SecurityGroupIngress
+      Properties:
+        GroupId: { "Ref": "KafkaControllerSecurityGroup" }
+        IpProtocol: tcp
+        FromPort: 9094
+        ToPort: 9094
+        SourceSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }
+        Description: Allow broker-to-controller traffic
+  
+    KafkaControllerInterControllerInbound:
+      Type: AWS::EC2::SecurityGroupIngress
+      Properties:
+        GroupId: {"Ref": "KafkaControllerSecurityGroup"}
+        IpProtocol: tcp
+        FromPort: 9093
+        ToPort: 9093
+        SourceSecurityGroupId: { "Ref": "KafkaControllerSecurityGroup" }
+        Description: Allow inter-controller communication
+  
+    KafkaControllerSSHInbound:
+      Type: AWS::EC2::SecurityGroupIngress
+      Properties:
+        GroupId: { "Ref": "KafkaControllerSecurityGroup" }
+        IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: { "Ref": "AllowedSshCidr" }
+        Description: Allow SSH access from management IPs
+
+    # Client Security Group
+    KafkaClientSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Security group for Kafka clients
+        VpcId: { "Ref": "ApacheKafkaVPC" }
+        Tags:
+          - Key: Name
+            Value: Kafka-Client-SG
+  
+    KafkaClientOutboundToBrokers:
+      Type: AWS::EC2::SecurityGroupEgress
+      Properties:
+        GroupId: { "Ref": "KafkaClientSecurityGroup" }
+        IpProtocol: tcp
+        FromPort: 9092
+        ToPort: 9092
+        DestinationSecurityGroupId: { "Ref": "KafkaNodeSecurityGroup" }
+        Description: Allow client to connect to brokers
+  
+    KafkaClientSSHInbound:
+      Type: AWS::EC2::SecurityGroupIngress
+      Properties:
+        GroupId: { "Ref": "KafkaClientSecurityGroup" }
+        IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: { "Ref": "AllowedSshCidr" }
+        Description: Allow SSH access from management IPs
+
+    # Common outbound rules for all components
+    KafkaCommonOutbound:
+      Type: AWS::EC2::SecurityGroupEgress
+      Properties:
+        GroupId: { "Ref": "KafkaNodeSecurityGroup" }
+        IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: 0.0.0.0/0
+        Description: Allow outbound HTTPS for package updates
+  
+    KafkaControllerOutbound:
+      Type: AWS::EC2::SecurityGroupEgress
+      Properties:
+        GroupId: { "Ref": "KafkaControllerSecurityGroup" }
+        IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: 0.0.0.0/0
+        Description: Allow outbound HTTPS for package updates
+  
+    KafkaClientOutbound:
+      Type: AWS::EC2::SecurityGroupEgress
+      Properties:
+        GroupId: { "Ref": "KafkaClientSecurityGroup" }
+        IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: 0.0.0.0/0
+        Description: Allow outbound HTTPS for package updates
+
+    KafkaFlowLogsRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal: { Service: vpc-flow-logs.amazonaws.com }
+              Action: sts:AssumeRole
+    
+    KafkaFlowLogs:
+      Type: AWS::EC2::FlowLog
+      Properties:
+        DeliverLogsPermissionArn: { "Fn::GetAtt": ["KafkaFlowLogsRole", "Arn"] }
+        LogGroupName: Kafka-Flow-Logs
+        ResourceId: { "Ref": "ApacheKafkaVPC" }
+        ResourceType: VPC
+        TrafficType: REJECT
+
     PrometheusSecurityGroup: ${file(./iac/ec2/security-group/prometheus-sg.yml)}
     KafkaBrokerSaslScram256Secrets: ${file(./iac/secrets-manager.yml)}
     KafkaEventSource: ${file(./iac/lambda/apache-kafka-lambda-event-source.yml)}
-    NodeOne5: ${file(./iac/ec2/instance/node-1.yml)}
-    NodeTwo5: ${file(./iac/ec2/instance/node-2.yml)}
-    NodeThree5: ${file(./iac/ec2/instance/node-3.yml)}
+    NodeOne1: ${file(./iac/ec2/instance/node-1.yml)}
+    NodeTwo1: ${file(./iac/ec2/instance/node-2.yml)}
+    NodeThree1: ${file(./iac/ec2/instance/node-3.yml)}
     ApacheKafkaPrometheus14: ${file(./iac/ec2/instance/prometheus.yml)}
     ApacheKafkaSNSTopic: ${file(./iac/sns/sns-topic.yml)}
     ApacheKafkaSNSTopicSubscription: ${file(./iac/sns/sns-subscription.yml)}
@@ -148,7 +270,7 @@ resources:
         RouteTableId: { "Ref": "KafkaRouteTable" }
     KafkaCertBucket: ${file(./iac/s3/certs-bucket.yml)}
     KafkaCertBucketPolicy: ${file(./iac/s3/certs-bucket-policy.yml)}
-    BastionHost5: ${file(./iac/ec2/instance/bastion.yml)}
+    BastionHost1: ${file(./iac/ec2/instance/bastion.yml)}
     BastionSecurityGroup: ${file(./iac/ec2/security-group/bastion-security-group.yml)}
     # IAM Role for the Bastion Host
     BastionInstanceRole:

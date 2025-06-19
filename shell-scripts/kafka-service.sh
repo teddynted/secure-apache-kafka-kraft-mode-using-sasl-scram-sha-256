@@ -64,8 +64,10 @@ sudo touch /opt/kafka/scripts/kafka-format.sh
 sudo tee /opt/kafka/scripts/kafka-format.sh > /dev/null <<EOF
 #!/bin/bash
 set -euo pipefail
+if [ ! -f /opt/kafka/config/kraft/meta.properties ]; then
 echo "Formatting Kafka KRaft storage with CLUSTER_ID=$CLUSTER_ID"
 sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=$USERNAME,password=$PASSWORD] --ignore-formatted
+fi
 EOF
       
 sudo chmod +x /opt/kafka/scripts/kafka-format.sh

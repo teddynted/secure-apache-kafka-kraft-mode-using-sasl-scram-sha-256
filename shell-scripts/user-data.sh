@@ -149,7 +149,6 @@ sudo sed -i s/inter.broker.listener.name=PLAINTEXT/inter.broker.listener.name=IN
 sudo sh -c 'cat << EOF >> /opt/kafka/config/kraft/server.properties
 sasl.enabled.mechanisms=SCRAM-SHA-256
 sasl.mechanism.controller.protocol=SCRAM-SHA-256
-#security.inter.broker.protocol=SASL_SSL 
 sasl.mechanism.inter.broker.protocol=SCRAM-SHA-256
 # ssl.client.auth=required
 ssl.protocol=TLS
