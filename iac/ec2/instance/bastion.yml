@@ -1,5 +1,5 @@
 Type: AWS::EC2::Instance
-DependsOn: [NodeOne1, NodeTwo1, NodeThree1]
+DependsOn: [NodeOne3, NodeTwo3, NodeThree3]
 Properties:
   InstanceType: t2.micro
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
@@ -18,44 +18,82 @@ Properties:
     Fn::Base64: !Sub |
       #!/bin/bash
       sudo yum update -y
-      sudo yum install -y aws-cli jq
+      sudo yum install -y aws-cli
 
-      sudo yum install -y amazon-ssm-agent
-      systemctl enable amazon-ssm-agent
-      systemctl start amazon-ssm-agent
-
-      BUCKET="kafka-certs-bucket-develop"
-      PREFIX="kafka-debugs"
-
-      # Delete all objects under the prefix
-      aws s3 rm s3://$BUCKET/$PREFIX --recursive
-
-      COMMAND=$(aws ssm send-command --instance-ids $(aws ec2 describe-instances --filters "Name=tag:Name,Values=*Apache*,*Kafka*" "Name=instance-state-name,Values=running" --query "Reservations[].Instances[].InstanceId" --output text) \
-        --document-name "AWS-RunShellScript" \
-        --parameters 'commands=[
-          "sudo systemctl daemon-reload",
-          "sudo systemctl enable kafka",
-          "sudo systemctl start kafka",
-          "sudo systemctl status kafka",
-          "sudo journalctl -u kafka -f",
-          "sudo journalctl -u kafka -n 100 --no-pager",
-          ]' \
-        --output-s3-bucket-name "$BUCKET" \
-        --output-s3-key-prefix "$PREFIX")
-
-      COMMAND_ID=$(echo "$COMMAND" | jq -r .Command.CommandId)
-      echo "COMMAND_ID: $COMMAND_ID"
+      # Install Python and pip if not already present
+      sudo dnf install -y python3 python3-pip
       
-      aws ssm list-command-invocations --command-id $COMMAND_ID --details
+      # Install Ansible
+      sudo pip3 install ansible
       
+      # Verify installation
+      ansible --version
+
+      PRIVATE_IPS=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=*Apache*,*Kafka*" "Name=instance-state-name,Values=running" --query "Reservations[].Instances[].PrivateIpAddress" --output text)
+      # Get IPs
+      FIRST_IP=${IP_ARRAY[0]}
+      SECOND_IP=${IP_ARRAY[1]}
+      THIRD_IP=${IP_ARRAY[2]}
+      
+      # Generate SSH key pair non-interactively
+      ssh-keygen -t rsa -b 4096 -f ~/.ssh/kafka_ansible -q -N ""
+      
+      # Set proper permissions
+      chmod 600 ~/.ssh/kafka_ansible
+      chmod 644 ~/.ssh/kafka_ansible.pub
+      chown -R ec2-user:ec2-user ~/.ssh
+
+      # Copy public key to all Kafka nodes
+      for host in $PRIVATE_IPS; do
+        ssh-copy-id -i ~/.ssh/kafka_ansible.pub -o StrictHostKeyChecking=no ec2-user@$host
+      done
+      
+      # Test SSH connection
+      echo "Testing SSH connection"
+      ssh -i ~/.ssh/kafka_ansible ec2-user@FIRST_IP
+
+      # Convert space-separated list into array
+      read -ra IP_ARRAY <<< "$PRIVATE_IPS"
+      
+      # Sort the IPs (optional, for deterministic order)
+      IFS=$'\n' IP_ARRAY=($(sort <<<"${IP_ARRAY[*]}"))
+      unset IFS
+
+      sudo tee inventory.ini << EOF
+      [kafka_nodes]
+      $FIRST_IP
+      $SECOND_IP
+      $THIRD_IP
+      
+      [kafka_nodes:vars]
+      ansible_user=ec2-user
+      ansible_ssh_private_key_file=~/.ssh/kafka_ansible
+EOF
+
+      cat inventory.ini
+
+      ansible kafka_nodes -i inventory.ini -m shell -a "sudo systemctl start kafka"
+
+      # sudo yum install -y amazon-ssm-agent
+      # systemctl enable amazon-ssm-agent
+      # systemctl start amazon-ssm-agent
+
       # BUCKET="kafka-certs-bucket-develop"
       # PREFIX="kafka-debugs"
+
       # # Delete all objects under the prefix
       # aws s3 rm s3://$BUCKET/$PREFIX --recursive
+
       # COMMAND=$(aws ssm send-command --instance-ids $(aws ec2 describe-instances --filters "Name=tag:Name,Values=*Apache*,*Kafka*" "Name=instance-state-name,Values=running" --query "Reservations[].Instances[].InstanceId" --output text) \
       #   --document-name "AWS-RunShellScript" \
       #   --parameters 'commands=[
-      #     "sudo systemctl stop kafka",
+      #     "sudo /opt/kafka/scripts/kafka-format.sh",
+      #     "sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties",
       #     ]' \
       #   --output-s3-bucket-name "$BUCKET" \
-      #   --output-s3-key-prefix "$PREFIX")
+      #   --output-s3-key-prefix "$PREFIX" --timeout-seconds 600)
+
+      # COMMAND_ID=$(echo "$COMMAND" | jq -r .Command.CommandId)
+      # echo "COMMAND_ID: $COMMAND_ID"
+      
+      # aws ssm list-command-invocations --command-id $COMMAND_ID --details

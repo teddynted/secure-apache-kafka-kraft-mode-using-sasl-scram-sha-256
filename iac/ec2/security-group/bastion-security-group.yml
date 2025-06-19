@@ -7,6 +7,11 @@ Properties:
       FromPort: 22
       ToPort: 22
       CidrIp: { "Ref": "TrustedCidr"}
+  SecurityGroupEgress:
+    - IpProtocol: tcp
+      FromPort: 22
+      ToPort: 22
+      CidrIp: { "Ref": "TrustedCidr"}
   Tags:
     - Key: Name
       Value: BastionSG

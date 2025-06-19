@@ -3,9 +3,8 @@
 set -euxo pipefail
 
 sudo yum update -y
-sudo yum install -y java-11-amazon-corretto aws-cli jq
-sudo yum install -y git chrony
-sudo yum -y install telnet
+sudo yum install -y java-11-amazon-corretto aws-cli jq firewalld telnet chrony
+sudo systemctl enable --now firewalld
 export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto
 export PATH=$PATH:$JAVA_HOME/bin
 wget https://downloads.apache.org/kafka/3.9.0/kafka_2.12-3.9.0.tgz
@@ -143,7 +142,7 @@ sudo mkdir -p /var/lib/kafka/logs
 sudo chmod -R 700 /var/lib/kafka
 sudo chown -R ec2-user:ec2-user /var/lib/kafka
 sudo sed -i s/node.id=1/node.id=$NODE_ID/ /opt/kafka/config/kraft/server.properties
-sudo sed -i s/num.partitions=1/num.partitions=8/ /opt/kafka/config/kraft/server.properties
+sudo sed -i s/num.partitions=1/num.partitions=3/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/log.dirs=\\/tmp\\/kraft-combined-logs/log.dirs=\\/opt\\/kafka\\/config\\/kraft\\/kraft-combined-logs/ /opt/kafka/config/kraft/server.properties
 sudo sed -i s/inter.broker.listener.name=PLAINTEXT/inter.broker.listener.name=INTERNAL/ /opt/kafka/config/kraft/server.properties
 sudo sh -c 'cat << EOF >> /opt/kafka/config/kraft/server.properties
@@ -172,7 +171,6 @@ session.timeout.ms=45000
 heartbeat.interval.ms=15000
 max.poll.interval.ms=300000
 authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
-#authorizer.class.name=kafka.security.authorizer.AclAuthorizer
 allow.everyone.if.no.acl.found=true
 super.users=User:admin
 delete.topic.enable=true

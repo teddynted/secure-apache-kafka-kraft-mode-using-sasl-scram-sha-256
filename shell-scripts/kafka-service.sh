@@ -64,7 +64,7 @@ sudo touch /opt/kafka/scripts/kafka-format.sh
 sudo tee /opt/kafka/scripts/kafka-format.sh > /dev/null <<EOF
 #!/bin/bash
 set -euo pipefail
-if [ ! -f /opt/kafka/config/kraft/meta.properties ]; then
+if [ ! -f /opt/kafka/config/kraft/kraft-combined-logs/meta.properties ]; then
 echo "Formatting Kafka KRaft storage with CLUSTER_ID=$CLUSTER_ID"
 sudo /opt/kafka/bin/kafka-storage.sh format --config /opt/kafka/config/kraft/server.properties --cluster-id $CLUSTER_ID --add-scram SCRAM-SHA-256=[name=$USERNAME,password=$PASSWORD] --ignore-formatted
 fi
@@ -117,30 +117,66 @@ log4j.logger.kafka.server.Authentication=DEBUG
 log4j.logger.kafka.raft=TRACE
 EOF
 
+echo 'KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' | sudo tee -a /etc/environment
+echo 'KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.conf"' | sudo tee -a /etc/environment
+echo 'KAFKA_JVM_PERFORMANCE_OPTS="-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"' | sudo tee -a /etc/environment
+echo 'KAFKA_LOG4J_OPTS="-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"' | sudo tee -a /etc/environment
+echo 'KAFKA_HEAP_OPTS="-Xms1G -Xmx1G"' | sudo tee -a /etc/environment
+source /etc/environment
+
+export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto
 # Create Kafka service
 sudo tee /etc/systemd/system/kafka.service > /dev/null <<EOF
 [Unit]
-Description=Kafka Service
-After=network-online.target
-Requires=network-online.target
- 
+Description=Apache Kafka Server (KRaft Mode)
+Documentation=https://kafka.apache.org/documentation/#kraft
+After=network.target
+
 [Service]
 Type=simple
 User=ec2-user
-Restart=on-failure
-SyslogIdentifier=kafka
-Environment="KAFKA_HEAP_OPTS='-Xms1G -Xmx1G'"
-Environment="KAFKA_LOG4J_OPTS=-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties -Dkafka.root.logger.level=DEBUG"
+Group=ec2-user
+Environment="JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto"  # Kafka 3.4+ needs Java 11+
+Environment="KAFKA_HEAP_OPTS=-Xms2G -Xmx2G"  # KRaft may need more memory
+Environment="KAFKA_OPTS=-javaagent:/opt/kafka/libs/jmx_prometheus_javaagent-0.17.2.jar=7071:/opt/kafka/config/jmx_exporter.yml"  # Optional JMX exporter
+Environment="KAFKA_LOG4J_OPTS=-Dlog4j.configuration=file:/opt/kafka/config/kraft/log4j.properties"
 Environment="KAFKA_OPTS=-Djava.security.auth.login.config=/opt/kafka/config/kraft/jaas.conf"
 Environment="KAFKA_JVM_PERFORMANCE_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent"
-ExecStartPre=sudo /opt/kafka/scripts/kafka-format.sh
-ExecStart=sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties
-ExecStop=sudo /opt/kafka/bin/kafka-server-stop.sh /opt/kafka/config/kraft/server.properties
- 
+# For KRaft controller+broker combined mode
+ExecStart=/opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties
+
+# For separate controller and broker nodes, use appropriate properties file
+# ExecStart=/opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/controller.properties
+# or
+# ExecStart=/opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/broker.properties
+
+ExecStop=/opt/kafka/bin/kafka-server-stop.sh
+Restart=on-failure
+RestartSec=30  # Longer restart sec for KRaft to avoid rapid restart cycles
+LimitNOFILE=100000
+LimitNPROC=100000
+TimeoutStopSec=60  # KRaft needs more time to shutdown gracefully
+SuccessExitStatus=143
+
+# Logging configuration
+StandardOutput=file:/var/log/kafka/kafka.out
+StandardError=file:/var/log/kafka/kafka.err
+SyslogIdentifier=kafka-kraft
+
 [Install]
 WantedBy=multi-user.target
 EOF
 
+sudo chmod 644 /etc/systemd/system/kafka.service
+sudo systemctl daemon-reload
+sudo systemctl enable kafka
+# Open ports (e.g., Kafka)
+sudo firewall-cmd --add-port=9092/tcp --permanent
+sudo firewall-cmd --add-port=9093/tcp --permanent
+sudo firewall-cmd --add-port=9094/tcp --permanent
+
+# Reload firewall rules
+sudo firewall-cmd --reload
 sudo systemctl enable chronyd
 sudo systemctl start chronyd
 fi

@@ -1,5 +1,5 @@
 Type: AWS::EC2::Instance
-DependsOn: [KafkaClusterIdParameter, KafkaCertBucket, NodeOne1]
+DependsOn: [KafkaClusterIdParameter, KafkaCertBucket, NodeOne3]
 Properties:
   AvailabilityZone: { "Fn::Select": [0,{ "Fn::GetAZs": "" }] }
   InstanceType: { 'Ref': 'InstanceType' }
@@ -10,7 +10,7 @@ Properties:
       DeviceIndex: "0"
       GroupSet: 
         - {"Ref": "KafkaNodeSecurityGroup"}
-      SubnetId: {"Ref": "KafkaPublicSubnet"}
+      SubnetId: {"Ref": "ApacheKafkaPrivateSubnet1"}
   KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
   Tags:
     - Key: Name
