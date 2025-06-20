@@ -28,13 +28,14 @@ type CloudFormationRequest struct {
 }
 
 type CloudFormationResponse struct {
-	Status             string            `json:"Status"`
-	Reason             string            `json:"Reason"`
-	PhysicalResourceId string            `json:"PhysicalResourceId"`
-	StackId            string            `json:"StackId"`
-	RequestId          string            `json:"RequestId"`
-	LogicalResourceId  string            `json:"LogicalResourceId"`
-	Data               map[string]string `json:"Data"`
+	Status             string `json:"Status"`
+	Reason             string `json:"Reason"`
+	PhysicalResourceId string `json:"PhysicalResourceId"`
+	StackId            string `json:"StackId"`
+	RequestId          string `json:"RequestId"`
+	LogicalResourceId  string `json:"LogicalResourceId"`
+	//Data               map[string]string `json:"Data"`
+	Data string `json:"Data"`
 }
 
 func AwsRegion() string {
@@ -115,9 +116,10 @@ func handler(event CloudFormationRequest) error {
 		StackId:            event.StackId,
 		RequestId:          event.RequestId,
 		LogicalResourceId:  event.LogicalResourceId,
-		Data: map[string]string{
-			"Value": servers,
-		},
+		// Data: map[string]string{
+		// 	"Value": servers,
+		// },
+		Data: servers,
 	}
 
 	responseBody, err := json.Marshal(response)
