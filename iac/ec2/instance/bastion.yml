@@ -46,12 +46,12 @@ Properties:
       # Copy public key to all Kafka nodes
       for host in $PRIVATE_IPS; do
         #ssh-copy-id -i ~/.ssh/kafka_ansible.pub -o StrictHostKeyChecking=no ec2-user@$host
-        ssh -o StrictHostKeyChecking=no ec2-user@$host "mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo '$(cat ~/.ssh/kafka_ansible.pub)' >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
+        #ssh -o StrictHostKeyChecking=no ec2-user@$host "mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo '$(cat ~/.ssh/kafka_ansible.pub)' >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
       done
       
       # Test SSH connection
       echo "Testing SSH connection"
-      ssh -i ~/.ssh/kafka_ansible ec2-user@FIRST_IP
+      #ssh -i ~/.ssh/kafka_ansible ec2-user@FIRST_IP
 
       # Convert space-separated list into array
       read -ra IP_ARRAY <<< "$PRIVATE_IPS"
@@ -65,9 +65,9 @@ Properties:
       $FIRST_IP
       $SECOND_IP
       $THIRD_IP
-      
+        
       [kafka_nodes:vars]
       ansible_user=ec2-user
       ansible_ssh_private_key_file=~/.ssh/kafka_ansible
-EOF
+      EOF
       cat inventory.ini
