@@ -63,7 +63,7 @@ FetchNodeIPs:
   handler: bootstrap
   runtime: provided.al2
   package:
-    artifact: build/fetch-node-ips.zip
+    artifact: build/fetch-node-ip.zip
     individually: true
   role: { "Fn::GetAtt": ["FetchNodeIPsLambdaRole", "Arn"] }
   name: ${self:provider.stage}-fetch-node-ips-lambda
