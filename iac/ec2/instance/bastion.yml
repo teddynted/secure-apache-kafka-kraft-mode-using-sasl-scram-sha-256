@@ -76,7 +76,6 @@ EOF
       ansible kafka_nodes -i inventory.ini -m shell -a \
       "sudo /opt/kafka/scripts/kafka-format.sh 2>&1 | tee /tmp/kafka-format.log; \
        sudo systemctl start kafka 2>&1 | tee /tmp/kafka-start.log; \
-       echo 'Exit Code: $?' >> /tmp/kafka-start.log; \
        sudo systemctl status kafka --no-pager > /tmp/kafka-status.log; \
        sudo journalctl -u kafka --since '5 min ago' --no-pager | grep -E 'error|fail|exception' > /tmp/kafka-journal-errors.log; \
        grep -E 'ERROR|Exception' /opt/kafka/logs/server.log | tail -100 > /tmp/kafka-app-errors.log" \
