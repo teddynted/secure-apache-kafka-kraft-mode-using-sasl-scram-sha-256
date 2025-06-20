@@ -72,28 +72,11 @@ EOF
 
       cat inventory.ini
 
-      ansible kafka_nodes -i inventory.ini -m shell -a "sudo systemctl start kafka"
-
-      # sudo yum install -y amazon-ssm-agent
-      # systemctl enable amazon-ssm-agent
-      # systemctl start amazon-ssm-agent
-
-      # BUCKET="kafka-certs-bucket-develop"
-      # PREFIX="kafka-debugs"
-
-      # # Delete all objects under the prefix
-      # aws s3 rm s3://$BUCKET/$PREFIX --recursive
-
-      # COMMAND=$(aws ssm send-command --instance-ids $(aws ec2 describe-instances --filters "Name=tag:Name,Values=*Apache*,*Kafka*" "Name=instance-state-name,Values=running" --query "Reservations[].Instances[].InstanceId" --output text) \
-      #   --document-name "AWS-RunShellScript" \
-      #   --parameters 'commands=[
-      #     "sudo /opt/kafka/scripts/kafka-format.sh",
-      #     "sudo /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties",
-      #     ]' \
-      #   --output-s3-bucket-name "$BUCKET" \
-      #   --output-s3-key-prefix "$PREFIX" --timeout-seconds 600)
-
-      # COMMAND_ID=$(echo "$COMMAND" | jq -r .Command.CommandId)
-      # echo "COMMAND_ID: $COMMAND_ID"
-      
-      # aws ssm list-command-invocations --command-id $COMMAND_ID --details
+      ansible kafka_nodes -i inventory.ini -m shell -a \
+      "sudo /opt/kafka/scripts/kafka-format.sh 2>&1 | tee /tmp/kafka-format.log; \
+       sudo systemctl start kafka 2>&1 | tee /tmp/kafka-start.log; \
+       echo 'Exit Code: $?' >> /tmp/kafka-start.log; \
+       sudo systemctl status kafka --no-pager > /tmp/kafka-status.log; \
+       sudo journalctl -u kafka --since '5 min ago' --no-pager | grep -E 'error|fail|exception' > /tmp/kafka-journal-errors.log; \
+       grep -E 'ERROR|Exception' /opt/kafka/logs/server.log | tail -100 > /tmp/kafka-app-errors.log" \
+      --become

@@ -26,6 +26,16 @@ resources:
       Type: Custom::GenerateUUID
       Properties:
         ServiceToken: { "Fn::GetAtt": ["GenerateClusterIdLambdaFunction", "Arn"] }
+    KafkaBootstrapParam:
+      Type: AWS::SSM::Parameter
+      Properties:
+        Name: /kafka/bootstrap-servers
+        Type: StringList
+        Value: { "Fn::GetAtt": ["FetchNodeIPs", "Value"] }
+    FetchNodeIPs:
+      Type: Custom::FetchNodeIPs
+      Properties:
+        ServiceToken: { "Fn::GetAtt": ["FetchNodeIPsLambdaFunction", "Arn"] }
     ApacheKafkaVPC: ${file(./iac/ec2/vpc/kafka-vpc.yml)}
     ApacheKafkaPrivateSubnet1: ${file(./iac/ec2/vpc/kafka-private-subnet-1.yml)}
     ApacheKafkaPrivateSubnet2: ${file(./iac/ec2/vpc/kafka-private-subnet-2.yml)}
@@ -222,6 +232,7 @@ resources:
     MessageInvokePermission: ${file(./iac/websocket/message-invoke-permission.yml)}
     ConnectionsTable: ${file(./iac/dynamo-db.yml)}
     GenerateClusterIdLambdaRole: ${file(./iac/lambda/generate-cluster-id-lambda-role.yml)}
+    FetchNodeIPsLambdaRole: ${file(./iac/lambda/fetch-node-ips-lambda-role.yml)}
     KafkaInternetGateway:
       Type: AWS::EC2::InternetGateway
     KafkaAttachGateway:
@@ -233,14 +244,14 @@ resources:
       Type: AWS::EC2::Subnet
       Properties:
         VpcId: { "Ref": "ApacheKafkaVPC" }
-        CidrBlock: 10.0.3.0/24
+        CidrBlock: 10.0.1.0/24
         MapPublicIpOnLaunch: true
         AvailabilityZone: { "Fn::Select": [0, !GetAZs ''] }
     KafkaPublicSubnet2:
       Type: AWS::EC2::Subnet
       Properties:
         VpcId: { "Ref": "ApacheKafkaVPC" }
-        CidrBlock: 10.0.5.0/24
+        CidrBlock: 10.0.3.0/24
         MapPublicIpOnLaunch: true
         AvailabilityZone: { "Fn::Select": [0, !GetAZs ''] }
     KafkaRouteTable:

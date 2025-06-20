@@ -1,7 +1,7 @@
 Type: AWS::EC2::Subnet
 Properties:
   VpcId: { "Ref": "ApacheKafkaVPC" }
-  CidrBlock: 10.0.2.0/24
+  CidrBlock: 10.0.4.0/24
   AvailabilityZone: { "Fn::Select": [0,{ "Fn::GetAZs": "" }] }
   MapPublicIpOnLaunch: false
   Tags:

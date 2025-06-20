@@ -8,6 +8,7 @@ build:
 	env GOOS=linux GOARCH=arm64 go build -o build/websocket-disconnect/bootstrap websocket-disconnect/main.go
 	env GOOS=linux GOARCH=arm64 go build -o build/websocket-message/bootstrap websocket-message/main.go
 	env GOOS=linux GOARCH=arm64 go build -o build/generate-cluster-id/bootstrap generate-cluster-id/main.go
+	env GOOS=linux GOARCH=arm64 go build -o build/fetch-nodes-ip/bootstrap fetch-nodes-ip/main.go
 
 zip:
 	zip -j build/start-instances.zip build/start-instances/bootstrap
@@ -18,3 +19,4 @@ zip:
 	zip -j build/websocket-disconnect.zip build/websocket-disconnect/bootstrap
 	zip -j build/websocket-message.zip build/websocket-message/bootstrap
 	zip -j build/generate-cluster-id.zip build/generate-cluster-id/bootstrap
+	zip -j build/fetch-nodes-ip.zip build/fetch-nodes-ip/bootstrap
