@@ -26,7 +26,7 @@ resources:
       Type: Custom::GenerateUUID
       Properties:
         ServiceToken: { "Fn::GetAtt": ["GenerateClusterIdLambdaFunction", "Arn"] }
-    KafkaBootstrapParameter:
+    KafkaBootstrapParam:
       DependsOn: FetchNodeIPs
       Type: AWS::SSM::Parameter
       Properties:
