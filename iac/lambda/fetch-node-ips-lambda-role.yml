@@ -31,6 +31,7 @@ Properties:
               - ssm:GetParameter
               - ssm:GetParameters
               - ssm:SendCommand
+              - ssm:PutParameter
             Resource: { "Fn::Sub": "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/kafka/bootstrap-servers" }
       PolicyName: { "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "FetchNodeIpsLambdaLogs"]] }
       
