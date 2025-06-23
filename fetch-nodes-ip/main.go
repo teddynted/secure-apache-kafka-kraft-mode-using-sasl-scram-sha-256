@@ -62,11 +62,11 @@ func GetApacheKakfaBrokers(client *ec2.EC2) (*ec2.DescribeInstancesOutput, error
 			},
 			{
 				Name:   aws.String("tag:Name"),
-				Values: []*string{aws.String("Apache"), aws.String("Kafka")},
+				Values: []*string{aws.String("*Apache Kafka Kraft*")},
 			},
 			{
 				Name:   aws.String("instance-type"),
-				Values: []*string{aws.String("t2.medium")},
+				Values: []*string{aws.String("t3.medium")},
 			},
 		},
 	})
