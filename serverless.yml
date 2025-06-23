@@ -27,15 +27,15 @@ resources:
       Properties:
         ServiceToken: { "Fn::GetAtt": ["GenerateClusterIdLambdaFunction", "Arn"] }
     KafkaBootstrapParameter:
-      DependsOn: FetchNodeIPs
+      DependsOn: FetchBootstrapServers
       Type: AWS::SSM::Parameter
       Properties:
         Name: /kafka/bootstrap-server-ip-addresses
         Type: String
-        Value: { "Fn::GetAtt": ["FetchNodeIPs", "Value"] }
+        Value: { "Fn::GetAtt": ["FetchBootstrapServers", "Value"] }
         Tier: "Standard" 
-    FetchNodeIPs:
-      Type: Custom::FetchNodeIPs
+    FetchBootstrapServers:
+      Type: Custom::FetchBootstrapServers
       Properties:
         ServiceToken: { "Fn::GetAtt": ["FetchBootstrapServersLambdaFunction", "Arn"] }
     ApacheKafkaVPC: ${file(./iac/ec2/vpc/kafka-vpc.yml)}
