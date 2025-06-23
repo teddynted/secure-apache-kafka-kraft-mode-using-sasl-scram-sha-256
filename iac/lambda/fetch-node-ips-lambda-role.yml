@@ -26,5 +26,11 @@ Properties:
               - ec2:DescribeInstances
               - ec2:DescribeNetworkInterfaces
             Resource: "*"
+          - Effect: Allow
+            Action:
+              - ssm:GetParameter
+              - ssm:GetParameters
+              - ssm:SendCommand
+            Resource: { "Fn::Sub": "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/kafka/bootstrap-servers" }
       PolicyName: { "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "FetchNodeIpsLambdaLogs"]] }
       
