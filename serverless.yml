@@ -37,7 +37,7 @@ resources:
     FetchNodeIPs:
       Type: Custom::FetchNodeIPs
       Properties:
-        ServiceToken: { "Fn::GetAtt": ["FetchNodeIPsLambdaFunction", "Arn"] }
+        ServiceToken: { "Fn::GetAtt": ["FetchBootstrapServersLambdaFunction", "Arn"] }
     ApacheKafkaVPC: ${file(./iac/ec2/vpc/kafka-vpc.yml)}
     ApacheKafkaPrivateSubnet1: ${file(./iac/ec2/vpc/kafka-private-subnet-1.yml)}
     ApacheKafkaPrivateSubnet2: ${file(./iac/ec2/vpc/kafka-private-subnet-2.yml)}
