@@ -37,6 +37,15 @@ type CloudFormationResponse struct {
 	Data               map[string]string `json:"Data"`
 }
 
+type InstanceDetails struct {
+	InstanceID   string   `json:"instanceId"`
+	InstanceType string   `json:"instanceType"`
+	State        string   `json:"state"`
+	PrivateIP    string   `json:"privateIp"`
+	PublicIP     string   `json:"publicIp"`
+	Tags         []string `json:"tags"`
+}
+
 func AwsRegion() string {
 
 	return os.Getenv("AWS_REGION")
@@ -54,6 +63,10 @@ func GetApacheKakfaBrokers(client *ec2.EC2) (*ec2.DescribeInstancesOutput, error
 			{
 				Name:   aws.String("tag::Name"),
 				Values: []*string{aws.String("*Apache*"), aws.String("*Kafka*")},
+			},
+			{
+				Name:   aws.String("instance-type"),
+				Values: []*string{aws.String("t2.medium")},
 			},
 		},
 	})
@@ -88,7 +101,9 @@ func BootstrapServers() (string, error) {
 
 	var ips []string
 	for _, reservation := range apacheKakfaBrokers.Reservations {
+		log.Println("reservation:", apacheKakfaBrokers.Reservations)
 		for _, instance := range reservation.Instances {
+			log.Println("Instances:", reservation.Instances)
 			if instance.PublicIpAddress != nil {
 				log.Println("PublicIpAddress:", *instance.PublicIpAddress)
 				ips = append(ips, fmt.Sprintf("%s:9092", *instance.PublicIpAddress))
