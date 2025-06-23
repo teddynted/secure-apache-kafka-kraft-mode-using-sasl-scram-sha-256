@@ -295,7 +295,8 @@ resources:
     #         Value: KafkaBrokerSaslScram256
     # Secrets Manager Configuration
     KeyPairSecretRotationSchedule:
-      DependsOn: [GenerateInstancesKeyPair]
+      DependsOn: 
+        - GenerateInstancesKeyPairLambdaFunction
       Type: AWS::SecretsManager::RotationSchedule
       Properties:
         SecretId: { "Fn::Sub": "ec2-keypair-${self:provider.region}-${self:provider.stage}-private-key" }
