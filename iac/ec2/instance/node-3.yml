@@ -11,7 +11,7 @@ Properties:
       GroupSet: 
         - {"Ref": "KafkaNodeSecurityGroup"}
       SubnetId: {"Ref": "KafkaPublicSubnet"}
-  KeyName: { "Fn::Sub": "ec2-keypair-${self:provider.region}-${self:provider.stage}-private-key" } #!Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
+  KeyName: { "Fn::Sub": "ec2-keypair-${self:provider.region}-${self:provider.stage}" } #!Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
   Tags:
     - Key: Name
       Value: Apache Kafka Kraft Instance 3

@@ -8,7 +8,7 @@ Properties:
         Principal:
           Service: 
             - lambda.amazonaws.com
-            - secretsmanager.amazonaws.com
+            #- secretsmanager.amazonaws.com
         Action: sts:AssumeRole
   ManagedPolicyArns:
     - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
