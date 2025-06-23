@@ -1,5 +1,5 @@
 Type: AWS::EC2::Instance
-DependsOn: [KafkaClusterIdParameter, KafkaBootstrapParameter, KafkaCertBucket, NodeOne]
+DependsOn: [KafkaClusterIdParameter, KafkaBootstrapParameter, KafkaCertBucket, NodeOne1]
 Properties:
   AvailabilityZone: { "Fn::Select": [0,{ "Fn::GetAZs": "" }] }
   InstanceType: { 'Ref': 'InstanceType' }
@@ -11,7 +11,7 @@ Properties:
       GroupSet: 
         - {"Ref": "KafkaNodeSecurityGroup"}
       SubnetId: {"Ref": "KafkaPublicSubnet"}
-  KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
+  KeyName: { "Fn::Sub": "ec2-keypair-${self:provider.region}-${self:provider.stage}-private-key" } #!Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
   Tags:
     - Key: Name
       Value: Apache Kafka Kraft Instance 2

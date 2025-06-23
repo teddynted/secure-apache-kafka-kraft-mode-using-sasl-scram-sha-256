@@ -1,8 +1,8 @@
 Type: AWS::EC2::Instance
-DependsOn: [NodeOne, NodeTwo, NodeThree]
+DependsOn: [NodeOne1, NodeTwo1, NodeThree1]
 Properties:
   InstanceType: t2.micro
-  KeyName: !Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
+  KeyName: { "Fn::Sub": "ec2-keypair-${self:provider.region}-${self:provider.stage}-private-key" } #!Join [ "-", [ {"Ref": "KeyPairName"}, { 'Ref': 'AWS::Region' } ] ]
   IamInstanceProfile: { "Ref": "BastionInstanceProfile" }
   ImageId: { "Ref": "LatestAmiId" }
   NetworkInterfaces: 
