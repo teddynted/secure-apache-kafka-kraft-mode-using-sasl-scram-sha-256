@@ -102,10 +102,10 @@ func handler(event CloudFormationRequest) error {
 	log.Println("Received CloudFormation event:", event)
 
 	// Create your custom return value
-	servers, _err := BootstrapServers()
+	servers, err := BootstrapServers()
 	log.Println("Boostrap Servers:", servers)
-	if _err != nil {
-		return fmt.Errorf("couldnt retrieve bootstrap servers: %v", _err)
+	if err != nil {
+		return fmt.Errorf("couldnt retrieve bootstrap servers: %v", err)
 	}
 
 	response := CloudFormationResponse{

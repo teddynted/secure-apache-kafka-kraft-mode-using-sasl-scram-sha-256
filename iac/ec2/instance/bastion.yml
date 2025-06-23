@@ -17,17 +17,17 @@ Properties:
   UserData:
     Fn::Base64: !Sub |
       #!/bin/bash -xe
-      # exec > >(tee /var/log/ansible.log) 2>&1
+      exec > >(tee /var/log/ansible.log) 2>&1
       
-      # # Download and execute with error handling
-      # if ! curl -fSL https://raw.githubusercontent.com/teddynted/secure-apache-kafka-kraft-mode-using-sasl-scram-sha-256/refs/heads/main/shell-scripts/ansible.sh -o /tmp/ansible.sh; then
-      #   echo "ERROR: Failed to download script"
-      #   exit 1
-      # fi
+      # Download and execute with error handling
+      if ! curl -fSL https://raw.githubusercontent.com/teddynted/secure-apache-kafka-kraft-mode-using-sasl-scram-sha-256/refs/heads/main/shell-scripts/ansible.sh -o /tmp/ansible.sh; then
+        echo "ERROR: Failed to download script"
+        exit 1
+      fi
       
-      # chmod +x /tmp/user-data.sh
-      # if ! /tmp/ansible.sh; then
-      #   echo "ERROR: Script execution failed"
-      #   exit 1
-      # fi
+      chmod +x /tmp/ansible.sh
+      if ! /tmp/ansible.sh; then
+        echo "ERROR: Script execution failed"
+        exit 1
+      fi
       echo "Started Apache Kafka Multinodes successfully"
