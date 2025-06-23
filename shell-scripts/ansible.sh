@@ -1,7 +1,7 @@
 sudo yum update -y
 sudo yum install -y aws-cli
 # Install Python and pip if not already present
-sudo dnf install -y python3 python3-pip
+dnf install -y python3 python3-pip
 
 # Install Ansible
 sudo pip3 install ansible
@@ -30,7 +30,7 @@ done
       
 # Test SSH connection
 echo "Testing SSH connection"
-ssh -i ~/.ssh/kafka_ansible ec2-user@FIRST_IP
+ssh -i ~/.ssh/kafka_ansible ec2-user@$FIRST_IP
 # Convert space-separated list into array
 read -ra IP_ARRAY <<< "$PRIVATE_IPS"
       
@@ -51,4 +51,4 @@ EOF
       
 cat inventory.ini
 
-ansible kafka_nodes -i inventory.ini -m shell -a "sudo /opt/kafka/scripts/kafka-format.sh 2>&1 | tee /tmp/kafka-format.log; sudo systemctl start kafka 2>&1 | tee /tmp/kafka-start.log; sudo systemctl status kafka --no-pager > /tmp/kafka-status.log; sudo journalctl -u kafka --since '5 min ago' --no-pager | grep -E 'error|fail|exception' > /tmp/kafka-journal-errors.log; grep -E 'ERROR|Exception' /opt/kafka/logs/server.log | tail -100 > /tmp/kafka-app-errors.log" \ --become
+ansible kafka_nodes -i inventory.ini -m shell -a --become "sudo /opt/kafka/scripts/kafka-format.sh 2>&1 | tee /tmp/kafka-format.log; sudo systemctl start kafka 2>&1 | tee /tmp/kafka-start.log; sudo systemctl status kafka --no-pager > /tmp/kafka-status.log; sudo journalctl -u kafka --since '5 min ago' --no-pager | grep -E 'error|fail|exception' > /tmp/kafka-journal-errors.log; grep -E 'ERROR|Exception' /opt/kafka/logs/server.log | tail -100 > /tmp/kafka-app-errors.log"

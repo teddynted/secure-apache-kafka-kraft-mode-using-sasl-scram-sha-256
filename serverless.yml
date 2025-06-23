@@ -273,7 +273,7 @@ resources:
         RouteTableId: { "Ref": "KafkaRouteTable" }
     KafkaCertBucket: ${file(./iac/s3/certs-bucket.yml)}
     KafkaCertBucketPolicy: ${file(./iac/s3/certs-bucket-policy.yml)}
-    BastionHost2: ${file(./iac/ec2/instance/bastion.yml)}
+    BastionHost3: ${file(./iac/ec2/instance/bastion.yml)}
     BastionSecurityGroup: ${file(./iac/ec2/security-group/bastion-security-group.yml)}
     # IAM Role for the Bastion Host
     BastionInstanceRole: ${file(./iac/ec2/iam/bastion-instance-role.yml)}
