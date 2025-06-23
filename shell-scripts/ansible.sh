@@ -4,7 +4,7 @@ sudo yum install -y aws-cli
 dnf install -y python3 python3-pip
 
 # Install Ansible
-sudo pip3 install ansible
+pip3 install ansible
 
 # Verify installation
 ansible --version
@@ -14,6 +14,8 @@ PRIVATE_IPS=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=*Apache
 FIRST_IP=${IP_ARRAY[0]}
 SECOND_IP=${IP_ARRAY[1]}
 THIRD_IP=${IP_ARRAY[2]}
+
+echo "PRIVATE_IPS: $PRIVATE_IPS"
 
 # Generate SSH key pair non-interactively
 ssh-keygen -t rsa -b 4096 -f ~/.ssh/kafka_ansible -q -N ""
