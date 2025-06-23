@@ -74,7 +74,7 @@ func GetApacheKakfaBrokers(client *ec2.EC2) (*ec2.DescribeInstancesOutput, error
 	if err != nil {
 		return nil, err
 	}
-
+	log.Println("Results:", result)
 	return result, err
 }
 
