@@ -118,7 +118,7 @@ func handler(event CloudFormationRequest) error {
 		RequestId:          event.RequestId,
 		LogicalResourceId:  event.LogicalResourceId,
 		Data: map[string]string{
-			"Value": "servers:1, servers:2, servers:3",
+			"Value": servers,
 		},
 	}
 
