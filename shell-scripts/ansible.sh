@@ -9,13 +9,13 @@ pip3 install ansible
 # Verify installation
 ansible --version
 
-PRIVATE_IPS=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=*Apache*,*Kafka*" "Name=instance-state-name,Values=running" --query "Reservations[].Instances[].PrivateIpAddress" --output text)
+PUBLIC_DNS_NAMES=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=*Apache*,*Kafka*" "Name=instance-state-name,Values=running" --query "Reservations[].Instances[].PublicDnsName" --output text)
 # Get IPs
 FIRST_IP=${IP_ARRAY[0]}
 SECOND_IP=${IP_ARRAY[1]}
 THIRD_IP=${IP_ARRAY[2]}
 
-echo "PRIVATE_IPS: $PRIVATE_IPS"
+echo "PUBLIC_DNS_NAMES: $PUBLIC_DNS_NAMES"
 
 # Generate SSH key pair non-interactively
 ssh-keygen -t rsa -b 4096 -f ~/.ssh/kafka_ansible -q -N ""
@@ -25,16 +25,16 @@ chmod 600 ~/.ssh/kafka_ansible
 chmod 644 ~/.ssh/kafka_ansible.pub
 chown -R ec2-user:ec2-user ~/.ssh
 # Copy public key to all Kafka nodes
-for host in $PRIVATE_IPS; do
+for host in $PUBLIC_DNS_NAMES; do
   #ssh-copy-id -i ~/.ssh/kafka_ansible.pub -o StrictHostKeyChecking=no ec2-user@$host
-  ssh -o StrictHostKeyChecking=no ec2-user@$host "mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo '$(cat ~/.ssh/kafka_ansible.pub)' >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
+  sudo ssh -o StrictHostKeyChecking=no ec2-user@$host "mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo '$(cat ~/.ssh/kafka_ansible.pub)' >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
 done
       
 # Test SSH connection
 echo "Testing SSH connection"
 ssh -i ~/.ssh/kafka_ansible ec2-user@$FIRST_IP
 # Convert space-separated list into array
-read -ra IP_ARRAY <<< "$PRIVATE_IPS"
+read -ra IP_ARRAY <<< "$PUBLIC_DNS_NAMES"
       
 # Sort the IPs (optional, for deterministic order)
 IFS=$'\n' IP_ARRAY=($(sort <<<"${IP_ARRAY[*]}"))
