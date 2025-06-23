@@ -1,0 +1,23 @@
+Type: AWS::IAM::Role
+Properties:
+  RoleName: BastionDescribeEC2Role
+  AssumeRolePolicyDocument:
+    Version: '2012-10-17'
+    Statement:
+      - Effect: Allow
+        Principal:
+          Service: ec2.amazonaws.com
+        Action: sts:AssumeRole
+  ManagedPolicyArns:
+    - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+  Policies:
+    - PolicyName: DescribeEC2Instances
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - ec2:DescribeAvailabilityZones
+              - ec2:DescribeInstances
+              - ec2:DescribeNetworkInterfaces
+            Resource: "*"

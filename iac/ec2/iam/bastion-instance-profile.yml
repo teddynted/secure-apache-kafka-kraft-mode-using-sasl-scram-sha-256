@@ -1,0 +1,4 @@
+Type: AWS::IAM::InstanceProfile
+Properties:
+  Roles:
+    - { "Ref": "BastionInstanceRole" }

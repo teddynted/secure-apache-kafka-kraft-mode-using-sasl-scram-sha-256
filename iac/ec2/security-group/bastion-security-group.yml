@@ -12,6 +12,11 @@ Properties:
       FromPort: 22
       ToPort: 22
       CidrIp: { "Ref": "TrustedCidr"}
+    - IpProtocol: tcp
+      FromPort: 443
+      ToPort: 443
+      CidrIp: 0.0.0.0/0
+      Description: Allow outbound HTTPS for package updates
   Tags:
     - Key: Name
       Value: BastionSG
