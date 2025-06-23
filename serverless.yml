@@ -280,15 +280,29 @@ resources:
     # Instance Profile required for EC2 to use the role
     BastionInstanceProfile: ${file(./iac/ec2/iam/bastion-instance-profile.yml)}
     GenerateInstancesKeyPairLambdaIamRole: ${file(./iac/lambda/generate-instances-key-pair-lambda-iam-role.yml)}
+    # KeyPairSecret:
+    #   Type: AWS::SecretsManager::Secret
+    #   Properties:
+    #     Name: KafkaBrokerSaslScram256
+    #     Description: "Kafka Broker Sasl Scram Sha-256"
+    #     GenerateSecretString:
+    #       SecretStringTemplate: '{"username": "${env:SASL_SCRAM_USERNAME}"}'
+    #       GenerateStringKey: password
+    #       PasswordLength: 16
+    #       ExcludePunctuation: true
+    #     Tags:
+    #       - Key: Name
+    #         Value: KafkaBrokerSaslScram256
     # Secrets Manager Configuration
     KeyPairSecretRotationSchedule:
+      DependsOn: [GenerateInstancesKeyPair]
       Type: AWS::SecretsManager::RotationSchedule
       Properties:
         SecretId: { "Fn::Sub": "ec2-keypair-${self:provider.region}-${self:provider.stage}-private-key" }
         RotationLambdaARN: { "Fn::GetAtt": ["GenerateInstancesKeyPairLambdaFunction", "Arn"] }
         RotationRules:
           AutomaticallyAfterDays: 30
-      DependsOn: GenerateInstancesKeyPairLambdaFunction
+      
     # Lambda Permission for Secrets Manager Rotation
     SecretsRotationPermission:
       Type: AWS::Lambda::Permission

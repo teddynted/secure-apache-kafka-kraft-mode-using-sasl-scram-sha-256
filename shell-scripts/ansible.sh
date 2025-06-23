@@ -9,6 +9,11 @@ pip3 install ansible
 # Verify installation
 ansible --version
 
+REGION=$(aws ec2 describe-availability-zones --output text --query 'AvailabilityZones[0].[RegionName]')
+STAGE=$1
+aws secretsmanager get-secret-value --secret-id ec2-keypair-$REGION-$STAGE-private-key --query SecretString --output text > private-key.pem
+chmod 400 private-key.pem
+
 USER="ec2-user"
 PUBLIC_DNS_NAMES=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=*Apache*,*Kafka*" "Name=instance-state-name,Values=running" --query "Reservations[].Instances[].PublicDnsName" --output text)
 

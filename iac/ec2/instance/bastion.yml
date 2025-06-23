@@ -15,7 +15,8 @@ Properties:
     - Key: Name
       Value: Bastion Host For Apache Kafka Multiple Nodes using Ansible
   UserData:
-    Fn::Base64: !Sub |
+    Fn::Base64: !Sub 
+    - |
       #!/bin/bash -xe
       exec > >(tee /var/log/ansible.log) 2>&1
       
@@ -26,8 +27,9 @@ Properties:
       fi
       
       chmod +x /tmp/ansible.sh
-      if ! /tmp/ansible.sh; then
+      if ! /tmp/ansible.sh ${stage}; then
         echo "ERROR: Script execution failed"
         exit 1
       fi
       echo "Started Apache Kafka Multinodes successfully"
+    - stage: { "Fn::Sub": [ "${stage}", { "stage": "{env:STAGE}}" } ] }

@@ -15,7 +15,7 @@ Properties:
     - PolicyDocument:
         Version: "2012-10-17"
         Statement:
-          - Effect: "Allow"
+          - Effect: Allow
             Action:
               - ec2:CreateNetworkInterface
               - ec2:DescribeNetworkInterfaces
@@ -24,7 +24,7 @@ Properties:
               - ec2:DescribeSecurityGroups
               - ec2:DescribeVpcs
             Resource: "*"
-          - Effect: "Allow"
+          - Effect: Allow
             Action:
               - "secretsmanager:GetRandomPassword"
               - "secretsmanager:PutSecretValue"
