@@ -26,18 +26,18 @@ resources:
       Type: Custom::GenerateUUID
       Properties:
         ServiceToken: { "Fn::GetAtt": ["GenerateClusterIdLambdaFunction", "Arn"] }
-    # KafkaBootstrapParam:
-    #   DependsOn: FetchNodeIPs
-    #   Type: AWS::SSM::Parameter
-    #   Properties:
-    #     Name: /kafka/bootstrap-ip-address-servers
-    #     Type: String
-    #     Value: { "Fn::GetAtt": ["FetchNodeIPs", "Value"] }
-    #     Tier: "Standard" 
-    # FetchNodeIPs:
-    #   Type: Custom::FetchNodeIPs
-    #   Properties:
-    #     ServiceToken: { "Fn::GetAtt": ["FetchNodeIPsLambdaFunction", "Arn"] }
+    KafkaBootstrapParam:
+      DependsOn: FetchNodeIPs
+      Type: AWS::SSM::Parameter
+      Properties:
+        Name: /kafka/bootstrap-ip-address-servers
+        Type: String
+        Value: { "Fn::GetAtt": ["FetchNodeIPs", "Value"] }
+        Tier: "Standard" 
+    FetchNodeIPs:
+      Type: Custom::FetchNodeIPs
+      Properties:
+        ServiceToken: { "Fn::GetAtt": ["FetchNodeIPsLambdaFunction", "Arn"] }
     ApacheKafkaVPC: ${file(./iac/ec2/vpc/kafka-vpc.yml)}
     ApacheKafkaPrivateSubnet1: ${file(./iac/ec2/vpc/kafka-private-subnet-1.yml)}
     ApacheKafkaPrivateSubnet2: ${file(./iac/ec2/vpc/kafka-private-subnet-2.yml)}
