@@ -59,6 +59,18 @@ GenerateClusterId:
   memorySize: 1800
   #vpc: ${file(./iac/ec2/vpc/lambda-vpc-config.yml)}
 
+GenerateInstancesKeyPair:
+  handler: bootstrap
+  runtime: provided.al2
+  package:
+    artifact: build/generate-instances-key-pair.zip
+    individually: true
+  role: { "Fn::GetAtt": ["GenerateInstancesKeyPairLambdaIamRole", "Arn"] }
+  name: ${self:provider.stage}-generate-instances-key-pair-lambda
+  timeout: 500
+  memorySize: 1800
+  #vpc: ${file(./iac/ec2/vpc/lambda-vpc-config.yml)}
+
 FetchBootstrapServers:
   handler: bootstrap
   runtime: provided.al2

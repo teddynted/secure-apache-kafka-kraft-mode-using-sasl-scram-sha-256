@@ -279,4 +279,21 @@ resources:
     BastionInstanceRole: ${file(./iac/ec2/iam/bastion-instance-role.yml)}
     # Instance Profile required for EC2 to use the role
     BastionInstanceProfile: ${file(./iac/ec2/iam/bastion-instance-profile.yml)}
+    GenerateInstancesKeyPairLambdaIamRole: ${file(./iac/lambda/generate-instances-key-pair-lambda-iam-role.yml)}
+    # Secrets Manager Configuration
+    KeyPairSecretRotationSchedule:
+      Type: AWS::SecretsManager::RotationSchedule
+      Properties:
+        SecretId: { "Fn::Sub": "ec2-keypair-${self:provider.region}-${self:provider.stage}-private-key" }
+        RotationLambdaARN: { "Fn::GetAtt": ["GenerateInstancesKeyPairLambdaFunction", "Arn"] }
+        RotationRules:
+          AutomaticallyAfterDays: 30
+      DependsOn: GenerateInstancesKeyPairLambdaFunction
+    # Lambda Permission for Secrets Manager Rotation
+    SecretsRotationPermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        FunctionName: { "Fn::GetAtt": ["GenerateInstancesKeyPairLambdaFunction", "Arn"] }
+        Action: 'lambda:InvokeFunction'
+        Principal: 'secretsmanager.amazonaws.com'
   Outputs: ${file(./iac/outputs.yml)}

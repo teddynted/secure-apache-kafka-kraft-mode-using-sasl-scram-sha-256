@@ -1,8 +1,8 @@
 #!/bin/bash
-Region=$AWS_DEFAULT_REGION
-Bucket=$KEY_PAIR_BUCKET_NAME
+REGION=$AWS_DEFAULT_REGION
+BUCKET_NAME=$KEY_PAIR_BUCKET_NAME
 KeyPairName=$KEY_PAIR_NAME
-key=$KeyPairName-$Region
+key=$KeyPairName-$REGION
 Available_key=`aws ec2 describe-key-pairs --key-name $key | grep KeyName | awk -F\" '{print $4}'`
 
 if [ "$key" = "$Available_key" ]; then
@@ -15,6 +15,6 @@ else
     --key-type rsa \
     --key-format pem \
     --query "KeyMaterial" \
-    --region $Region \
+    --region $REGION \
     --output text > $key.pem
 fi
