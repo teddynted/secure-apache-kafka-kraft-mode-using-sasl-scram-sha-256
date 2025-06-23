@@ -37,15 +37,6 @@ type CloudFormationResponse struct {
 	Data               map[string]string `json:"Data"`
 }
 
-type InstanceDetails struct {
-	InstanceID   string   `json:"instanceId"`
-	InstanceType string   `json:"instanceType"`
-	State        string   `json:"state"`
-	PrivateIP    string   `json:"privateIp"`
-	PublicIP     string   `json:"publicIp"`
-	Tags         []string `json:"tags"`
-}
-
 func AwsRegion() string {
 
 	return os.Getenv("AWS_REGION")
@@ -74,13 +65,11 @@ func GetApacheKakfaBrokers(client *ec2.EC2) (*ec2.DescribeInstancesOutput, error
 	if err != nil {
 		return nil, err
 	}
-	log.Println("Results:", result)
+
 	return result, err
 }
 
 func BootstrapServers() (string, error) {
-
-	log.Println("Retrieved an Instances...")
 
 	sess, err := session.NewSessionWithOptions(session.Options{
 		Config: aws.Config{
@@ -101,16 +90,13 @@ func BootstrapServers() (string, error) {
 
 	var ips []string
 	for _, reservation := range apacheKakfaBrokers.Reservations {
-		log.Println("reservation:", apacheKakfaBrokers.Reservations)
 		for _, instance := range reservation.Instances {
-			log.Println("Instances:", reservation.Instances)
 			if instance.PublicIpAddress != nil {
 				log.Println("PublicIpAddress:", *instance.PublicIpAddress)
 				ips = append(ips, fmt.Sprintf("%s:9092", *instance.PublicIpAddress))
 			}
 		}
 	}
-
 	return strings.Join(ips, ", "), nil
 }
 
@@ -119,7 +105,7 @@ func handler(event CloudFormationRequest) error {
 
 	// Create your custom return value
 	servers, err := BootstrapServers()
-	log.Println("Boostrap Servers:", servers)
+	log.Println("Bootstrap Servers:", servers)
 	if err != nil {
 		return fmt.Errorf("couldnt retrieve bootstrap servers: %v", err)
 	}
@@ -127,12 +113,12 @@ func handler(event CloudFormationRequest) error {
 	response := CloudFormationResponse{
 		Status:             "SUCCESS",
 		Reason:             "Custom resource creation successful",
-		PhysicalResourceId: "custom-resource-id-123",
+		PhysicalResourceId: "apache-kafka-bootstrap-servers",
 		StackId:            event.StackId,
 		RequestId:          event.RequestId,
 		LogicalResourceId:  event.LogicalResourceId,
 		Data: map[string]string{
-			"Value": servers,
+			"Value": "servers:1, servers:2, servers:3",
 		},
 	}
 
