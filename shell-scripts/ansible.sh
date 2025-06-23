@@ -15,6 +15,19 @@ FIRST_IP=${IP_ARRAY[0]}
 SECOND_IP=${IP_ARRAY[1]}
 THIRD_IP=${IP_ARRAY[2]}
 
+sudo tee inventory.ini << EOF
+[kafka_nodes]
+$FIRST_IP
+$SECOND_IP
+$THIRD_IP
+  
+[kafka_nodes:vars]
+ansible_user=ec2-user
+ansible_ssh_private_key_file=~/.ssh/kafka_ansible
+EOF
+      
+cat inventory.ini
+
 echo "PUBLIC_DNS_NAMES: $PUBLIC_DNS_NAMES"
 
 # Generate SSH key pair non-interactively
@@ -40,17 +53,5 @@ read -ra IP_ARRAY <<< "$PUBLIC_DNS_NAMES"
 IFS=$'\n' IP_ARRAY=($(sort <<<"${IP_ARRAY[*]}"))
 unset IFS
 
-sudo tee inventory.ini << EOF
-[kafka_nodes]
-$FIRST_IP
-$SECOND_IP
-$THIRD_IP
-  
-[kafka_nodes:vars]
-ansible_user=ec2-user
-ansible_ssh_private_key_file=~/.ssh/kafka_ansible
-EOF
-      
-cat inventory.ini
 
 ansible kafka_nodes -i inventory.ini -m shell -a --become "sudo /opt/kafka/scripts/kafka-format.sh 2>&1 | tee /tmp/kafka-format.log; sudo systemctl start kafka 2>&1 | tee /tmp/kafka-start.log; sudo systemctl status kafka --no-pager > /tmp/kafka-status.log; sudo journalctl -u kafka --since '5 min ago' --no-pager | grep -E 'error|fail|exception' > /tmp/kafka-journal-errors.log; grep -E 'ERROR|Exception' /opt/kafka/logs/server.log | tail -100 > /tmp/kafka-app-errors.log"
