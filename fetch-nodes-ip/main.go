@@ -67,7 +67,7 @@ func GetApacheKakfaBrokers(client *ec2.EC2) (*ec2.DescribeInstancesOutput, error
 
 func BootstrapServers() (string, error) {
 
-	log.Println("Stopped an Instance...")
+	log.Println("Retrieved an Instances...")
 
 	sess, err := session.NewSessionWithOptions(session.Options{
 		Config: aws.Config{
