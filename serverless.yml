@@ -33,6 +33,8 @@ resources:
         Name: /kafka/bootstrap-servers
         Type: String
         Value: { "Fn::GetAtt": ["FetchNodeIPs", "Value"] }
+        Overwrite: true  # Required for updates
+        Tier: "Standard" 
     FetchNodeIPs:
       Type: Custom::FetchNodeIPs
       Properties:

@@ -32,6 +32,7 @@ Properties:
               - ssm:GetParameters
               - ssm:SendCommand
               - ssm:PutParameter
+              - ssm:DeleteParameter
             Resource: "*"
       PolicyName: { "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "${self:provider.stage}-FetchNodeIpsLambdaPolicy"]] }
       
