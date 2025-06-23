@@ -92,7 +92,6 @@ func BootstrapServers() (string, error) {
 	for _, reservation := range apacheKakfaBrokers.Reservations {
 		for _, instance := range reservation.Instances {
 			if instance.PublicIpAddress != nil {
-				log.Println("PublicIpAddress:", *instance.PublicIpAddress)
 				ips = append(ips, fmt.Sprintf("%s:9092", *instance.PublicIpAddress))
 			}
 		}
