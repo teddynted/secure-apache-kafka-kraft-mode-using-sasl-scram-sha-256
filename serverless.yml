@@ -30,10 +30,9 @@ resources:
       DependsOn: FetchNodeIPs
       Type: AWS::SSM::Parameter
       Properties:
-        Name: /kafka/bootstrap-servers
+        Name: /kafka/bootstrap-ip-address-servers
         Type: String
         Value: { "Fn::GetAtt": ["FetchNodeIPs", "Value"] }
-        Overwrite: true  # Required for updates
         Tier: "Standard" 
     FetchNodeIPs:
       Type: Custom::FetchNodeIPs
