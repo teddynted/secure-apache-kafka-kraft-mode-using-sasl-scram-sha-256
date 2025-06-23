@@ -1,6 +1,6 @@
 Type: AWS::IAM::Role
 Properties:
-  RoleName: generateClusterIdLambdaLogs-${self:provider.stage}
+  RoleName: GenerateInstancesKeyPairLambdaLogs-${self:provider.stage}
   AssumeRolePolicyDocument:
     Version: "2012-10-17"
     Statement:
@@ -31,6 +31,6 @@ Properties:
               - secretsmanager:CreateSecret
               - secretsmanager:DeleteSecret
               - secretsmanager:TagResource
-            Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:ec2-keypair-*'
+            Resource: { "Fn::Sub": "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:ec2-keypair-*" }
       PolicyName: { "Fn::Join": ["-", [{ "Ref": "AWS::StackName" }, "GenerateInstancesKeyPairLambdaLambdaLogs"]] }
       
