@@ -96,7 +96,7 @@ sudo ss -tulnp | grep java
 
 ### AWS
 
-- Use Elastic IP for you Kafka broker so the public IP remains static and doesn't change when the EC@ instance restarts
+- Use Elastic IP for you Kafka broker so the public IP remains static and doesn't change whenever your EC2 instances restarts
 
 ## Terms
 
