@@ -92,7 +92,7 @@ sudo ss -tulnp | grep java
 ### Kafka
 
 - Local Dev: 1 replication factor
-- Production: 3 replication factor, for high availability  (have at least ec2 instances)
+- Production: 3 replication factor, for high availability  (have at least three ec2 instances)
 
 ### AWS
 
