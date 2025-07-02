@@ -1,4 +1,4 @@
-# Securing and Monitoring Kafka Kraft Mode Using SASL/SCRAM authentication
+# Securing and Monitoring Apache Kafka Kraft Mode Using SASL/SCRAM authentication
 
 Secure and monitor your Amazon Linux 2023 EC2 self-hosted Apache Kafka using SASL/SCRAM
 
