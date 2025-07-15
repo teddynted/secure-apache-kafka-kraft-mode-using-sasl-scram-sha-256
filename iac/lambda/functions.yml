@@ -30,7 +30,7 @@ StartInstances:
   events:
     - schedule:
         rate: cron(0 17 ? * * *)
-        enabled: true
+        enabled: false # enable this when ready
         method: scheduler
         timezone: Africa/Johannesburg
   #vpc: ${file(./iac/ec2/vpc/lambda-vpc-config.yml)}
